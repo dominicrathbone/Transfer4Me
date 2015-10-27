@@ -1,2 +1,4 @@
 \contentsline {section}{\numberline {0.1}Project Scope}{2}
-\contentsline {section}{\numberline {0.2}Methodology}{3}
+\contentsline {section}{\numberline {0.2}Specification}{2}
+\contentsline {section}{\numberline {0.3}Methodology}{3}
+\contentsline {section}{\numberline {0.4}Literature Review}{4}

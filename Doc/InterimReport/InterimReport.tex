@@ -19,11 +19,11 @@
 		\subsection*{Aims and Objectives}
 			The ultimate objective of my project is to investigate the possibility of data transfer over web browsers (in particular audio and video streaming) without the need for a centralised client-server architecture, instead opting for a peer to peer architecture. In order to do so, I will need to research peer to peer networking as well technologies that will allow for it's development in the browser such as WebRTC. In order to test and demonstrate this objective, It will materialize in the form of a web application that people can use to both transfer and stream files (if in a suitable format).
 		\subsection*{Stakeholders}
-			The stakeholders involved in my project will be myself and the supervisor of my project, Stelios Kapetanakis.
+			The stakeholders involved in my project will be myself, the supervisor of my project, Stelios Kapetanakis and the user.
 		\subsection*{Methods of Communication}
 			Stelios and I have set up a regular meeting once a week on friday at 4pm to review progress and answer any questions. On top of this, we communicate regularly via email and I have set up a private git repository on github to keep my project in which I will give Stelios access to.
 		\subsection*{Quality Analysis}
-			Success will be measured by the performance of the web application's ability to transfer data. This will be achieved by application metrics recording how fast/reliably files are streamed and transferred under differing amounts of load. Load will be simulated using a load testing tool to mock client connections to the web application.
+			Success will be measured by the performance of the web application's ability to transfer data. This will be achieved by application metrics recording how fast/reliably files are transferred under differing amounts of load. Load will be simulated using a load testing tool to mock client connections to the web application. I will implement metrics using the WebRTC statistics API, which allows for monitoring of peer connections.
 		
 	\section{Specification}
 			The first intermediate product will be the signalling server written in Java. This will handle the exchange of client meta data in order to establish the connection between two peers using the web application. I plan to overlap the development of this with the development of the data transfer functionality and user interface of my second deliverable, the web application as manually testing the signalling server will be a lot easier with a partially developed application to test it with.
@@ -49,11 +49,35 @@
 		\begin{center}
 			\includegraphics[scale=0.5]{tdd-circle-of-life.png}
 		\end{center}
+		
+		\subsubsection*{Tools and Environment}
+		Git
+		IDE
+		Unit testing framework
+		build tools
 
 	\section{Literature Review}
 		\subsection*{Problems I am trying to solve}
 		\subsection*{WebRTC}
-		WebRTC is an emerging web technology that enables browsers to communicate real time via a peer to peer connecton, avoiding the need for a centralized server to transfer data between them. This was first released by Google as an open source project to implement real-time communication in the browser in May 2011 \cite{Google WebRTC Release}. It was later drafted as an API definition by W3C which is still a work in progress. \cite{W3C WebRTC Definition}.
+		WebRTC is an emerging web technology that enables browsers to communicate real time via a peer to peer connecton, avoiding the need for a centralized server to transfer data between them. This was first released by Google as an open source project to implement real-time communication in the browser in May 2011 \cite{Google WebRTC Release}. It was later drafted as an API definition by W3C which is still a work in progress. \cite{W3C WebRTC Definition}. WebRTC has yet to be fully implemented in every web browser but Chrome, Firefox and a WebRTC specific browser called Bowser are leading the way in implementing the API definition. Firefox (Nightly) seems to be leading the way in this so I will focus specifically in developing towards this browser\cite{WebRTC browser support}.
+		The 3 main WebRTC APIs supported at this time are:
+		\begin{itemize}
+			\item RTCDataChannel:
+			"The RTCDataChannel interface represents a bi-directional data channel between two peers of a connection." \cite{Mozilla Web API}
+			\item RTCPeerConnection:
+			"The RTCPeerConnection interface represents a WebRTC connection between the local computer and a remote peer. It is used to handle efficient streaming of data between the two peers." 
+			\cite{Mozilla Web API}
+			\item getUserMedia:
+			"Prompts the user for permission to use one video and/or one audio input device such as a camera or screensharing and/or a microphone. If the user provides permission, then the successCallback is invoked with the resulting MediaStream object as its argument. If the user denies permission or media is not available, then the errorCallback is called with PermissionDeniedError or NotFoundError respectively. Note that it is possible for neither completion callback to be called, as the user is not required to make a choice."
+			\cite{Mozilla Web API}
+		\end{itemize}
+			My Web Application will utilize the RTCPeerConnection and RTCDataChannel APIs. The former to establish a peer connection between two clients and the latter to create a data channel over this peer connection to transfer data.
+			
+			Although WebRTC is used to transfer data, it purposely doesn't handle signalling. Signalling is a concept that came from telecommunications and VoIP. It is the process of organising the communication between two clients and handles the exchange of metadata that creates and manages a session between two clients. With WebRTC, the most prevalent signalling protocol is the Session Initiation Protocol (SIP). SIP 
+			
+			This data is sent over a protocol called Secure Real Time Transport Protocol (SRTP). This protocol was originally developed for secure VoIP but has been adopted by WebRTC. 
+	
+		
 		\subsection*{Peer to peer networking topology}
 		The entire idea behind my application is based on this peer to peer connection between two browsers. Whilst this one-to-one connection is formed and maintained by WebRTC, it does no more than this. If I want to form an actual many-to-many network of peers then I will have to produce code that will discover and co-ordinate these one-to-one peer connections.
 	
@@ -68,7 +92,11 @@
 		Harald Alvestrand. (2011). Google release of WebRTC source code. Available: http://lists.w3.org/Archives/Public/public-webrtc/2011May/0022.html. Last accessed 29/10/2015.
 		\bibitem{W3C WebRTC Definition} 
 		Adam Bergkvist, Daniel C. Burnett, Cullen Jennings, Anant Narayanan (until November 2012). (2011). WebRTC 1.0: Real-time Communication Between Browsers. Available: http://www.w3.org/TR/webrtc/. Last accessed 29/10/2015.
-		\bibitem{
+		\bibitem{WebRTC browser support}
+		Available: http://iswebrtcreadyyet.com/. Last accessed 30/10/2015.
+		\bibitem{Mozilla Web API}
+		Mozilla Web API. Available: https://developer.mozilla.org/en-US/docs/Web/API. Last accessed 30/10/2015.
+		\bibitem{Mesh Network Definition}
 	\end{thebibliography}
 
 \end{document}          

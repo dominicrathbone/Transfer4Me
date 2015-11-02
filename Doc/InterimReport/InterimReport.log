@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.10.27)  29 OCT 2015 15:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.10.27)  30 OCT 2015 16:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -173,38 +173,50 @@ File: resources/images/tdd-circle-of-life.png Graphic file (type png)
 Package pdftex.def Info: resources/images/tdd-circle-of-life.png used on input 
 line 50.
 (pdftex.def)             Requested size: 238.39003pt x 186.69704pt.
- [4 <./resources/images/tdd-circle-of-life.png>] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 67--68
+ [4 <./resources/images/tdd-circle-of-life.png>]
+Overfull \hbox (21.0561pt too wide) in paragraph at lines 59--61
+[]\OT1/cmr/m/n/10 RTCDataChannel: "The RTC-Dat-aChan-nel in-ter-face rep-re-sen
+ts a bi-directional
+ []
+
+[5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 86--87
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 67--68
+Underfull \hbox (badness 10000) in paragraph at lines 86--87
 \OT1/cmr/m/n/10 code. Avail-able: http://lists.w3.org/Archives/Public/public-
  []
 
-[6
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
+[]\OT1/cmr/m/n/10 Mozilla Web API. Avail-able: https://developer.mozilla.org/en
+-
+ []
+
+[7
 
 ] (./InterimReport.aux) ) 
 Here is how much of TeX's memory you used:
- 1539 strings out of 495025
- 22079 string characters out of 6181514
- 77599 words of memory out of 5000000
- 4755 multiletter control sequences out of 15000+600000
+ 1542 strings out of 495025
+ 22145 string characters out of 6181514
+ 77608 words of memory out of 5000000
+ 4758 multiletter control sequences out of 15000+600000
  9107 words of font info for 32 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 37i,6n,23p,814b,211s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,6n,23p,830b,211s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr1
 0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on InterimReport.pdf (7 pages, 101727 bytes).
+Output written on InterimReport.pdf (8 pages, 105073 bytes).
 PDF statistics:
- 55 PDF objects out of 1000 (max. 8388607)
- 37 compressed objects within 1 object stream
+ 58 PDF objects out of 1000 (max. 8388607)
+ 39 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  9 NOV 2015 16:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  10 NOV 2015 21:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -466,147 +466,154 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 ]
 Chapter 1.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 23.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 22.
 (c:/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 23.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 22.
  [3
 
-] [4]
-<resources/images/overlaynetwork.jpg, id=27, 144.54pt x 61.1886pt>
+]
+<resources/images/overlaynetwork.jpg, id=24, 144.54pt x 61.1886pt>
 File: resources/images/overlaynetwork.jpg Graphic file (type jpg)
 
 <use resources/images/overlaynetwork.jpg>
 Package pdftex.def Info: resources/images/overlaynetwork.jpg used on input line
- 58.
+ 47.
 (pdftex.def)             Requested size: 144.53963pt x 61.18843pt.
-
-Overfull \hbox (18.44504pt too wide) in paragraph at lines 71--72
-[]\OT1/cmr/m/n/10 Currently, the most com-mon over-lay net-work ar-chi-tec-ture
- for file stor-age/transfer
- []
-
-[5 <./resources/images/overlaynetwork.jpg>]
-Overfull \hbox (21.0561pt too wide) in paragraph at lines 82--84
+ [4 <./resources/images/overlaynetwork.jpg>] [5] [6]
+Overfull \hbox (21.0561pt too wide) in paragraph at lines 84--86
 []\OT1/cmr/m/n/10 RTCDataChannel: "The RTC-Dat-aChan-nel in-ter-face rep-re-sen
 ts a bi-directional
  []
 
-[6] [7] [8]
-<resources/images/tdd-circle-of-life.png, id=41, 476.78125pt x 373.395pt>
+[7] [8] [9]
+<resources/images/ganttchart.png, id=44, 810.02625pt x 950.04938pt>
+File: resources/images/ganttchart.png Graphic file (type png)
+
+<use resources/images/ganttchart.png>
+Package pdftex.def Info: resources/images/ganttchart.png used on input line 126
+.
+(pdftex.def)             Requested size: 405.01213pt x 475.02353pt.
+
+Overfull \hbox (60.01213pt too wide) in paragraph at lines 126--127
+[][] 
+ []
+
+[10 <./resources/images/ganttchart.png>] [11]
+<resources/images/tdd-circle-of-life.png, id=51, 476.78125pt x 373.395pt>
 File: resources/images/tdd-circle-of-life.png Graphic file (type png)
 
 <use resources/images/tdd-circle-of-life.png>
 Package pdftex.def Info: resources/images/tdd-circle-of-life.png used on input 
-line 145.
+line 153.
 (pdftex.def)             Requested size: 238.39003pt x 186.69704pt.
- [9 <./resources/images/tdd-circle-of-life.png>] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 159--160
+ [12 <./resources/images/tdd-circle-of-life.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 162--163
 []\OT1/cmr/m/n/10 Cloud Se-cu-rity Al-liance. (2013). The No-to-ri-ous Nine
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 159--160
+Underfull \hbox (badness 10000) in paragraph at lines 162--163
 \OT1/cmr/m/n/10 Cloud Com-put-ing Top Threats in 2013. Avail-able:
  []
 
 
-Underfull \hbox (badness 1210) in paragraph at lines 159--160
+Underfull \hbox (badness 1210) in paragraph at lines 162--163
 \OT1/cmr/m/n/10 otorious[]Nine[]Cloud[]Computing[]Top[]Threats[]in[]2013.pdf. L
 ast ac-cessed
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 163--164
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
 \OT1/cmr/m/n/10 and-tech/news/investigatory-powers-bill-could-allow-government-
 to-ban-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--168
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
 []\OT1/cmr/m/n/10 Amazon Web Ser-vices. We-Trans-fer Case Study. Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--168
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
 \OT1/cmr/m/n/10 https://aws.amazon.com/solutions/case-studies/wetransfer/. Last
  ac-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 169--171
+Underfull \hbox (badness 10000) in paragraph at lines 172--174
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 169--171
+Underfull \hbox (badness 10000) in paragraph at lines 172--174
 \OT1/cmr/m/n/10 http://www.hindawi.com/journals/jcnc/2012/485875/fig1/. Last Ac
 -
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--175
+Underfull \hbox (badness 10000) in paragraph at lines 177--178
 []\OT1/cmr/m/n/10 Yang, Bev-erly; Garcia-Molina, Hec-tor (2001). Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--175
+Underfull \hbox (badness 10000) in paragraph at lines 177--178
 \OT1/cmr/m/n/10 http://infolab.stanford.edu/ byang/pubs/hybridp2p[]long.pdf. Ve
 ry
  []
 
-[11
+[13
 
 ]
-Underfull \hbox (badness 5475) in paragraph at lines 178--179
+Underfull \hbox (badness 5475) in paragraph at lines 181--182
 []\OT1/cmr/m/n/10 N/A. A Study of We-bRTC Se-cu-rity. Avail-able: http://webrtc
 -
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 180--181
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 180--181
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 \OT1/cmr/m/n/10 code. Avail-able: http://lists.w3.org/Archives/Public/public-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 186--187
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
 []\OT1/cmr/m/n/10 Mozilla Web API. Avail-able: https://developer.mozilla.org/en
 -
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 188--189
+Underfull \hbox (badness 10000) in paragraph at lines 191--192
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-
  []
 
-[12] (./InterimReport.aux) ) 
+[14] (./InterimReport.aux) ) 
 Here is how much of TeX's memory you used:
- 12140 strings out of 493054
- 247006 string characters out of 6138326
- 317863 words of memory out of 5000000
- 15427 multiletter control sequences out of 15000+600000
+ 12089 strings out of 493054
+ 245868 string characters out of 6138326
+ 303690 words of memory out of 5000000
+ 15375 multiletter control sequences out of 15000+600000
  9107 words of font info for 32 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,9n,76p,1123b,870s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,9n,76p,1527b,700s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2015/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx12.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
 <c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texliv
 e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on InterimReport.pdf (13 pages, 182971 bytes).
+Output written on InterimReport.pdf (15 pages, 285038 bytes).
 PDF statistics:
- 78 PDF objects out of 1000 (max. 8388607)
- 53 compressed objects within 1 object stream
+ 85 PDF objects out of 1000 (max. 8388607)
+ 57 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 23 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,7 +1,12 @@
 \documentclass[]{report}
 \usepackage{graphicx}
 \usepackage{todonotes}	
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage[margin=1in]{geometry}
+
 \graphicspath{{resources/images/}}
+
 
 
 % Title Page
@@ -33,10 +38,9 @@
 		\subsection*{Methods of Communication}
 			Stelios and I have set up a regular meeting once a week on Friday at 4pm to review progress and answer any questions. On top of this, we communicate regularly via email and Stelios has access to a project git repository on GitHub and a workflow board set up on my web server to monitor the progress of my project. 
 			
-	\section{Literature Review}
-	
+	\section{Research}
 		\subsection*{Comparing Network Architectures}	
-			Peer-to-peer networking is the distribution of resources and processing between the nodes of a network. These networks tend to take the form of an overlay network. An overlay network is a topology describing a virtual network that sits on top of a physical network (e.g the internet), the nodes within being a subset of the nodes in the physical network. 
+			Peer-to-peer networking is the distribution of resources and processing between the nodes of a network. These networks tend to take the form of an overlay network. An overlay network is a topology describing a virtual network that sits on top of a physical network (e.g the internet) consisting of a subset of the nodes connected to the physical network. 
 			
 			\begin{figure}[h]
 				\caption{
@@ -72,13 +76,13 @@
 		 
 		 	Whilst the uploaded data can be encrypted in a way that means only clients of the service can decrypt it (through end-to-end encryption), many people feel insecure leaving traces of their private information on a remote server belonging to a company that is not necessarily always acting in their interest. In 2013, this concern was legitimized by Edward Snowden when he disclosed information about government surveillance programs such as PRISM which coerced firms such as Google, Microsoft and Yahoo to provide private consumer data from their services to the government.\cite{PRISM}  More recently, this idea has been reinforced by legislation such as the "Investigatory Powers Bill" being introduced in the UK that could prohibit companies from using end-to-end encryption techniques allowing the government to request decrypted client data \cite{IPB Encryption}. Whilst we can assume the UK government have done this with non-malicious intentions, by weakening the encryption practices of these companies, they will potentially weaken the defence against malicious attackers.
 			
-			As an alternative to using cloud storage solutions for sharing files, there is also specific file sharing sites such as WeTransfer that allows you to send files up to 2gb via their site. This works by sending a link through email to the person you want to send the file to. Whilst it does store the uploaded files, they are only kept for 7 days in order to prevent unnecessary storage usage \cite{WeTransfer Storage Time}. Although this is better for data privacy, WeTransfer use third party providers such as Amazon Web Services (AWS) to store this data using AWS S3 Storage \cite{WeTransfer AWS Case Study} meaning there is still the potential concern of data privacy highlighted previously.
+			As an alternative to using cloud storage solutions for sharing files, there is also specific file sharing sites such as WeTransfer that allows you to send files up to 2gb via their site. This works by sending a link through email to the person you want to send the file to. Whilst it does store the uploaded files, they are only kept for 7 days in order to prevent unnecessary storage usage \cite{WeTransfer Storage Time}. Although this is better for data privacy, WeTransfer use third party providers such as Amazon Web Services (AWS) to store this data using AWS S3 Storage \cite{WeTransfer AWS Case Study} meaning there is still the potential concern of data privacy and security highlighted previously.
 			
 			Peer-to-peer networks have been also been popular for file sharing since the late 1990s due to the rise of applications such as Napster which allowed users to share music over one. Napster worked by using a central server to index files that each peer's made available on their machine. Each peer would then be able to search the index for copies of songs. However, this service was eventually shut down as the company ran into legal problems with copyright infringement. Since then, protocols such as BitTorrent have improved on the idea of peer to peer sharing. The BitTorrent protocol works by peers creating ".torrent" descriptor files that describe the file's metadata, this is then shared however it is seen fit. Each peer wanting to download this file then picks up this ".torrent" file, opens it with a BitTorrent client and becomes one of the many "leechers" trying to download this file. At the same time, this peer becomes one of the many "seeders" uploading this file as they download it so that other leechers can download it from them. The initial peer discovery is based on "trackers" which are servers hosting lists of seeders and leechers for the file. One of the issues with BitTorrent is that in order to share a file, you must go through the process of download a client, creating a ".torrent" file, add it to a trackers list and share the ".torrent" with the peers you wish to share it with and this can be seen as a arduous task for a basic consumer looking to share their files. 
 
 			As an alternative to these current solutions, the application I plan to develop has the aim of separating the online transfer of data from it's storage by connecting the peers involved in the transfer directly with each other. This circumvents the problems with cloud storage as the data being transferred does not pass through any servers as well as the problems with current peer to peer file sharing as it does not require a desktop client or torrent files. To allow my application to share files online, WebRTC will be used.
 			
-			WebRTC (Real Time Communication) is an emerging web technology that enables browsers to communicate real time via a peer-to-peer connection, avoiding the need for a centralized server to transfer data between them. This was first released by Google as an open source project to implement real-time communication in the browser in May 2011 \cite{Google WebRTC Release}. It was later drafted as an API definition by W3C which is still a work in progress. \cite{W3C WebRTC Definition}. WebRTC has yet to be fully implemented in every web browser but Chrome, Firefox and a WebRTC specific browser called Bowser are leading the way in implementing the API definition. Firefox (Nightly) seems to be leading the way in this so I will focus specifically in developing towards this browser\cite{WebRTC browser support}.
+			WebRTC (Real Time Communication) is an emerging web technology that enables browsers to communicate real time via a peer-to-peer connection, avoiding the need for a centralized server to transfer data between clients. This was first released by Google as an open source project in May 2011 \cite{Google WebRTC Release} and was later drafted as an API definition by W3C which is still a work in progress. \cite{W3C WebRTC Definition}. WebRTC has yet to be fully implemented in every web browser but Chrome, Firefox and a WebRTC specific browser called Bowser are leading the way in implementing the API definition. Firefox (Nightly) is leading the way in this so the application will specifically be developed towards this browser\cite{WebRTC browser support}.
 			The 3 main WebRTC APIs supported at this time are:
 				\begin{itemize}
 					\item RTCDataChannel:
@@ -90,10 +94,77 @@
 					"Prompts the user for permission to use one video and/or one audio input device such as a camera or screensharing and/or a microphone. If the user provides permission, then the successCallback is invoked with the resulting MediaStream object as its argument. If the user denies permission or media is not available, then the errorCallback is called with PermissionDeniedError or NotFoundError respectively. Note that it is possible for neither completion callback to be called, as the user is not required to make a choice."
 					\cite{Mozilla Web API}
 				\end{itemize}
-			My Web Application will utilize the RTCPeerConnection and RTCDataChannel APIs. The former to establish a peer connection between two clients and the latter to create a data channel over this peer connection to transfer data.	Although WebRTC is used to transfer data, it purposely doesn't handle signalling. Signalling is a concept that came from telecommunications and VoIP and is the process of organising the communication between two clients, handling the exchange of metadata that creates and manages a session. To handle signalling, I will use Session Initiation Protocol (SIP).
+
+			In order to achieve it's aim, the application will utilize the RTCPeerConnection and RTCDataChannel APIs. The former to establish a peer connection between two clients and the latter to create a data channel over this peer connection to transfer data.	
 			
-			SIP is a protocol describing the 
-			\todo{SIP}
+			As mentioned in Javascript Session Establishment Protocol (JSEP)\cite{JSEP}, although WebRTC and the browser is used to transfer the data between two peers, it purposely does not handle signalling. Signalling is a concept that came from telecommunications and VoIP and is the process of organising the communication between two clients, handling the exchange of metadata that creates and manages a session. The rationale behind webRTC being protocol-agnostic with signalling is that different applications may require different protocols in order to, for example, fit into previously existing architecture. To handle signalling for my implementation of WebRTC, Session Initiation Protocol (SIP) over WebSockets will be used.
+			
+			\begin{figure}[h!]
+				\caption{WebRTC Architecture as defined by JSEP \cite{JSEP}}
+				\includegraphics[scale=0.4]{jsep.png}
+			\end{figure}
+			\newpage
+			
+			WebSockets is a protocol implemented by browsers and web servers running over TCP to provide bi-directional communication between them. Once it establishes a session with a client connecting to the server, this session is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably signal messages back and forth through the server. SIP is a communication protocol that does not specify how signals are transported (e.g WebSockets) but how these signals are defined. The transaction model defined by SIP is similar to HTTP with each SIP request being matched by a response.
+			
+			\subsubsection*{SIP Example}
+			
+			 Initial handshake with WebSocket signalling server over HTTP \\
+			 dom -\textgreater\ sip.transfer4.me
+			 \begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
+			 GET / HTTP/1.1
+			 Host: proxy.example.com
+			 Upgrade: websocket
+			 Connection: Upgrade
+			 Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+			 Origin: https://www.example.com
+			 Sec-WebSocket-Protocol: sip
+			 Sec-WebSocket-Version: 13
+			 \end{lstlisting}
+			 Switching to WebSocket protocol \\
+			 sip.transfer4.me -\textgreater\ dom
+			 \begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
+			 HTTP/1.1 101 Switching Protocols
+			 Upgrade: websocket
+			 Connection: Upgrade
+			 Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+			 Sec-WebSocket-Protocol: sip
+			 \end{lstlisting}
+			 SIP REGISTER request letting the server know of Dom's "location" \\
+			 dom -\textgreater\ sip.transfer4.me
+			 \begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
+			 REGISTER sip:proxy.example.com SIP/2.0
+			 Via: SIP/2.0/WSS df7jal23ls0d.invalid;branch=z9hG4bKasudf
+			 From: sip:dom@example.com;tag=65bnmj.34asd
+			 To: sip:dom@example.com
+			 Call-ID: aiuy7k9njasd
+			 CSeq: 1 REGISTER
+			 Max-Forwards: 70
+			 Supported: path, outbound, gruu
+			 Contact: <sip:dom@df7jal23ls0d.invalid;transport=ws>
+			 ;reg-id=1
+			 ;+sip.instance="<urn:uuid:f81-7dec-14a06cf1>"
+			 \end{lstlisting}
+			 OK response \\
+			 sip.transfer4.me -\textgreater\ Dom
+			 \begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
+			 SIP/2.0 200 OK
+			 Via: SIP/2.0/WSS df7jal23ls0d.invalid;branch=z9hG4bKasudf
+			 From: sip:dom@example.com;tag=65bnmj.34asd
+			 To: sip:dom@example.com;tag=12isjljn8
+			 Call-ID: aiuy7k9njasd
+			 CSeq: 1 REGISTER
+			 Supported: outbound, gruu
+			 Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
+			 ;reg-id=1
+			 ;+sip.instance="<urn:uuid:f81-7dec-14a06cf1>"
+			 ;pub-gruu="sip:dom@example.com;gr=urn:uuid:f81-7dec-14a06cf1"
+			 ;temp-gruu="sip:87ash54=3dd.98a@example.com;gr"
+			 ;expires=3600
+			\end{lstlisting}
+			 
+			 
+			\todo{SIP Over }
 				
 			This data is sent over a protocol called Secure Real Time Transport Protocol (SRTP). This protocol was originally developed for secure VoIP but has been adopted by WebRTC. 
 			\todo{DTLS - SRTP}	
@@ -112,19 +183,29 @@
 			
 			The second end deliverable will be the final report containing documentation and analysis using the metrics from my application, comparing how it and technologies behind it perform in comparison to others, focusing in particular on how peer-to-peer over the browser (WebRTC) compares to other methods of data transfer and media streaming.
 			
+			\newpage
+			\subsection*{Schedule of Activities}
+			\begin{figure}[h!]
+				\includegraphics[scale=0.5]{ganttchart.png}
+			\end{figure}
+			\newpage	
+			
 			\subsection*{Risk Analysis}
-			\todo{risk table}
-			In terms of risk, I think this will be the largest in my project as it is the only tangible end product and it relies on WebRTC which is a relatively immature technology. As it is new (released in 2011) and it is the only technology at the moment enabling browsers to communicate peer-to-peer, it has not truly been tried and tested. This means there is a higher potential for problems such as security flaws to exist. 
+				\todo{write more}
+				\scalebox{0.6}{\begin{tabular}{@{}|l|l|l|l|l|@{}}
+						\toprule
+						\textbf{Risk}                                      & \textbf{Probability (1-5)} & \textbf{Impact (1-5)} & \textbf{Mitigation}                                                                                                  & \textbf{Contingency}                                                                            \\ \midrule
+						Illness/Injury                                     & 4                          & 3                     & \begin{tabular}[c]{@{}l@{}}Reserve time for illness\\ Be hygienic\\ Eat healthy\\ Exercise\end{tabular}              & \begin{tabular}[c]{@{}l@{}}Allow time for recovery\\ Take medicine to aid recovery\end{tabular} \\ \midrule
+						Inaccurate estimations                             & 3                          & 3                     & \begin{tabular}[c]{@{}l@{}}Be liberal with estimations\\ Reserve time for deliverables behind schedule\end{tabular}  & Adjust scope of project                                                                         \\ \midrule
+						Data loss                                          & 1                          & 5                     & \begin{tabular}[c]{@{}l@{}}Use a version control system\\ Keep local backups\end{tabular}                            & Recover data from Git                                                                           \\ \midrule
+						Uncommunicative stakeholder                        & 1                          & 3                     & Ensure regular meetings with stakeholder                                                                             &                                                                                                 \\ \midrule
+						Stakeholder turnover                               & 1                          & 4                     & N/A (out of my control)                                                                                              & Get new stakeholders                                                                            \\ \midrule
+						Project scope too large                            & 3                          & 4                     & \begin{tabular}[c]{@{}l@{}}Research enough to be certain in project scope\\ Be liberal with estimations\end{tabular} & Adjust scope of project                                                                         \\ \midrule
+						Technologies too immature/insufficient for project & 2                          & 4                     & Research technologies beforehand                                                                                     & \begin{tabular}[c]{@{}l@{}}Find alternative technologies\\ Adjust scope of project\end{tabular} \\ \bottomrule
+					\end{tabular}}
 		
 			\subsection*{Quality Analysis}
 			The main measure of success will be the web application's performance in it's ability to transfer \& stream data between two peers. To track this, I will implement metrics using the WebRTC "getStats" statistics API, which allows for monitoring of peer connections. Further to this, once I have implemented a many-to-many peer-to-peer network, I will test the application with multiple peers in order to replicate load. The application will also be user tested to ensure it is user-friendly. The signalling server will be load tested in isolation to make certain it can handle multiple requests. 
-
-			\newpage
-			\subsection*{Schedule of Activities}
-				\begin{figure}[h!]
-					\includegraphics[scale=0.5]{ganttchart.png}
-				\end{figure}
-			\newpage	
 			
 	\section{Methodology}
 		I chose to use an alternative methodology to the waterfall model because it lacks the ability to adapt to changes in a project deadline. Due to the way waterfall is structured into different phases that must be completed sequentially, often when changes such as new requirements occur, all these phases must be repeated in order to account for this. Iterative methodologies take an approach that can adapt to these changing requirements because they utilise short development cycles and focus on developing small modules of a product at one time, making it easier to revise a product if necessary. This is particular useful in my project as it is relatively experimental and the requirements of it may change regularly. 
@@ -140,7 +221,6 @@
 			\item Done
 		\end{enumerate}
 		
-		\newpage
 		During the "In Progress" step of the work flow, I will use a test driven development (TDD) process in which tests are written first and then code is wrote to make the test work. However, I will be fairly lenient with this, only using this process on parts of the code that require stringent testing as writing unnecessary tests will take up development time. 
 		
 		\begin{figure}[h!]
@@ -186,6 +266,8 @@
 		Available: http://iswebrtcreadyyet.com/. Last accessed 30/10/2015.
 		\bibitem{Mozilla Web API}
 		Mozilla Web API. Available: https://developer.mozilla.org/en-US/docs/Web/API. Last accessed 30/10/2015.
+		\bibitem{JSEP}
+		Justin Uberti. (2011). Javascript Session Establishment Protocol (JSEP). Available: https://lists.w3.org/Archives/Public/public-webrtc/2012Jan/att-0002/JavascriptSessionEstablishmentProtocol.pdf. Last accessed 11/11/2015.
 		\bibitem{TDD Diagram}
 		Available: http://www.agilenutshell.com/assets/test-driven-development/tdd-circle-of-life.png. Last accessed 09/11/2015.
 	\end{thebibliography}

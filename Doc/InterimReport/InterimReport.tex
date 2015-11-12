@@ -24,7 +24,7 @@
 		\subsection*{Aims and Objectives}
 			The ultimate objective of my project is to investigate the possibility of data transfer over web browsers (in particular audio and video streaming) without the need for a centralised client-server architecture, instead opting for a peer-to-peer network architecture. In order to do so, I plan to:
 			\begin{itemize}
-				\item Research peer-to-peer networking architecture
+				\item Research peer-to-peer networking architecture and topologies
 				\item Research WebRTC
 				\item Research signalling protocols
 				\item Research media streaming compression \& protocols
@@ -51,13 +51,13 @@
 				\includegraphics{overlaynetwork.jpg}
 			\end{figure}
 			
-			Although an overlay network does not need to manage the burden the physical network is responsible for, in order to discover new nodes and route them, it needs to have some way of managing the subset of nodes. This is normally achieved in 3 different ways:
+			Although an overlay network does not need to manage the burden the physical network is responsible for, in order to discover new nodes and route them, it needs to have some way of managing the subset of nodes. There are different ways of defining how a network does this:
 			
 			\begin{itemize}
 				\item Unstructured peer-to-peer:
 				Peer connections in the overlay are established randomly and do not adhere to a topology. New peers copy the connections another peer has formed and develops it's own over time as other new peers join  \cite{P2P overlay networks}. These networks are easier to build than structured networks as the routing is random and they also tend to fair better in periods when the rate of peers leaving and joining (churn rate) is high due to the fact that connections are established randomly. However, searching in these networks tends to be less efficient as they rely on flooding the network to find nodes that have the data they are searching for.
 				\item Structured peer-to-peer:
-				Peers in a network are organised in a specified network topology and generally use a distributed hash table (DHT). The DHT consists of many peers maintaining a partial hash table containing the unique keys of it's neighbouring peers, allowing it to route to them. This way, a node can communicate with another by hopping a message through other nodes until it is reached \cite{P2P overlay networks}. 
+				Peers in a network are organised in a specified network topology and generally use a distributed hash table (DHT). The DHT consists of many peers maintaining a partial hash table containing the unique keys of it's neighbouring peers, allowing it to route to them. This way, a node can communicate with another by hopping a message through other nodes until it is reached. \cite{P2P overlay networks}. 
 				\item Hybrid peer-to-peer:
 				A combination of  peer-to-peer and client-server models, these networks use centralized servers in some way.  This model tends to work better than both unstructured and structured as dependent on how it is implemented, the responsibilities of this server can vary in degree as features that function better in decentralized networks can be left to the nodes of the network whilst the server can handle other features that it is better at \cite{Hybrid P2P network}
 			\end{itemize}
@@ -66,23 +66,24 @@
 			
 			Using peer to peer architecture avoids the issues associated with the client-server model as processing is distributed between the nodes making up the network, resulting in it being cheaper to maintain as there is no reliance on servers and more robust as the network scales as load increases. However, there are a number of considerations to be aware of in peer to peer networking. Security is a concern within peer-to-peer networking as there is no centralized authority to manage access control to resources. Thus, a malicious client could potentially launch a number of attacks versus other nodes in the network such as Denial Of Service (DoS) where a malicious group of nodes floods a network with a massive amount of fake data, potentially crashing nodes within it or Man in the Middle (MitM) attacks where a node is able to intercept data flowing between two other nodes and spy on or poison this data\cite{P2P Security Issues}.	Whilst it would be hard to completely avoid risks like this as it is an inherent flaw in peer-to-peer architecture, introducing the basic concept of trust into a peer-to-peer network can stop malicious peers from entering it in the first place. Trust will be implemented in my application by allowing users to enable authentication (via password) for the uploaded file giving them a level of access control that would prevent malicious attackers from being able to join the network of peers involved in the download or stream of the file. 
 			
-			The application will most closely resemble a hybrid peer-to-peer network as even though the actual channel for transferring data between peers (WebRTC DataChannel) will not go through a server, it will use a signalling server to route peers together. To form a scalable network of peers, my application will have to manage how these peers connect to each other. The idea behind this is that when a new peer connects, they will connect to a pre existing peer based on an algorithm. A	
+			The application will most closely resemble a hybrid peer-to-peer network as even though the actual channel for transferring data between peers (WebRTC DataChannel) will not go through a server, it will use a signalling server to route peers together. To form a network of peers that go beyond the one-to-many peer connection established by WebRTC, the signalling server in conjunction with the client-side application will have to manage how these peers connect to each other. A way of doing this is to connect new peers to the second newest peer and so on, forming a linear chain of peers that can reroute if the neighbouring peer disconnected.	
 			\begin{figure}[h!]
 				\centering
-				\caption{Peers connected to network downloading a file}
-				\includegraphics[scale=0.6]{network.png}
+				\caption{Linear network}
+				\includegraphics[scale=0.4]{network.png}
 			\end{figure}
-			
-			If a peer disconnects, then the network should reroute the neighbouring peer to the peer before that.
 			\begin{figure}[h!]
 				\centering
-				\caption{Peers connected to network downloading a file}
-				\includegraphics[scale=0.6]{peerdisconnect.png}
-			\end{figure}	
-			
-			\todo{Network topology}
-	
-		\subsection*{Current Solutions to Data Transfer}
+				\caption{Peer disconnects from the network}
+				\includegraphics[scale=0.4]{peerdisconnect.png}
+			\end{figure}
+			However, this would prove inefficient if a peer in the chain had a restricted bandwidth or malfunctioned, potentially bottlenecking the rest of the peers behind it. As an alternative, peers could be routed based on a tree network topology \cite{Tree Topology} consisting of supernodes, high capability nodes that relay the transferred data to subnodes. This way load can be balanced across many nodes by distributing new nodes to another supernode or by electing further supernodes if it increases too much or if one disconnects. By exploiting heterogeneity between peers of the network, this topology can also be used to improve performance within the network by electing supernodes based on criteria such as location and, in our case, how much of the data has already been transferred or streamed to them. By doing so, performance within a network can potentially be improved as subnodes can be connected to supernodes based on this criteria, e.g if a a supernode and subnode are both located in United Kingdom, then connect them together. \cite{Supernodes}.		
+			\begin{figure}[h!]
+				\centering
+				\caption{Tree Network}
+				\includegraphics[scale=0.4]{treetopology.png}
+			\end{figure}			
+			\subsection*{Current Solutions to Data Transfer}
 			Currently, solutions such as DropBox and Google Drive focus on cloud storage as a service whilst providing the ability to transfer your data as a secondary function of this service. Although this is an extremely valuable and convenient idea enabling consumers to back-up their data, not all want a service that stores the data they want to transfer as the practice of storing data in the cloud does raise ethical issues, namely with it's security, privacy and ownership once it has been uploaded. However, this can be hard to avoid when the online storage and transfer of data are so closely intertwined.
 			
 			Once you have uploaded files to one of these services, there is a trust placed on the company to store the data securely. However, The "Cloud Security Alliance" released a regularly updated list of the top threats faced by cloud computing services in 2010 submitting there are numerous security issues faced within the cloud computing industry with many of the issues on this list occurring due to malicious intentions, for example the 6th item on the list, "malicious insiders" describes a situation in which current or former employees abuse their authorizations within system to gain access to sensitive information \cite{CSA Top Threats}. This suggests that even though companies can protect their client's data to an extent, there are still issues the industry face that consumers may want to avoid.
@@ -91,12 +92,11 @@
 			
 			As an alternative to using cloud storage solutions for sharing files, there is also specific file sharing sites such as WeTransfer that allows you to send files up to 2gb via their site. This works by sending a link through email to the person you want to send the file to. Whilst it does store the uploaded files, they are only kept for 7 days in order to prevent unnecessary storage usage \cite{WeTransfer Storage Time}. Although this is better for data privacy, WeTransfer use third party providers such as Amazon Web Services (AWS) to store this data using AWS S3 Storage \cite{WeTransfer AWS Case Study} meaning there is still the potential concern of data privacy and security highlighted previously.
 			
-			Peer-to-peer networks have been also been popular for file sharing since the late 1990s due to the rise of applications such as Napster which allowed users to share music over one. Napster worked by using a central server to index files that each peer's made available on their machine. Each peer would then be able to search the index for copies of songs. However, this service was eventually shut down as the company ran into legal problems with copyright infringement. Since then, protocols such as BitTorrent have improved on the idea of peer to peer sharing. The BitTorrent protocol works by peers creating ".torrent" descriptor files that describe the file's metadata, this is then shared however it is seen fit. Each peer wanting to download this file then picks up this ".torrent" file, opens it with a BitTorrent client and becomes one of the many "leechers" trying to download this file. At the same time, this peer becomes one of the many "seeders" uploading this file as they download it so that other leechers can download it from them. The initial peer discovery is based on "trackers" which are servers hosting lists of seeders and leechers for the file. One of the issues with BitTorrent is that in order to share a file, you must go through the process of download a client, creating a ".torrent" file, add it to a trackers list and share the ".torrent" with the peers you wish to share it with and this can be seen as a arduous task for a basic consumer looking to share their files. 
+			Peer-to-peer networks also been popular for file sharing since the late 1990s due to the rise of applications such as Napster which allowed users to share music over one. Napster worked by using a central server to index files that each peer's made available on their machine. Each peer would then be able to search the index for copies of songs. However, this service was eventually shut down as the company ran into legal problems with copyright infringement. Since then, protocols such as BitTorrent have improved on the idea of peer to peer sharing. The BitTorrent protocol works by peers creating ".torrent" descriptor files that describe the file's metadata, this is then shared however it is seen fit. Each peer wanting to download this file then picks up this ".torrent" file, opens it with a BitTorrent client and becomes one of the many "leechers" trying to download this file. At the same time, this peer becomes one of the many "seeders" uploading this file as they download it so that other leechers can download it from them. The initial peer discovery is based on "trackers" which are servers hosting lists of seeders and leechers for the file. One of the issues with BitTorrent is that in order to share a file, you must go through the process of download a client, creating a ".torrent" file, add it to a trackers list and share the ".torrent" with the peers you wish to share it with and this can be seen as a arduous task for a basic consumer looking to share their files.
 
 			As an alternative to these current solutions, the application I plan to develop has the aim of separating the online transfer of data from it's storage by connecting the peers involved in the transfer directly with each other. This circumvents the problems with cloud storage as the data being transferred does not pass through any servers as well as the problems with current peer to peer file sharing as it does not require a desktop client or torrent files. To allow my application to share files online, WebRTC will be used.
 			
-			\subsection*{WebRTC}
-			
+			\subsection*{WebRTC}			
 			WebRTC (Real Time Communication) is an emerging web technology that enables browsers to communicate real time via a peer-to-peer connection, avoiding the need for a centralized server to transfer data between clients. This was first released by Google as an open source project in May 2011 \cite{Google WebRTC Release} and was later drafted as an API definition by W3C which is still a work in progress. \cite{W3C WebRTC Definition}. WebRTC has yet to be fully implemented in every web browser but Chrome, Firefox and a WebRTC specific browser called Bowser are leading the way in implementing the API definition. Firefox (Nightly) is leading the way in this so the application will specifically be developed towards this browser\cite{WebRTC browser support}.
 			The 3 main WebRTC APIs supported at this time are:
 				\begin{itemize}
@@ -120,7 +120,7 @@
 			\end{figure}
 			\newpage
 			
-			WebSockets is a protocol implemented by browsers and web servers running over TCP to provide bi-directional communication between them. Once it establishes a session with a client connecting to the server, this session is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably signal messages back and forth through the server. SIP is a communication protocol that does not specify how signals are transported (e.g WebSockets) but how these signals are defined. The transaction model defined by SIP is similar to HTTP with each SIP request being matched by a SIP response.
+			WebSockets is a protocol implemented by browsers and servers to provide bi-directional communication between them\cite{WebSockets}. Once it establishes a session with a client connecting to the server, this session is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably signal messages back and forth through the server. SIP is a communication protocol that does not specify how signals are transported (e.g WebSockets) but how these signals are defined. The transaction model defined by SIP is similar to HTTP with each SIP request being matched by a SIP response.
 			
 			\begin{figure}[h!]
 			\caption{SIP over WebSockets transaction example\cite{SIP Over WebSockets}}
@@ -179,10 +179,8 @@
 			 \end{lstlisting}
 			 \end{figure}
 			 
-			Once two peers have registered with the server, a peer can send an invite to another through it in the form of an INVITE request to form a signalling channel between them which WebRTC can use to establish a peer connection and data channel. To create this peer connection, it uses interactive connectivity establishment (ICE) to find a list of the possible IP's and ports of each peer which are then sent through the server. Once this is done, the data channel can be formed and packets can be sent peer-to-peer. These packets are managed and secured by Secure Real Time Transport Protocol (SCTP) and encrypted by Datagram Transport Layer Security (DTLS).
-		\subsection*{Media streaming}
-			\todo{Media Streaming}
-			
+			Once two peers have registered with the server, a peer can send an invite to another through it in the form of an INVITE request to form a signalling channel between them which WebRTC can use to establish a peer connection and data channel. To create this peer connection, it uses interactive connectivity establishment (ICE) to find a list of the possible IP's and ports of each peer which are then sent through the server. Once this is done, the data channel can be formed and packets can be sent peer-to-peer. These packets are managed and secured by Secure Real Time Transport Protocol (SCTP) for media and Stream Control Transmission Protocol(SCTP) for non-media and encrypted by Datagram Transport Layer Security (DTLS) \cite{WebRTC Data Channel Establishment Protocol}.
+						
 	\section{Specification}
 			\subsection*{Deliverables}
 			The first intermediate product will be the signalling server written in Java. This will handle the exchange of client meta data in order to establish the connection between two peers using the web application. I plan to overlap the development of this with the development of the data transfer functionality and user interface of my second deliverable, the web application as manually testing the signalling server will be a lot easier with a partially developed application to test it with.
@@ -214,6 +212,7 @@
 		
 			\subsection*{Quality Analysis}
 			The main measure of success will be the web application's performance in it's ability to transfer \& stream data between two peers. To track this, I will implement metrics using the WebRTC "getStats" statistics API, which allows for monitoring of peer connections. Further to this, once I have implemented a many-to-many peer-to-peer network, I will test the application with multiple peers in order to replicate load. The application will also be user tested to ensure it is user-friendly. The signalling server will be load tested in isolation to make certain it can handle multiple requests. 
+			\todo{bandwidth usage, CPU usage, usability, comparing transfer speeds before and after many-to-many}
 			
 	\section{Methodology}
 	I chose to use an alternative methodology to the waterfall model because it lacks the ability to adapt to changes in a project deadline. Due to the way waterfall is structured into different phases that must be completed sequentially, often when changes such as new requirements occur, all these phases must be repeated in order to account for this. Iterative methodologies take an approach that can adapt to these changing requirements because they utilise short development cycles and focus on developing small modules of a product at one time, making it easier to revise a product if necessary. This is particular useful in my project as it is relatively experimental and the requirements of it may change regularly. 
@@ -240,11 +239,23 @@
 		\includegraphics[scale=0.5]{tdd-circle-of-life.png}
 	\end{figure}
 		
-	During the "Code Review" step, I plan to self-evaluate the task I have completed. On top of this, I will run static code analysis tools (such as FindBugs and PMD for Java) if the task is a coding task and use the code review section StackExchange to get second opinions. If it passes the code review step and it is possible to do so, I will black-box test the task from a user's perspective to see that it actually works as intended. Once every task forming a feature is completed, I will manually test the feature as a whole to see that each task has integrated together as planned.
+	During the "Code Review" step, I plan to self-evaluate the task I have completed. On top of this, I will run static code analysis tools (such as FindBugs/PMD for Java) if the task is a coding task and use the code review section StackExchange to get second opinions. If it passes the code review step and it is possible to do so, I will black-box test the task from a user's perspective to see that it actually works as intended. Once every task forming a feature is completed, I will manually test the feature as a whole to see that each task has integrated together as planned.
 		
 	To visualise this workflow, I will use the open source web application "Kanboard" which I have hosted on an AWS EC2 Instance. This will allow me to keep track of progress throughout the duration of the project. To manage the actual changes made to the project files, I have utilised the version control system Git with a private GitHub repository containing my project.
 		
 	\begin{thebibliography}{20}
+		\bibitem{Unstructured P2P Diagram}
+		An Unstructured Peer-To-Peer Overlay Network. Available: http://www.hindawi.com/journals/jcnc/2012/485875/fig1/. Last Accessed 6 Nov. 2015.
+		\bibitem{P2P overlay networks}
+		Eng Keong Lua Crowcroft, J. ; Pias, M. ; Sharma, R. ; Lim, S.. (Second Quarter 2005). A survey and comparison of peer-to-peer overlay network schemes. Communications Surveys \& Tutorials, IEEE. 7 (2), 72 - 93.
+		\bibitem{Hybrid P2P network}
+		Yang, Beverly; Garcia-Molina, Hector (2001). Available: http://infolab.stanford.edu/~byang/pubs/hybridp2p\_long.pdf. Very Large Data Bases. Last Accessed 06/11/2015.
+		\bibitem{P2P Security Issues}
+		Schulzrinne, et al. (February 2010). Security in P2P Realtime Communications. Available: https://tools.ietf.org/html/rfc5765\#section-7.2. Last accessed 05/11/2015.
+		\bibitem{Tree Topology}
+		JOHAN GRONBERG, ERIC MEADOWS-JONSSON . (2014). Tree topology networks in WebRTC. Available: http://publications.lib.chalmers.se/records/fulltext/202811/202811.pdf. Last accessed 12/11/2015.
+		\bibitem{Supernodes}
+		Jan Sacha. (2009). Exploiting Heterogeneity in Peer-to-Peer Systems Using Gradient Topologies. Available: https://www.scss.tcd.ie/publications/tech-reports/reports.10/TCD-CS-2010-06.pdf. Last accessed 12/11/2015.
 		\bibitem{CSA Top Threats}
 		Cloud Security Alliance. (2013). The Notorious Nine Cloud Computing Top Threats in 2013. Available: https://downloads.cloudsecurityalliance.org/initiatives/top\_threats/The\_N\\otorious\_Nine\_Cloud\_Computing\_Top\_Threats\_in\_2013.pdf. Last accessed 09/11/2015.
 		\bibitem{PRISM}
@@ -255,15 +266,6 @@
 		WeTransfer. How long are my uploads available to download?. Available: https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-long-are-my-uploads-available-to-download-. Last accessed 05/11/2015.
 		\bibitem{WeTransfer AWS Case Study}
 		Amazon Web Services. WeTransfer Case Study. Available: https://aws.amazon.com/solutions/case-studies/wetransfer/. Last accessed 05/11/2015.
-		\bibitem{Unstructured P2P Diagram}
-		An Unstructured Peer-To-Peer Overlay Network. Available:
-		http://www.hindawi.com/journals/jcnc/2012/485875/fig1/. Last Accessed 6 Nov. 2015.
-		\bibitem{P2P overlay networks}
-		Eng Keong Lua Crowcroft, J. ; Pias, M. ; Sharma, R. ; Lim, S.. (Second Quarter 2005). A survey and comparison of peer-to-peer overlay network schemes. Communications Surveys \& Tutorials, IEEE. 7 (2), 72 - 93.
-		\bibitem{Hybrid P2P network}
-		Yang, Beverly; Garcia-Molina, Hector (2001). Available: http://infolab.stanford.edu/~byang/pubs/hybridp2p\_long.pdf. Very Large Data Bases. Last Accessed 06/11/2015.
-		\bibitem{P2P Security Issues}
-		Schulzrinne, et al. (February 2010). Security in P2P Realtime Communications. Available: https://tools.ietf.org/html/rfc5765\#section-7.2. Last accessed 05/11/2015.
 		\bibitem{WebRTC Security Study}
 		N/A. A Study of WebRTC Security. Available: http://webrtc-security.github.io/\#4.3. Last accessed 05/11/2015.
 		\bibitem{Google WebRTC Release}
@@ -276,8 +278,12 @@
 		Mozilla Web API. Available: https://developer.mozilla.org/en-US/docs/Web/API. Last accessed 30/10/2015.
 		\bibitem{JSEP}
 		Justin Uberti. (2011). Javascript Session Establishment Protocol (JSEP). Available: https://lists.w3.org/Archives/Public/public-webrtc/2012Jan/att-0002/JavascriptSessionEstablishmentProtocol.pdf. Last accessed 11/11/2015.
+		\bibitem{WebSockets}
+		Fette \& Melnikov. (2011). The WebSocket Protocol. Available: https://tools.ietf.org/html/rfc6455. Last accessed 12/11/2015.
 		\bibitem{SIP Over WebSockets}
 		Baz Castillo, et al. . (2014). The WebSocket Protocol as a Transport for the Session Initiation Protocol (SIP). Available: https://tools.ietf.org/html/rfc7118. Last accessed 12/11/2015.
+		\bibitem{WebRTC Data Channel Establishment Protocol} 
+		Jesup, et al. (2015). WebRTC Data Channel Establishment Protocol. Available: https://tools.ietf.org/html/draft-ietf-rtcweb-data-protocol-09. Last accessed 12/11/2015.
 		\bibitem{TDD Diagram}
 		Available: http://www.agilenutshell.com/assets/test-driven-development/tdd-circle-of-life.png. Last accessed 09/11/2015.
 	\end{thebibliography}

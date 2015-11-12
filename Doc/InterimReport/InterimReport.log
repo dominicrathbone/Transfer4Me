@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  12 NOV 2015 17:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  12 NOV 2015 21:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -585,135 +585,166 @@ Package pdftex.def Info: resources/images/overlaynetwork.jpg used on input line
 (pdftex.def)             Requested size: 144.53963pt x 61.18843pt.
  [3
 
-] [4 <./resources/images/overlaynetwork.jpg>] [5] <resources/images/jsep.png, i
-d=31, 837.1275pt x 521.95pt>
-File: resources/images/jsep.png Graphic file (type png)
-
-<use resources/images/jsep.png>
-Package pdftex.def Info: resources/images/jsep.png used on input line 108.
-(pdftex.def)             Requested size: 334.84506pt x 208.77629pt.
- [6 <./resources/images/jsep.png (PNG copy)>]
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 117.
-
-
-(c:/texlive/2015/texmf-dist/tex/latex/base/omlcmr.fd
-File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 117.
- [7]
-<resources/images/network.png, id=41, 678.535pt x 178.6675pt>
+]
+<resources/images/network.png, id=25, 678.535pt x 178.6675pt>
 File: resources/images/network.png Graphic file (type png)
 
 <use resources/images/network.png>
-Package pdftex.def Info: resources/images/network.png used on input line 177.
-(pdftex.def)             Requested size: 407.12415pt x 107.20131pt.
+Package pdftex.def Info: resources/images/network.png used on input line 73.
+(pdftex.def)             Requested size: 271.40918pt x 71.46573pt.
 
-<resources/images/peerdisconnect.png, id=43, 678.535pt x 215.80624pt>
+<resources/images/peerdisconnect.png, id=27, 678.535pt x 215.80624pt>
 File: resources/images/peerdisconnect.png Graphic file (type png)
 
 <use resources/images/peerdisconnect.png>
 Package pdftex.def Info: resources/images/peerdisconnect.png used on input line
- 184.
-(pdftex.def)             Requested size: 407.12415pt x 129.48474pt.
- [8 <./resources/images/network.png> <./resources/images/peerdisconnect.png>] [
-9]
-<resources/images/ganttchart.png, id=52, 810.02625pt x 950.04938pt>
+ 78.
+(pdftex.def)             Requested size: 271.40918pt x 86.32095pt.
+
+<resources/images/treetopology.png, id=28, 456.70625pt x 404.51125pt>
+File: resources/images/treetopology.png Graphic file (type png)
+
+<use resources/images/treetopology.png>
+Package pdftex.def Info: resources/images/treetopology.png used on input line 8
+4.
+(pdftex.def)             Requested size: 182.67926pt x 161.80162pt.
+ [4 <./resources/images/overlaynetwork.jpg>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5 <./resources/images/network.png> <./resources/images/peerdisconnect.png>]
+[6 <./resources/images/treetopology.png>]
+<resources/images/jsep.png, id=42, 837.1275pt x 521.95pt>
+File: resources/images/jsep.png Graphic file (type png)
+
+<use resources/images/jsep.png>
+Package pdftex.def Info: resources/images/jsep.png used on input line 119.
+(pdftex.def)             Requested size: 334.84506pt x 208.77629pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[7]
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 128.
+
+ (c:/texlive/2015/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 128.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[8 <./resources/images/jsep.png (PNG copy)>] [9]
+<resources/images/ganttchart.png, id=54, 810.02625pt x 950.04938pt>
 File: resources/images/ganttchart.png Graphic file (type png)
 
 <use resources/images/ganttchart.png>
-Package pdftex.def Info: resources/images/ganttchart.png used on input line 204
+Package pdftex.def Info: resources/images/ganttchart.png used on input line 195
 .
 (pdftex.def)             Requested size: 405.01213pt x 475.02353pt.
  [10 <./resources/images/ganttchart.png>]
-<resources/images/tdd-circle-of-life.png, id=56, 476.78125pt x 373.395pt>
+<resources/images/tdd-circle-of-life.png, id=58, 476.78125pt x 373.395pt>
 File: resources/images/tdd-circle-of-life.png Graphic file (type png)
 
 <use resources/images/tdd-circle-of-life.png>
 Package pdftex.def Info: resources/images/tdd-circle-of-life.png used on input 
-line 247.
+line 239.
 (pdftex.def)             Requested size: 238.39003pt x 186.69704pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [11] [12 <./resources/images/tdd-circle-of-life.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 260--261
-\OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
-ow-government-to-ban-end-to-end-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 262--263
-[]\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
-. Avail-able:
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 262--263
-\OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
-long-are-my-uploads-available-
- []
-
-
-Overfull \hbox (71.66275pt too wide) in paragraph at lines 266--268
+Overfull \hbox (71.66275pt too wide) in paragraph at lines 248--249
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
  http://www.hindawi.com/journals/jcnc/2012/485875/fig1/.
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 273--274
+Underfull \hbox (badness 3058) in paragraph at lines 254--255
 []\OT1/cmr/m/n/10 Schulzrinne, et al. (Febru-ary 2010). Se-cu-rity in P2P Re-al
 -time Com-mu-ni-ca-tions. Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 277--278
+Underfull \hbox (badness 1571) in paragraph at lines 258--259
+\OT1/cmr/m/n/10 Avail-able: https://www.scss.tcd.ie/publications/tech-reports/r
+eports.10/TCD-CS-2010-06.pdf. Last
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 264--265
+\OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
+ow-government-to-ban-end-to-end-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 266--267
+[]\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
+. Avail-able:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 266--267
+\OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
+long-are-my-uploads-available-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 272--273
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
  code. Avail-able:
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 279--280
+Underfull \hbox (badness 5637) in paragraph at lines 274--275
 []\OT1/cmr/m/n/10 Adam Bergkvist, Daniel C. Bur-nett, Cullen Jen-nings, Anant N
 arayanan (un-til Novem-
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 279--280
+Underfull \hbox (badness 4060) in paragraph at lines 274--275
 \OT1/cmr/m/n/10 ber 2012). (2011). We-bRTC 1.0: Real-time Com-mu-ni-ca-tion Be-
 tween Browsers. Avail-able:
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 285--286
-[]\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
-ro-to-col (JSEP).
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 285--286
-\OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
-2012Jan/att-
  []
 
 [13
 
 ]
-Underfull \hbox (badness 1688) in paragraph at lines 289--290
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
+[]\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
+ro-to-col (JSEP).
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
+\OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
+2012Jan/att-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 286--287
+[]\OT1/cmr/m/n/10 Jesup, et al. (2015). We-bRTC Data Chan-nel Es-tab-lish-ment 
+Pro-to-col. Avail-able:
+ []
+
+
+Underfull \hbox (badness 1688) in paragraph at lines 288--289
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-de
 velopment/tdd-circle-of-life.png. Last
  []
 
 [14] (./InterimReport.aux) ) 
 Here is how much of TeX's memory you used:
- 13826 strings out of 493054
- 271354 string characters out of 6138326
- 342452 words of memory out of 5000000
+ 13827 strings out of 493054
+ 271419 string characters out of 6138326
+ 344325 words of memory out of 5000000
  17079 multiletter control sequences out of 15000+600000
  9443 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,13n,76p,1527b,1064s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,13n,76p,1521b,1064s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2015/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx12.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
@@ -722,10 +753,10 @@ ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/te
 xmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type
 1/public/amsfonts/cm/cmtt8.pfb>
-Output written on InterimReport.pdf (15 pages, 397559 bytes).
+Output written on InterimReport.pdf (15 pages, 435078 bytes).
 PDF statistics:
- 98 PDF objects out of 1000 (max. 8388607)
+ 100 PDF objects out of 1000 (max. 8388607)
  63 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 48 words of extra memory for PDF output out of 10000 (max. 10000000)
 

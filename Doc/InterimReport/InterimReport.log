@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  11 NOV 2015 22:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  12 NOV 2015 17:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -590,126 +590,142 @@ d=31, 837.1275pt x 521.95pt>
 File: resources/images/jsep.png Graphic file (type png)
 
 <use resources/images/jsep.png>
-Package pdftex.def Info: resources/images/jsep.png used on input line 104.
+Package pdftex.def Info: resources/images/jsep.png used on input line 108.
 (pdftex.def)             Requested size: 334.84506pt x 208.77629pt.
  [6 <./resources/images/jsep.png (PNG copy)>]
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 113.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 117.
 
 
 (c:/texlive/2015/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 113.
- [7] [8]
-<resources/images/ganttchart.png, id=44, 810.02625pt x 950.04938pt>
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 117.
+ [7]
+<resources/images/network.png, id=41, 678.535pt x 178.6675pt>
+File: resources/images/network.png Graphic file (type png)
+
+<use resources/images/network.png>
+Package pdftex.def Info: resources/images/network.png used on input line 177.
+(pdftex.def)             Requested size: 407.12415pt x 107.20131pt.
+
+<resources/images/peerdisconnect.png, id=43, 678.535pt x 215.80624pt>
+File: resources/images/peerdisconnect.png Graphic file (type png)
+
+<use resources/images/peerdisconnect.png>
+Package pdftex.def Info: resources/images/peerdisconnect.png used on input line
+ 184.
+(pdftex.def)             Requested size: 407.12415pt x 129.48474pt.
+ [8 <./resources/images/network.png> <./resources/images/peerdisconnect.png>] [
+9]
+<resources/images/ganttchart.png, id=52, 810.02625pt x 950.04938pt>
 File: resources/images/ganttchart.png Graphic file (type png)
 
 <use resources/images/ganttchart.png>
-Package pdftex.def Info: resources/images/ganttchart.png used on input line 189
+Package pdftex.def Info: resources/images/ganttchart.png used on input line 204
 .
 (pdftex.def)             Requested size: 405.01213pt x 475.02353pt.
- [9 <./resources/images/ganttchart.png>]
-<resources/images/tdd-circle-of-life.png, id=48, 476.78125pt x 373.395pt>
+ [10 <./resources/images/ganttchart.png>]
+<resources/images/tdd-circle-of-life.png, id=56, 476.78125pt x 373.395pt>
 File: resources/images/tdd-circle-of-life.png Graphic file (type png)
 
 <use resources/images/tdd-circle-of-life.png>
 Package pdftex.def Info: resources/images/tdd-circle-of-life.png used on input 
-line 232.
+line 247.
 (pdftex.def)             Requested size: 238.39003pt x 186.69704pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[10] [11 <./resources/images/tdd-circle-of-life.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 245--246
+[11] [12 <./resources/images/tdd-circle-of-life.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 260--261
 \OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
 ow-government-to-ban-end-to-end-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 247--248
+Underfull \hbox (badness 10000) in paragraph at lines 262--263
 []\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
 . Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 247--248
+Underfull \hbox (badness 10000) in paragraph at lines 262--263
 \OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
 long-are-my-uploads-available-
  []
 
 
-Overfull \hbox (71.66275pt too wide) in paragraph at lines 251--253
+Overfull \hbox (71.66275pt too wide) in paragraph at lines 266--268
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
  http://www.hindawi.com/journals/jcnc/2012/485875/fig1/.
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 258--259
+Underfull \hbox (badness 3058) in paragraph at lines 273--274
 []\OT1/cmr/m/n/10 Schulzrinne, et al. (Febru-ary 2010). Se-cu-rity in P2P Re-al
 -time Com-mu-ni-ca-tions. Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--263
+Underfull \hbox (badness 10000) in paragraph at lines 277--278
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
  code. Avail-able:
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 264--265
+Underfull \hbox (badness 5637) in paragraph at lines 279--280
 []\OT1/cmr/m/n/10 Adam Bergkvist, Daniel C. Bur-nett, Cullen Jen-nings, Anant N
 arayanan (un-til Novem-
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 264--265
+Underfull \hbox (badness 4060) in paragraph at lines 279--280
 \OT1/cmr/m/n/10 ber 2012). (2011). We-bRTC 1.0: Real-time Com-mu-ni-ca-tion Be-
 tween Browsers. Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--271
+Underfull \hbox (badness 10000) in paragraph at lines 285--286
 []\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
 ro-to-col (JSEP).
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--271
+Underfull \hbox (badness 10000) in paragraph at lines 285--286
 \OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
 2012Jan/att-
  []
 
+[13
 
-Underfull \hbox (badness 1688) in paragraph at lines 272--273
+]
+Underfull \hbox (badness 1688) in paragraph at lines 289--290
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-de
 velopment/tdd-circle-of-life.png. Last
  []
 
-[12
-
-] [13] (./InterimReport.aux) ) 
+[14] (./InterimReport.aux) ) 
 Here is how much of TeX's memory you used:
- 13831 strings out of 493054
- 271384 string characters out of 6138326
- 352191 words of memory out of 5000000
- 17086 multiletter control sequences out of 15000+600000
+ 13826 strings out of 493054
+ 271354 string characters out of 6138326
+ 342452 words of memory out of 5000000
+ 17079 multiletter control sequences out of 15000+600000
  9443 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,13n,76p,1527b,955s stack positions out of 5000i,500n,10000p,200000b,80000s
-<c:/texlive/2015/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmbx10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmbx12.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.p
-fb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/tex
-live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmtt8.pfb>
-Output written on InterimReport.pdf (14 pages, 360543 bytes).
+ 62i,13n,76p,1527b,1064s stack positions out of 5000i,500n,10000p,200000b,80000s
+<c:/texlive/2015/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmbx10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mbx12.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmtt8.pfb>
+Output written on InterimReport.pdf (15 pages, 397559 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 61 compressed objects within 1 object stream
+ 98 PDF objects out of 1000 (max. 8388607)
+ 63 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 43 words of extra memory for PDF output out of 10000 (max. 10000000)
 

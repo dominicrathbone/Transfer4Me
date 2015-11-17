@@ -117,10 +117,8 @@
 			\end{figure}
 			\newpage
 			
-			WebSockets is a protocol implemented by browsers and servers to provide bi-directional communication between them\cite{WebSockets}. Once established, a session with a client communicating with the server is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably send messages back and forth through the server. Over this WebSockets session, SIP messages will be sent. SIP is a communication protocol that does not specify how signals are transported but how these signals are defined. The transaction model defined by SIP is similar to HTTP with each SIP request being matched by a SIP response.
+			WebSockets is a protocol implemented by browsers and servers to provide bi-directional communication between them\cite{WebSockets}. Once established, a session with a client communicating with the server is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably send messages back and forth through the server. Over this WebSockets session, SIP messages will be sent. SIP is a communication protocol that does not specify how signals are transported but how these signals are defined. The transaction model defined by SIP is similar to HTTP with each SIP request being matched by a SIP response. An example of a SIP over WebSockets transaction:\cite{SIP Over WebSockets}
 			
-			\begin{figure}[h!]
-			\caption{SIP over WebSockets transaction example\cite{SIP Over WebSockets}}
 			 Initial handshake with WebSockets signalling server over HTTP \\
 			 Alice -\textgreater\ proxy.example.com (TLS)
 			 \begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
@@ -174,7 +172,6 @@
 			 ;temp-gruu="sip:87ash54=3dd.98a@example.com;gr"
 			 ;expires=3600
 			 \end{lstlisting}
-			 \end{figure}
 			 
 			Once two peers have registered, one of them can send an invite to another through the server in the form of an INVITE request to form a signalling channel between them which WebRTC uses to establish a peer connection and data channel. To create this peer connection, it uses interactive connectivity establishment (ICE) to find a list of the possible IP's and ports of each peer which are then sent through the server. Once this is done, the data channel can be formed and packets can be sent peer-to-peer. These packets are managed and secured by Secure Real Time Transport Protocol (SCTP) for media and Stream Control Transmission Protocol(SCTP) for non-media and encrypted by Datagram Transport Layer Security (DTLS) \cite{WebRTC Data Channel Establishment Protocol}.
 						

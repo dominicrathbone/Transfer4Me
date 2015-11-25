@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/WebRTCSignallingServer.iml" filepath="$PROJECT_DIR$/WebRTCSignallingServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/signalling.iml" filepath="$PROJECT_DIR$/signalling.iml" />
     </modules>
   </component>
 </project>

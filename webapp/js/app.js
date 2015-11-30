@@ -1,41 +1,26 @@
-        var stompClient = null;
+var AppRouter = Backbone.Router.extend({
+    routes: {
+        "/:id": "connectToRoom"
+    }
+});
 
-        function setConnected(connected) {
-            document.getElementById('connect').disabled = connected;
-            document.getElementById('disconnect').disabled = !connected;
-            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
-            document.getElementById('response').innerHTML = '';
-        }
+var app_router = new AppRouter();
+app_router.on('route:connectToRoom', function (id) {
+    alert( "Get room id " + id );   
+});
 
-        function connect() {
-            var socket = new SockJS('/');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
-                setConnected(true);
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/signals', function(message){
-                    showGreeting(JSON.parse(message.body).message);
-                });
-            });
-        }
-
-        function disconnect() {
-            if (stompClient != null) {
-                stompClient.disconnect();
-            }
-            setConnected(false);
-            console.log("Disconnected");
-        }
-
-        function sendMessage() {
-            var message = document.getElementById('message').value;
-            stompClient.send("/app/signal", {}, JSON.stringify({ 'message': message }));
-        }
-
-        function showGreeting(message) {
-            var response = document.getElementById('response');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message));
-            response.appendChild(p);
-        }
+var AppView = Backbone.View.extend({
+  // el - stands for element. Every view has a element associate in with HTML
+  //      content will be rendered.
+  el: '#container',
+  // It's the first function called when this view it's instantiated.
+  initialize: function(){
+    this.render();
+  },
+  // $el - it's a cached jQuery object (el), in which you can use jQuery functions
+  //       to push content. Like the Hello World in this case.
+  render: function(){
+    this.$el.html("Hello World");
+  }
+});   
+var appView = new AppView();

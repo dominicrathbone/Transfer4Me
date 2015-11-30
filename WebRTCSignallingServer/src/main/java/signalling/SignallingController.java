@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class SignallingController {
 
-    @MessageMapping("/{room}")
+    @MessageMapping("/signal/{room}")
     @SendTo("/topic/{room}")
     public SignallingMessage sendSignal(@DestinationVariable String room, SignallingMessage message) throws Exception {
         return new SignallingMessage(message.getMessage());

@@ -8,7 +8,7 @@ function setConnected(connected) {
 }
 
 function connect(roomId) {
-    var socket = new SockJS('/');
+    var socket = new SockJS('http://localhost:8080/signal');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         setConnected(true);
@@ -27,12 +27,12 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendMessage(roomUrl) {
+function sendMessage(roomId) {
     var message = document.getElementById('message').value;
     stompClient.send("/app/signal/" + roomId, {}, JSON.stringify({ 'message': message }));
 }
 
-function showGreeting(message) {
+function showMessage(message) {
     var response = document.getElementById('response');
     var p = document.createElement('p');
     p.style.wordWrap = 'break-word';

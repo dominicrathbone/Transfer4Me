@@ -1,26 +1,8 @@
-var AppRouter = Backbone.Router.extend({
-    routes: {
-        "/:id": "connectToRoom"
-    }
-});
 
-var app_router = new AppRouter();
-app_router.on('route:connectToRoom', function (id) {
-    alert( "Get room id " + id );   
+$(document).ready(function() {
+    $("#connectButton").click(function(){
+        var roomId = $("#roomId").val();
+        console.log(roomId);
+        connect(roomId);
+    });
 });
-
-var AppView = Backbone.View.extend({
-  // el - stands for element. Every view has a element associate in with HTML
-  //      content will be rendered.
-  el: '#container',
-  // It's the first function called when this view it's instantiated.
-  initialize: function(){
-    this.render();
-  },
-  // $el - it's a cached jQuery object (el), in which you can use jQuery functions
-  //       to push content. Like the Hello World in this case.
-  render: function(){
-    this.$el.html("Hello World");
-  }
-});   
-var appView = new AppView();

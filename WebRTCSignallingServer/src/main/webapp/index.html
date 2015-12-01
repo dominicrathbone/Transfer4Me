@@ -7,16 +7,25 @@
     <script src="js/vendor/backbone.js"></script>
     <script src="js/vendor/sock.js"></script>
     <script src="js/vendor/stomp.js"></script>
-    <script src="js/transfer4me.js"></script>
+    <script src="js/signaller.js"></script>
     <script src="js/app.js"></script>
 </head>
 <body>
-    <div id ="container"> 
+    <div id="container"> 
         <form>
             Please enter room name:
             <input type="text" id="roomId">
             <input type="button" id="connectButton" value="Connect">
         </form>
+        <form id="messager">
+            Please enter message:
+            <input type="text" id="message">
+            <input type="button" id="sendMessageButton" value="Send Message">
+        </form>
+        
+        <ul id="messageList">
+            
+        </ul>
     </div>
 </body>
 </html>

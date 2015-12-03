@@ -2,9 +2,6 @@
 <html>
 <head>
     <title>Transfer4Me</title>
-    <script src="js/vendor/underscore.js"></script>
-    <script src="js/vendor/jquery-2.1.4.min.js"></script>
-    <script src="js/vendor/backbone.js"></script>
     <script src="js/vendor/sock.js"></script>
     <script src="js/vendor/stomp.js"></script>
     <script src="js/signaller.js"></script>
@@ -12,9 +9,7 @@
 </head>
 <body>
     <div id="container"> 
-        <form>
-            Please enter room name:
-            <input type="text" id="roomId">
+        <form id="connector">
             <input type="button" id="connectButton" value="Connect">
         </form>
         <form id="messager">

@@ -1,10 +1,10 @@
+var connected = 0;
+var roomId = null;
+
 
 document.addEventListener("DOMContentLoaded", function(event) {   
-    var connected = 0;
-    var roomId = null;
-    
-    document.getElementById('messager').style.display = 'none';  
-    
+    document.getElementById('room').style.display = 'none';  
+
     document.getElementById('connectButton').onclick = function(){
         roomId = Math.floor((Math.random() * 100) + 1);
         if(connected == 0) {
@@ -21,22 +21,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
 });
 
-window.addEventListener('popstate', function(e) {
-    alert(e.state);
-});
+//window.addEventListener('popstate', function(e) {
+//    alert(e.state);
+//});
 
 function setConnected(roomId) {
     connect(roomId);
     document.getElementById('connectButton').value = "Disconnect";
-    document.getElementById('messager').style.display = 'block';          
-    history.pushState(roomId, roomId, window.location.href + roomId);
+    document.getElementById('room').style.display = 'block';  
+//  history.pushState(roomId, roomId, window.location.href + roomId);
     connected = 1;
 }
 
 function setDisconnected() {
     disconnect();
     document.getElementById('connectButton').value = "Connect";
-    document.getElementById('messager').style.display = 'none';
+    document.getElementById('room').style.display = 'none';
     document.getElementById('messager').value = null;
     connected = 0;
 }
@@ -48,6 +48,7 @@ function updateMessageList(message) {
     messageElement.appendChild(messageText);
     document.getElementById('messageList').appendChild(messageElement);
 }
+
 
 
 

@@ -11,9 +11,7 @@ public class SignallingController {
     @MessageMapping("/signal/{room}")
     @SendTo("/topic/{room}")
     public SignallingMessage sendSignal(@DestinationVariable String room, SignallingMessage message) throws Exception {
-        generateNewRoomUrl();
         return new SignallingMessage(message.getMessage());
     }
-
 }
 

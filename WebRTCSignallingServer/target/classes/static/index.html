@@ -12,15 +12,18 @@
         <form id="connector">
             <input type="button" id="connectButton" value="Connect">
         </form>
-        <form id="messager">
-            Please enter message:
-            <input type="text" id="message">
-            <input type="button" id="sendMessageButton" value="Send Message">
-        </form>
-        
-        <ul id="messageList">
-            
-        </ul>
+        <div id="room">
+            Room URL:
+            <textarea readonly rows="1" id="roomUrl"></textarea> 
+            <form id="messager">
+                Please enter message:
+                <input type="text" id="message">
+                <input type="button" id="sendMessageButton" value="Send Message">
+            </form>
+            <ul id="messageList">
+
+            </ul>
+        </div>
     </div>
 </body>
 </html>

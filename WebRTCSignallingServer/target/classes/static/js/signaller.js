@@ -6,7 +6,9 @@ function connect(roomId) {
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/' + roomId, function(message){
-            console.log(message);
+            var messageContent = JSON.parse(message.body);
+            updateMessageList(messageContent.message);
+
         });
     });
 }
@@ -22,3 +24,14 @@ function sendMessage(roomId, message) {
     stompClient.send("/app/signal/" + roomId, {}, JSON.stringify({ 'message': message }));
 }
 
+function createNewRoom() {
+    var result = null;
+    $.ajax({
+        url:"/newRoom",
+        async: false,
+        success:function(data) {
+            result = data;
+        }
+    });
+    return result;
+}

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Transfer4Me</title>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="js/vendor/sock.js"></script>
     <script src="js/vendor/stomp.js"></script>
     <script src="js/signaller.js"></script>
@@ -13,16 +14,13 @@
             <input type="button" id="connectButton" value="Connect">
         </form>
         <div id="room">
-            Room URL:
-            <textarea readonly rows="1" id="roomUrl"></textarea> 
-            <form id="messager">
+            <div id ="roomUrlContainer"> </div>
+            <form id="messenger">
                 Please enter message:
                 <input type="text" id="message">
                 <input type="button" id="sendMessageButton" value="Send Message">
             </form>
-            <ul id="messageList">
-
-            </ul>
+            <ul id="messageList"></ul>
         </div>
     </div>
 </body>

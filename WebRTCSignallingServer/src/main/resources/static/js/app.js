@@ -1,19 +1,18 @@
 var connected = 0;
 var roomId = null;
 
+document.addEventListener("DOMContentLoaded", function(event) {
 
-document.addEventListener("DOMContentLoaded", function(event) {   
-    document.getElementById('room').style.display = 'none';  
+    document.getElementById('room').style.display = 'none';
 
     document.getElementById('connectButton').onclick = function(){
-        roomId = Math.floor((Math.random() * 100) + 1);
         if(connected == 0) {
-            setConnected(roomId);
+            setConnected();
         } else if(connected == 1) {
             setDisconnected();
         }
     };
-    
+
     document.getElementById('sendMessageButton').onclick = function(){ 
         var message = document.getElementById('message').value;
         sendMessage(roomId, message);
@@ -21,15 +20,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
 });
 
-//window.addEventListener('popstate', function(e) {
-//    alert(e.state);
-//});
-
-function setConnected(roomId) {
+function setConnected() {
+    roomId = checkPathForRoomID();
+    var roomUrl = "" + window.location.href;
+    if(roomId == null) {
+        roomId = createNewRoom();
+        roomUrl = "" + window.location.href + roomId;
+        history.pushState(null,null,roomUrl);
+        var roomUrlTextNode = document.createTextNode("Room URL:");
+        var roomUrlElement = document.createElement("textarea");
+        roomUrlElement.setAttribute("readOnly","true"); 
+        roomUrlElement.value = roomUrl;
+        document.getElementById("roomUrlContainer").appendChild(roomUrlTextNode);
+        document.getElementById("roomUrlContainer").appendChild(roomUrlElement);
+    }
     connect(roomId);
     document.getElementById('connectButton').value = "Disconnect";
-    document.getElementById('room').style.display = 'block';  
-//  history.pushState(roomId, roomId, window.location.href + roomId);
+    document.getElementById('room').style.display = 'block';
     connected = 1;
 }
 
@@ -37,7 +44,7 @@ function setDisconnected() {
     disconnect();
     document.getElementById('connectButton').value = "Connect";
     document.getElementById('room').style.display = 'none';
-    document.getElementById('messager').value = null;
+    document.getElementById('messenger').value = null;
     connected = 0;
 }
 
@@ -49,6 +56,14 @@ function updateMessageList(message) {
     document.getElementById('messageList').appendChild(messageElement);
 }
 
+function checkPathForRoomID() {
+    var pathname = window.location.pathname;
+    var roomId = pathname.split("/")[1];
+    if(roomId != null && roomId != "") {
+        return roomId;
+    }
+    return null;
+}
 
 
 

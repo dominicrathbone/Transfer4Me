@@ -1,59 +1,53 @@
-var connected = 0;
-var roomId = null;
+var roomId = checkPathForRoomID();
+var signallingChannel = new signaller();
+var isUploader = false;
 
 document.addEventListener("DOMContentLoaded", function(event) {
-
-    document.getElementById('room').style.display = 'none';
-
-    document.getElementById('connectButton').onclick = function(){
-        if(connected == 0) {
-            setConnected();
-        } else if(connected == 1) {
-            setDisconnected();
-        }
-    };
-
-    document.getElementById('sendMessageButton').onclick = function(){ 
-        var message = document.getElementById('message').value;
-        sendMessage(roomId, message);
-    };
-    
+    if(roomId == null) {
+        setFileUploadState();
+    } else {
+        isUploader = false;
+        signallingChannel.connect(roomId, isUploader);
+        setJoinRoomState();
+    }
 });
 
-function setConnected() {
-    roomId = checkPathForRoomID();
-    var roomUrl = "" + window.location.href;
-    if(roomId == null) {
-        roomId = createNewRoom();
-        roomUrl = "" + window.location.href + roomId;
-        history.pushState(null,null,roomUrl);
-        var roomUrlTextNode = document.createTextNode("Room URL:");
-        var roomUrlElement = document.createElement("textarea");
-        roomUrlElement.setAttribute("readOnly","true"); 
-        roomUrlElement.value = roomUrl;
-        document.getElementById("roomUrlContainer").appendChild(roomUrlTextNode);
-        document.getElementById("roomUrlContainer").appendChild(roomUrlElement);
-    }
-    connect(roomId);
-    document.getElementById('connectButton').value = "Disconnect";
-    document.getElementById('room').style.display = 'block';
-    connected = 1;
+function setFileUploadState() {
+    var fileInput = document.createElement('input');
+    fileInput.id="fileInput";
+    fileInput.type="file";
+    fileInput.addEventListener('change', function () {
+        if (handleFile(this.files[0])) {
+            roomId = signallingChannel.createNewRoom();
+            isUploader = true;
+            signallingChannel.connect(roomId, isUploader);
+            setNewRoomState();
+        }
+    });
+    document.getElementById("container").appendChild(fileInput);
 }
 
-function setDisconnected() {
-    disconnect();
-    document.getElementById('connectButton').value = "Connect";
-    document.getElementById('room').style.display = 'none';
-    document.getElementById('messenger').value = null;
-    connected = 0;
+
+function setNewRoomState() {
+    var roomUrl = "" + window.location.href + roomId;
+    history.pushState(null,null,roomUrl);
+    var roomUrlContainer = document.createElement("div");
+    var roomUrlTextNode = document.createTextNode("Room URL:");
+    var roomUrlElement = document.createElement("textarea");
+    roomUrlElement.setAttribute("readOnly","true");
+    roomUrlElement.value = roomUrl;
+    roomUrlContainer.appendChild(roomUrlTextNode);
+    roomUrlContainer.appendChild(roomUrlElement);
+    document.getElementById('container').appendChild(roomUrlContainer);
+    document.getElementById('container').style.display = 'block';
 }
 
-function updateMessageList(message) {
-    console.log(message);
-    var messageElement = document.createElement("li"); 
-    var messageText = document.createTextNode(message);  
-    messageElement.appendChild(messageText);
-    document.getElementById('messageList').appendChild(messageElement);
+function setJoinRoomState() {
+    var downloadFileButton = document.createElement("input");
+    downloadFileButton.type = "button";
+    downloadFileButton.id="downloadFileButton";
+    downloadFileButton.value="Download File";
+    document.getElementById('container').appendChild(downloadFileButton);
 }
 
 function checkPathForRoomID() {
@@ -65,5 +59,35 @@ function checkPathForRoomID() {
     return null;
 }
 
+function handleFile(file) {
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        if (file === undefined || file === null) {
+            logErrorToConsole("file is undefined or null");
+        } else {
+            var fileSize = file.size;
+            var chunkSize = 16;
+            if(fileSize > chunkSize) {
+                var blobs = [];
+                var startByte = 0;
+                var endByte = chunkSize;
+                while(startByte < fileSize) {
+                    var blob = file.slice(startByte, endByte);
+                    blobs.push(blob);
+                    startByte = endByte;
+                    endByte = endByte + chunkSize;
+                }
+            }
+            return true;
+        }
 
+    } else {
+        logErrorToConsole("HTML5 File API is not supported in this browser");
+    }
+    return false;
+}
+
+function logErrorToConsole(error) {
+    console.error(error);
+}
 

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+import java.util.UUID;
+
 @Controller
 public class SignallingController {
 
@@ -15,8 +18,8 @@ public class SignallingController {
 
     @MessageMapping("/signal/{room}")
     @SendTo("/topic/{room}")
-    public SignallingMessage sendSignal(@DestinationVariable String room, SignallingMessage message) throws Exception {
-        return new SignallingMessage(message.getMessage());
+    public String sendSignal(@DestinationVariable String room, String signal) throws Exception {
+        return signal;
     }
 
     @RequestMapping("/{room:[\\d]+}")

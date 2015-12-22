@@ -1,13 +1,14 @@
 var roomId = checkPathForRoomID();
-var signallingChannel = new signaller();
+var p2pChannel = new p2p();
 var isUploader = false;
+var file = null;
 
 document.addEventListener("DOMContentLoaded", function(event) {
     if(roomId == null) {
         setFileUploadState();
     } else {
         isUploader = false;
-        signallingChannel.connect(roomId, isUploader);
+        p2pChannel.startSession(roomId, isUploader);
         setJoinRoomState();
     }
 });
@@ -17,11 +18,17 @@ function setFileUploadState() {
     fileInput.id="fileInput";
     fileInput.type="file";
     fileInput.addEventListener('change', function () {
-        if (handleFile(this.files[0])) {
-            roomId = signallingChannel.createNewRoom();
+        file = this.files[0];
+        var reader = new window.FileReader();
+        reader.readAsArrayBuffer(file);
+        if (file != null) {
             isUploader = true;
-            signallingChannel.connect(roomId, isUploader);
+            p2pChannel.startSession(roomId, isUploader, file);
+            roomId = p2pChannel.roomId;
             setNewRoomState();
+        }
+        else {
+            alert("upload valid file");
         }
     });
     document.getElementById("container").appendChild(fileInput);
@@ -59,16 +66,16 @@ function checkPathForRoomID() {
     return null;
 }
 
-function handleFile(file) {
+function spliceFile(file) {
     // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         if (file === undefined || file === null) {
             logErrorToConsole("file is undefined or null");
         } else {
+            var blobs = [];
             var fileSize = file.size;
             var chunkSize = 16;
             if(fileSize > chunkSize) {
-                var blobs = [];
                 var startByte = 0;
                 var endByte = chunkSize;
                 while(startByte < fileSize) {
@@ -77,14 +84,15 @@ function handleFile(file) {
                     startByte = endByte;
                     endByte = endByte + chunkSize;
                 }
+            } else {
+                blobs.push(file);
             }
-            return true;
+            return blobs;
         }
-
     } else {
         logErrorToConsole("HTML5 File API is not supported in this browser");
     }
-    return false;
+    return null;
 }
 
 function logErrorToConsole(error) {

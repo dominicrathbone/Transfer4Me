@@ -1,14 +1,16 @@
 var roomId = checkPathForRoomID();
 var p2pChannel = new p2p();
-var isUploader = false;
-var file = null;
+var userType = {
+    UPLOADER: 0,
+    DOWNLOADER: 1,
+    STREAMER: 2
+}
+var user;
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
     if(roomId == null) {
         setFileUploadState();
     } else {
-        isUploader = false;
-        p2pChannel.startSession(roomId, isUploader);
         setJoinRoomState();
     }
 });
@@ -18,12 +20,10 @@ function setFileUploadState() {
     fileInput.id="fileInput";
     fileInput.type="file";
     fileInput.addEventListener('change', function () {
-        file = this.files[0];
-        var reader = new window.FileReader();
-        reader.readAsArrayBuffer(file);
+        var file = this.files[0];
         if (file != null) {
-            isUploader = true;
-            p2pChannel.startSession(roomId, isUploader, file);
+            user = userType.UPLOADER;
+            p2pChannel.startSession(roomId, user, file, null);
             roomId = p2pChannel.roomId;
             setNewRoomState();
         }
@@ -54,7 +54,37 @@ function setJoinRoomState() {
     downloadFileButton.type = "button";
     downloadFileButton.id="downloadFileButton";
     downloadFileButton.value="Download File";
+    downloadFileButton.addEventListener("click", function() {
+        user = userType.DOWNLOADER;
+        p2pChannel.startSession(roomId, user, null, setDownloadState());
+    });
+    var streamFileButton = document.createElement("input");
+    streamFileButton.type = "button";
+    streamFileButton.id="streamFileButton";
+    streamFileButton.value="Stream File";
+    streamFileButton.addEventListener("click", function() {
+        user = userType.STREAMER;
+        p2pChannel.startSession(roomId, user, null, setStreamingState());
+    });
     document.getElementById('container').appendChild(downloadFileButton);
+    document.getElementById('container').appendChild(streamFileButton);
+
+}
+
+function setDownloadState() {
+    var downloadingFileTextNode = document.createTextNode("FILE IS DOWNLOADING...");
+    document.getElementById('container').appendChild(downloadingFileTextNode);
+}
+
+function setStreamingState() {
+        var audioPlayerElement = document.createElement("AUDIO");
+        audioPlayerElement.controls = true;
+        audioPlayerElement.id = "audioPlayer";
+        document.getElementById('container').appendChild(audioPlayerElement);
+        //var videoPlayerElement = document.createElement("VIDEO");
+        //videoPlayerElement.controls = true;
+        //videoPlayerElement.id = "videoPlayer";
+        //document.getElementById('container').appendChild(videoPlayerElement);
 }
 
 function checkPathForRoomID() {
@@ -62,35 +92,6 @@ function checkPathForRoomID() {
     var roomId = pathname.split("/")[1];
     if(roomId != null && roomId != "") {
         return roomId;
-    }
-    return null;
-}
-
-function spliceFile(file) {
-    // Check for the various File API support.
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-        if (file === undefined || file === null) {
-            logErrorToConsole("file is undefined or null");
-        } else {
-            var blobs = [];
-            var fileSize = file.size;
-            var chunkSize = 16;
-            if(fileSize > chunkSize) {
-                var startByte = 0;
-                var endByte = chunkSize;
-                while(startByte < fileSize) {
-                    var blob = file.slice(startByte, endByte);
-                    blobs.push(blob);
-                    startByte = endByte;
-                    endByte = endByte + chunkSize;
-                }
-            } else {
-                blobs.push(file);
-            }
-            return blobs;
-        }
-    } else {
-        logErrorToConsole("HTML5 File API is not supported in this browser");
     }
     return null;
 }

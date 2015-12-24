@@ -2,12 +2,12 @@ function signaller() {
     var stompClient = null;
     var roomUrl = null;
 
-    this.connect = function(roomId, isUploader, onsignal, onsuccess) {
+    this.connect = function(roomId, user, onsignal, onsuccess) {
         var socket = new SockJS('/signal');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            if(isUploader) {
+            if(user == userType.UPLOADER) {
                 stompClient.subscribe('/topic/' + roomId + 'u', function(data) {
                     onsignal(data);
                 });

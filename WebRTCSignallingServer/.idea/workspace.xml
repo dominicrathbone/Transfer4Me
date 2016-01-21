@@ -100,7 +100,6 @@
         <option value="$PROJECT_DIR$/src/main/java/signalling/MvcConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/signalling/WebMvcConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/signalling/WebConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/java/signalling/SignallingServerApplication.java" />
         <option value="$PROJECT_DIR$/src/main/resources/static/index.html" />
         <option value="$PROJECT_DIR$/src/main/java/signalling/Signal.java" />
         <option value="$PROJECT_DIR$/src/main/java/signalling/WebSocketConfig.java" />
@@ -108,6 +107,7 @@
         <option value="$PROJECT_DIR$/src/main/resources/static/js/signaller.js" />
         <option value="$PROJECT_DIR$/src/main/resources/static/js/app.js" />
         <option value="$PROJECT_DIR$/src/main/resources/static/js/p2p.js" />
+        <option value="$PROJECT_DIR$/src/main/java/signalling/SignallingServerApplication.java" />
       </list>
     </option>
   </component>
@@ -724,12 +724,12 @@
       <workItem from="1451264458771" duration="5000" />
       <workItem from="1452012625564" duration="62000" />
       <workItem from="1453224334211" duration="25611000" />
-      <workItem from="1453377891075" duration="11974000" />
+      <workItem from="1453377891075" duration="12098000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="223977000" />
+    <option name="totallyTimeSpent" value="224101000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="26" width="1368" height="745" extended-state="6" />

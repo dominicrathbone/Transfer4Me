@@ -23,7 +23,7 @@ function setFileUploadState() {
         var file = this.files[0];
         if (file != null) {
             user = userType.UPLOADER;
-            p2pChannel.startSession(roomId, user, file, null);
+            p2pChannel.startSession(roomId, user, file);
             roomId = p2pChannel.roomId;
             setNewRoomState();
         }
@@ -77,14 +77,14 @@ function setDownloadState() {
 }
 
 function setStreamingState() {
-        var audioPlayerElement = document.createElement("AUDIO");
-        audioPlayerElement.controls = true;
-        audioPlayerElement.id = "audioPlayer";
-        document.getElementById('container').appendChild(audioPlayerElement);
-        //var videoPlayerElement = document.createElement("VIDEO");
-        //videoPlayerElement.controls = true;
-        //videoPlayerElement.id = "videoPlayer";
-        //document.getElementById('container').appendChild(videoPlayerElement);
+    var audioPlayerElement = document.createElement("AUDIO");
+    audioPlayerElement.controls = true;
+    audioPlayerElement.id = "audioPlayer";
+    document.getElementById('container').appendChild(audioPlayerElement);
+    var videoPlayerElement = document.createElement("VIDEO");
+    videoPlayerElement.controls = true;
+    videoPlayerElement.id = "videoPlayer";
+    document.getElementById('container').appendChild(videoPlayerElement);
 }
 
 function checkPathForRoomID() {

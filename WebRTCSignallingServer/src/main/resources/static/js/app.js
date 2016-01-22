@@ -1,11 +1,14 @@
 var roomId = checkPathForRoomID();
 var p2pChannel = new p2p();
-var userType = {
+var UserType = {
     UPLOADER: 0,
     DOWNLOADER: 1,
     STREAMER: 2
 }
-var user;
+var user = {
+    userId: null,
+    userType: null
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     if(roomId == null) {
@@ -22,7 +25,7 @@ function setFileUploadState() {
     fileInput.addEventListener('change', function () {
         var file = this.files[0];
         if (file != null) {
-            user = userType.UPLOADER;
+            user.userType = UserType.UPLOADER;
             p2pChannel.startSession(roomId, user, file);
             roomId = p2pChannel.roomId;
             setNewRoomState();
@@ -55,7 +58,7 @@ function setJoinRoomState() {
     downloadFileButton.id="downloadFileButton";
     downloadFileButton.value="Download File";
     downloadFileButton.addEventListener("click", function() {
-        user = userType.DOWNLOADER;
+        user.userType = UserType.DOWNLOADER;
         p2pChannel.startSession(roomId, user, null, setDownloadState());
     });
     var streamFileButton = document.createElement("input");
@@ -63,7 +66,7 @@ function setJoinRoomState() {
     streamFileButton.id="streamFileButton";
     streamFileButton.value="Stream File";
     streamFileButton.addEventListener("click", function() {
-        user = userType.STREAMER;
+        user.userType = UserType.STREAMER;
         p2pChannel.startSession(roomId, user, null, setStreamingState());
     });
     document.getElementById('container').appendChild(downloadFileButton);

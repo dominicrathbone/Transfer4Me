@@ -1,52 +1,60 @@
 function p2p() {
-    this.peerConnection = null;
+    this.peerConnection = {
+        user: null,
+        peerConnection: null
+    };
+    this.peerConnections = []
     this.dataChannel;
     this.signallingChannel;
     this.roomId = null;
     this.fileName = null;
     this.file = null;
-    this.transferedFile = [];
     var that = this;
 
     this.startSession = function(roomId, user, file) {
         that.signallingChannel = new signaller();
         if(roomId == null) {
             roomId = that.signallingChannel.createNewRoom();
-            that.roomId = roomId;
         }
+        that.roomId = roomId;
+        if(user.userId == null) {
+            user.userId == that.signallingChannel.createNewUser(roomId);
+        }
+        that.peerConnection.user = user;
 
         that.signallingChannel.connect(roomId, user, that.onSignal, function() {
 
-            that.peerConnection = new RTCPeerConnection(
+            that.peerConnection.peerConnection = new RTCPeerConnection(
                 {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
                 null
             );
 
-            that.peerConnection.onicecandidate = function (event) {
+            that.peerConnection.peerConnection.onicecandidate = function (event) {
                 that.signallingChannel.send(JSON.stringify({"candidate": event.candidate}));
             };
 
-            if(user == userType.DOWNLOADER || user == userType.STREAMER) {
-                if (user == userType.DOWNLOADER) {
+            if(user.userType == UserType.DOWNLOADER || user.userType == UserType.STREAMER) {
+                if (user.userType == UserType.DOWNLOADER) {
                     openDataChannel(roomId);
-                } else if (user == userType.STREAMER) {
+                } else if (user == UserType.STREAMER) {
                     prepareForMediaStream();
                 }
                 sendOffer();
-            } else if(user == userType.UPLOADER) {
+            } else if(user.userType == UserType.UPLOADER) {
                 that.file = file;
                 that.fileName = file.name;
+                that.peerConnections.push(that.peerConnection);
                 prepareForDataChannel(file);
             }
         });
     };
 
     this.answerOffer = function(callback) {
-        if(that.peerConnection.remoteDescription.type == 'offer') {
-            that.peerConnection.createAnswer(function (description) {
-                that.peerConnection.setLocalDescription(description, function () {
+        if(that.peerConnection.peerConnection.remoteDescription.type == 'offer') {
+            that.peerConnection.peerConnection.createAnswer(function (description) {
+                that.peerConnection.peerConnection.setLocalDescription(description, function () {
                     that.signallingChannel.send(JSON.stringify({
-                        'sdp': that.peerConnection.localDescription
+                        'sdp': that.peerConnection.peerConnection.localDescription
                     }));
                     if(callback !=  null) {
                         callback();
@@ -57,33 +65,35 @@ function p2p() {
     };
 
     this.onSignal = function(data) {
+        console.log(data);
         var signal = JSON.parse(data.body);
+        console.log(signal);
         if (signal.sdp) {
-            if(signal.user == userType.STREAMER) {
+            if(signal.user && signal.user.userType == UserType.STREAMER) {
                 sendMediaStream(signal);
             } else {
-                that.peerConnection.setRemoteDescription(
+                that.peerConnection.peerConnection.setRemoteDescription(
                     new RTCSessionDescription(signal.sdp),
                     that.answerOffer,
                     logErrorToConsole
                 );
             }
         } else if (signal.candidate) {
-            that.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+            that.peerConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
         }
     }
 
     this.sendNewMediaStreamOffer = function(stream) {
-        that.peerConnection.addStream(stream);
+        that.peerConnection.peerConnection.addStream(stream);
         sendOffer();
     }
 
     function sendOffer() {
-        that.peerConnection.createOffer(function (description) {
-            that.peerConnection.setLocalDescription(description, function () {
+        that.peerConnection.peerConnection.createOffer(function (description) {
+            that.peerConnection.peerConnection.setLocalDescription(description, function () {
                 that.signallingChannel.send(JSON.stringify({
-                    'user': user,
-                    'sdp': that.peerConnection.localDescription
+                    'user': that.peerConnection.user,
+                    'sdp': that.peerConnection.peerConnection.localDescription
                 }));
             }, logErrorToConsole);
         }, logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
@@ -100,7 +110,7 @@ function p2p() {
                 source.buffer = buffer;
                 source.start(0);
                 source.connect(destination);
-                that.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
+                that.peerConnection.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
                     that.answerOffer(function() {
                         that.sendNewMediaStreamOffer(destination.stream);
                     });
@@ -111,7 +121,7 @@ function p2p() {
     }
 
     function prepareForDataChannel(file) {
-        that.peerConnection.ondatachannel = function(event) {
+        that.peerConnection.peerConnection.ondatachannel = function(event) {
             that.dataChannel = event.channel;
             that.dataChannel.onopen = function() {
                 that.dataChannel.send(file.name);
@@ -121,7 +131,7 @@ function p2p() {
     }
 
     function openDataChannel(roomId) {
-        that.dataChannel = that.peerConnection.createDataChannel(roomId, null);
+        that.dataChannel = that.peerConnection.peerConnection.createDataChannel(roomId, null);
         that.dataChannel.onopen = function () {
             that.dataChannel.onmessage = function (event) {
                 var data = event.data;
@@ -140,7 +150,7 @@ function p2p() {
     }
 
     function prepareForMediaStream() {
-        that.peerConnection.onaddstream = function (event) {
+        that.peerConnection.peerConnection.onaddstream = function (event) {
             var audioPlayer = document.querySelector("audio");
             audioPlayer.src = window.URL.createObjectURL(event.stream);
             var videoPlayer = document.querySelector("video");

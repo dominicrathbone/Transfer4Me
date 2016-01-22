@@ -7,7 +7,7 @@ function signaller() {
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            if(user == userType.UPLOADER) {
+            if(user.userType == UserType.UPLOADER) {
                 stompClient.subscribe('/topic/' + roomId + 'u', function(data) {
                     onsignal(data);
                 });
@@ -36,7 +36,7 @@ function signaller() {
     this.createNewRoom = function() {
         var result = null;
         $.ajax({
-            url: "/newRoom",
+            url: "/addRoom",
             async: false,
             success: function (data) {
                 result = data;
@@ -44,4 +44,16 @@ function signaller() {
         });
         return result;
     };
+
+    this.createNewUser = function(roomId) {
+        var result = null;
+        $.ajax({
+            url: "/"+ roomId +"/addUser",
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return result;
+    }
 }

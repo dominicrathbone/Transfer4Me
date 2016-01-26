@@ -14,40 +14,44 @@ function p2p() {
     this.startSession = function(roomId, user, file) {
         that.signallingChannel = new signaller();
         if(roomId == null) {
-            roomId = that.signallingChannel.createNewRoom();
+            roomId = that.signallingChannel.addRoom();
         }
         that.roomId = roomId;
         if(user.userId == null) {
-            user.userId == that.signallingChannel.createNewUser(roomId);
+            user.userId == that.signallingChannel.addUser(roomId);
         }
         that.peerConnection.user = user;
 
         that.signallingChannel.connect(roomId, user, that.onSignal, function() {
-
-            that.peerConnection.peerConnection = new RTCPeerConnection(
-                {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
-                null
-            );
-
-            that.peerConnection.peerConnection.onicecandidate = function (event) {
-                that.signallingChannel.send(JSON.stringify({"candidate": event.candidate}));
-            };
-
-            if(user.userType == UserType.DOWNLOADER || user.userType == UserType.STREAMER) {
-                if (user.userType == UserType.DOWNLOADER) {
-                    openDataChannel(roomId);
-                } else if (user == UserType.STREAMER) {
-                    prepareForMediaStream();
-                }
-                sendOffer();
-            } else if(user.userType == UserType.UPLOADER) {
-                that.file = file;
-                that.fileName = file.name;
-                that.peerConnections.push(that.peerConnection);
-                prepareForDataChannel(file);
-            }
+            that.onSignallerConnection(roomId,user,file)
         });
     };
+
+    this.onSignallerConnection = function(roomId, user, file) {
+
+        that.peerConnection.peerConnection = new RTCPeerConnection(
+            {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
+            null
+        );
+
+        that.peerConnection.peerConnection.onicecandidate = function (event) {
+            that.signallingChannel.send(JSON.stringify({"candidate": event.candidate}));
+        };
+
+        if(user.userType == UserType.DOWNLOADER || user.userType == UserType.STREAMER) {
+            if (user.userType == UserType.DOWNLOADER) {
+                prepareForDownload(roomId);
+            } else if (user == UserType.STREAMER) {
+                prepareForMediaStream();
+            }
+            sendOffer();
+        } else if(user.userType == UserType.UPLOADER) {
+            that.file = file;
+            that.fileName = file.name;
+            that.peerConnections.push(that.peerConnection);
+            sendFileOnDataChannel(file);
+        }
+    }
 
     this.answerOffer = function(callback) {
         if(that.peerConnection.peerConnection.remoteDescription.type == 'offer') {
@@ -65,7 +69,6 @@ function p2p() {
     };
 
     this.onSignal = function(data) {
-        console.log(data);
         var signal = JSON.parse(data.body);
         console.log(signal);
         if (signal.sdp) {
@@ -104,6 +107,7 @@ function p2p() {
         reader.onload = (function(event) {
             window.AudioContext = window.AudioContext||window.webkitAudioContext;
             var audioContext = new AudioContext();
+            console.log(event.target.result);
             audioContext.decodeAudioData(event.target.result, function(buffer) {
                 var source = audioContext.createBufferSource();
                 var destination = audioContext.createMediaStreamDestination();
@@ -120,7 +124,7 @@ function p2p() {
         reader.readAsArrayBuffer(that.file);
     }
 
-    function prepareForDataChannel(file) {
+    function sendFileOnDataChannel(file) {
         that.peerConnection.peerConnection.ondatachannel = function(event) {
             that.dataChannel = event.channel;
             that.dataChannel.onopen = function() {
@@ -130,7 +134,7 @@ function p2p() {
         };
     }
 
-    function openDataChannel(roomId) {
+    function prepareForDownload(roomId) {
         that.dataChannel = that.peerConnection.peerConnection.createDataChannel(roomId, null);
         that.dataChannel.onopen = function () {
             that.dataChannel.onmessage = function (event) {
@@ -167,7 +171,6 @@ function p2p() {
         (document.body || document.documentElement).appendChild(hyperlink);
         hyperlink.onclick = function() {
             (document.body || document.documentElement).removeChild(hyperlink);
-
         };
 
         var mouseEvent = new MouseEvent('click', {

@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function setFileUploadState() {
     var fileInput = document.createElement('input');
     fileInput.id="fileInput";
+    fileInput.className="fileInput";
     fileInput.type="file";
     fileInput.addEventListener('change', function () {
         var file = this.files[0];
@@ -49,7 +50,6 @@ function setNewRoomState() {
     roomUrlContainer.appendChild(roomUrlTextNode);
     roomUrlContainer.appendChild(roomUrlElement);
     document.getElementById('container').appendChild(roomUrlContainer);
-    document.getElementById('container').style.display = 'block';
 }
 
 function setJoinRoomState() {

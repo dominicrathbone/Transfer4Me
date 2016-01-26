@@ -24,19 +24,18 @@ public class SignallingController {
         return signal;
     }
 
-    @RequestMapping("/{room:[\\d]+}")
-    public String routeRoomToIndex(@PathVariable("room") int roomId) {
+    @RequestMapping("/{roomId:[\\d]+}")
+    public String routeRoomToIndex(@PathVariable("roomId") int roomId) {
         if(rooms.containsKey(roomId)) {
             return "index.html";
         }
         else {
             return null;
         }
-
     }
 
     @RequestMapping("/addRoom")
-    public @ResponseBody long createNewRoom() {
+    public @ResponseBody long addRoom() {
         int roomId = rng.nextInt(100000);
         while(rooms.containsKey(roomId)) {
             roomId = rng.nextInt(100000);
@@ -45,15 +44,24 @@ public class SignallingController {
         return roomId;
     }
 
-    @RequestMapping("/{room:[\\d]+}/addUser")
-    public @ResponseBody int addUser(@PathVariable("room") int roomId) {
+    @RequestMapping("/removeRoom/{roomId:[\\d]+}")
+    public @ResponseBody boolean removeRoom(@PathVariable("roomId") int roomId) {
+        rooms.remove(roomId);
+        if(rooms.containsKey(roomId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @RequestMapping("/{roomId:[\\d]+}/addUser")
+    public @ResponseBody int addUser(@PathVariable("roomId") int roomId) {
         return rooms.get(roomId).addUser();
     }
 
-    @RequestMapping("/{room:[\\d]+}/removeUser")
-    public @ResponseBody boolean removeUser(@PathVariable("room") int roomId, int userId) {
+    @RequestMapping("/{roomId:[\\d]+}/removeUser/{userId}")
+    public @ResponseBody boolean removeUser(@PathVariable("roomId") int roomId, @PathVariable("userId") int userId) {
         return rooms.get(roomId).removeUser(userId);
     }
 
- }
+}
 

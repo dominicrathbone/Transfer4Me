@@ -33,7 +33,7 @@ function signaller() {
         stompClient.send(roomUrl, {}, signal);
     };
 
-    this.createNewRoom = function() {
+    this.addRoom = function() {
         var result = null;
         $.ajax({
             url: "/addRoom",
@@ -45,7 +45,19 @@ function signaller() {
         return result;
     };
 
-    this.createNewUser = function(roomId) {
+    this.removeRoom = function(roomId) {
+        var result = null;
+        $.ajax({
+            url: "/removeRoom/" + roomId,
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return result;
+    }
+
+    this.addUser = function(roomId) {
         var result = null;
         $.ajax({
             url: "/"+ roomId +"/addUser",
@@ -56,4 +68,18 @@ function signaller() {
         });
         return result;
     }
+
+    this.removeUser = function(roomId, userId) {
+        var result = null;
+        $.ajax({
+            url: "/"+ roomId +"/addUser/" + userId,
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return result;
+    }
+
+
 }

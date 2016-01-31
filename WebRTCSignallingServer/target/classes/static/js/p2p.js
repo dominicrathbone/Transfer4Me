@@ -1,14 +1,10 @@
 function p2p() {
-    this.peerConnection = {
-        user: null,
-        peerConnection: null
-    };
-    this.peerConnections = []
-    this.dataChannel;
+    this.connection;
+    this.incomingConnections = []
     this.signallingChannel;
     this.roomId = null;
     this.fileName = null;
-    this.file = null;
+    this.fileStream = null;
     var that = this;
 
     this.startSession = function(roomId, user, file) {
@@ -17,127 +13,147 @@ function p2p() {
             roomId = that.signallingChannel.addRoom();
         }
         that.roomId = roomId;
-        if(user.userId == null) {
-            user.userId == that.signallingChannel.addUser(roomId);
-        }
-        that.peerConnection.user = user;
 
-        that.signallingChannel.connect(roomId, user, that.onSignal, function() {
-            that.onSignallerConnection(roomId,user,file)
+        if(user.userId == null) {
+            user.userId = that.signallingChannel.addUser(roomId);
+        }
+
+        that.signallingChannel.connect(roomId, user, onSignal, function() {
+            onSignallerConnect(roomId,user,file);
         });
     };
 
-    this.onSignallerConnection = function(roomId, user, file) {
-
-        that.peerConnection.peerConnection = new RTCPeerConnection(
-            {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
-            null
-        );
-
-        that.peerConnection.peerConnection.onicecandidate = function (event) {
-            that.signallingChannel.send(JSON.stringify({"candidate": event.candidate}));
-        };
-
+    function onSignallerConnect(roomId, user, file) {
+        that.connection = new Connection(user);
         if(user.userType == UserType.DOWNLOADER || user.userType == UserType.STREAMER) {
             if (user.userType == UserType.DOWNLOADER) {
                 prepareForDownload(roomId);
-            } else if (user == UserType.STREAMER) {
+            } else if (user.userType == UserType.STREAMER) {
                 prepareForMediaStream();
             }
             sendOffer();
         } else if(user.userType == UserType.UPLOADER) {
             that.file = file;
-            that.fileName = file.name;
-            that.peerConnections.push(that.peerConnection);
-            sendFileOnDataChannel(file);
+            var audioPlayer = document.querySelector("audio");
+            if(audioPlayer.canPlayType(file.type) !== "") {
+                prepareFileStream(file);
+            }
         }
     }
 
-    this.answerOffer = function(callback) {
-        if(that.peerConnection.peerConnection.remoteDescription.type == 'offer') {
-            that.peerConnection.peerConnection.createAnswer(function (description) {
-                that.peerConnection.peerConnection.setLocalDescription(description, function () {
-                    that.signallingChannel.send(JSON.stringify({
-                        'sdp': that.peerConnection.peerConnection.localDescription
-                    }));
-                    if(callback !=  null) {
-                        callback();
-                    }
-                }, logErrorToConsole);
-            }, logErrorToConsole);
-        }
-    };
+    function Connection(user) {
+        this.user = user;
+        this.peerConnection = new RTCPeerConnection(
+            {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
+            null
+        );
+        this.peerConnection.onicecandidate = function (event) {
+            that.signallingChannel.send(JSON.stringify({
+                'user': this.user,
+                "candidate": event.candidate}));
+        };
+    }
 
-    this.onSignal = function(data) {
+    function onSignal(data) {
         var signal = JSON.parse(data.body);
         console.log(signal);
-        if (signal.sdp) {
-            if(signal.user && signal.user.userType == UserType.STREAMER) {
-                sendMediaStream(signal);
+        if(signal.user) {
+            if(that.connection.user.userType == UserType.UPLOADER) {
+                if (signal.sdp) {
+                    var connection = getConnection(signal.user.userId);
+                    if (signal.user.userType == UserType.STREAMER) {
+                        connection.peerConnection.addStream(that.fileStream);
+                    } else if (signal.user.userType == UserType.DOWNLOADER) {
+                        sendFileOnDataChannel(connection, that.file);
+                    }
+                    connection.peerConnection.setRemoteDescription(
+                        new RTCSessionDescription(signal.sdp),
+                        function() {
+                            console.log(connection);
+                            answerOffer(connection);
+                        },
+                        logErrorToConsole
+                    );
+                }
             } else {
-                that.peerConnection.peerConnection.setRemoteDescription(
-                    new RTCSessionDescription(signal.sdp),
-                    that.answerOffer,
-                    logErrorToConsole
-                );
+                if (signal.sdp) {
+                    that.connection.peerConnection.setRemoteDescription(
+                        new RTCSessionDescription(signal.sdp),
+                        function() {
+                            console.log(connection);
+                        },
+                        logErrorToConsole
+                    );
+                } else if(signal.candidate) {
+                    that.peerConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                }
             }
-        } else if (signal.candidate) {
-            that.peerConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
         }
-    }
-
-    this.sendNewMediaStreamOffer = function(stream) {
-        that.peerConnection.peerConnection.addStream(stream);
-        sendOffer();
     }
 
     function sendOffer() {
-        that.peerConnection.peerConnection.createOffer(function (description) {
-            that.peerConnection.peerConnection.setLocalDescription(description, function () {
+        var connection = that.connection;
+        connection.peerConnection.createOffer(function (description) {
+            connection.peerConnection.setLocalDescription(description, function () {
                 that.signallingChannel.send(JSON.stringify({
-                    'user': that.peerConnection.user,
-                    'sdp': that.peerConnection.peerConnection.localDescription
+                    'user': connection.user,
+                    'sdp': connection.peerConnection.localDescription
                 }));
             }, logErrorToConsole);
         }, logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
     }
 
-    function sendMediaStream(signal) {
+    function answerOffer(connection) {
+        if(connection.peerConnection.remoteDescription.type == 'offer') {
+            connection.peerConnection.createAnswer(function (description) {
+                connection.peerConnection.setLocalDescription(description, function () {
+                    that.signallingChannel.send(JSON.stringify({
+                        'sdp': connection.peerConnection.localDescription
+                    }));
+                }, logErrorToConsole);
+            }, logErrorToConsole);
+        }
+    };
+
+    function prepareForMediaStream() {
+        that.connection.peerConnection.onaddstream = function (event) {
+            var audioPlayer = document.querySelector("audio");
+            audioPlayer.src = window.URL.createObjectURL(event.stream);
+            audioPlayer.play();
+        }
+    }
+
+    function prepareFileStream(file) {
         var reader = new FileReader();
-        reader.onload = (function(event) {
+        reader.onloadend = (function(event) {
             window.AudioContext = window.AudioContext||window.webkitAudioContext;
             var audioContext = new AudioContext();
-            console.log(event.target.result);
             audioContext.decodeAudioData(event.target.result, function(buffer) {
                 var source = audioContext.createBufferSource();
                 var destination = audioContext.createMediaStreamDestination();
                 source.buffer = buffer;
                 source.start(0);
                 source.connect(destination);
-                that.peerConnection.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
-                    that.answerOffer(function() {
-                        that.sendNewMediaStreamOffer(destination.stream);
-                    });
-                }, logErrorToConsole);
+                that.fileStream = destination.stream;
             });
         });
-        reader.readAsArrayBuffer(that.file);
+        reader.readAsArrayBuffer(file);
     }
 
-    function sendFileOnDataChannel(file) {
-        that.peerConnection.peerConnection.ondatachannel = function(event) {
-            that.dataChannel = event.channel;
-            that.dataChannel.onopen = function() {
-                that.dataChannel.send(file.name);
-                that.dataChannel.send(file);
+    function sendFileOnDataChannel(connection, file) {
+        connection.peerConnection.ondatachannel = function(event) {
+            var dataChannel = event.channel;
+            dataChannel.onopen = function() {
+                dataChannel.send(file.name);
+                dataChannel.send(file);
             }
         };
     }
 
     function prepareForDownload(roomId) {
-        that.dataChannel = that.peerConnection.peerConnection.createDataChannel(roomId, null);
-        that.dataChannel.onopen = function () {
-            that.dataChannel.onmessage = function (event) {
+        var dataChannel = that.connection.peerConnection.createDataChannel(roomId, null);
+        dataChannel.onopen = function () {
+            dataChannel.onmessage = function (event) {
                 var data = event.data;
                 if (typeof data === 'string' || data instanceof String)  {
                     that.fileName = data;
@@ -150,15 +166,6 @@ function p2p() {
                     };
                 }
             };
-        }
-    }
-
-    function prepareForMediaStream() {
-        that.peerConnection.peerConnection.onaddstream = function (event) {
-            var audioPlayer = document.querySelector("audio");
-            audioPlayer.src = window.URL.createObjectURL(event.stream);
-            var videoPlayer = document.querySelector("video");
-            videoPlayer.src = window.URL.createObjectURL(event.stream);
         }
     }
 
@@ -185,6 +192,18 @@ function p2p() {
             window.URL.revokeObjectURL(hyperlink.href);
         }
     }
+
+    function getConnection(key){
+        for (var i=0; i < that.incomingConnections.length; i++) {
+            if (that.incomingConnections[i].user.userId === key) {
+                return that.incomingConnections[i];
+            }
+        }
+        var connection = new Connection(key);
+        that.incomingConnections.push(connection);
+        return connection;
+    }
+
 
     //Code for Chrome implementation.
     //function transformOutgoingSdp(sdp) {

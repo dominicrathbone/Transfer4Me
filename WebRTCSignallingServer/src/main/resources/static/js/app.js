@@ -5,9 +5,10 @@ var UserType = {
     DOWNLOADER: 1,
     STREAMER: 2
 }
-var user = {
-    userId: null,
-    userType: null
+
+function User(userId, userType) {
+    this.userId = userId,
+    this.userType = userType;
 };
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -26,8 +27,7 @@ function setFileUploadState() {
     fileInput.addEventListener('change', function () {
         var file = this.files[0];
         if (file != null) {
-            user.userType = UserType.UPLOADER;
-            p2pChannel.startSession(roomId, user, file);
+            p2pChannel.startSession(roomId, new User(null, UserType.UPLOADER), file);
             roomId = p2pChannel.roomId;
             setNewRoomState();
         }
@@ -35,6 +35,8 @@ function setFileUploadState() {
             alert("upload valid file");
         }
     });
+    var audioPlayerElement = document.createElement("audio");
+    document.getElementById("container").appendChild(audioPlayerElement);
     document.getElementById("container").appendChild(fileInput);
 }
 
@@ -58,16 +60,16 @@ function setJoinRoomState() {
     downloadFileButton.id="downloadFileButton";
     downloadFileButton.value="Download File";
     downloadFileButton.addEventListener("click", function() {
-        user.userType = UserType.DOWNLOADER;
-        p2pChannel.startSession(roomId, user, null, setDownloadState());
+        p2pChannel.startSession(roomId, new User(null, UserType.DOWNLOADER), null);
+        setDownloadState();
     });
     var streamFileButton = document.createElement("input");
     streamFileButton.type = "button";
     streamFileButton.id="streamFileButton";
     streamFileButton.value="Stream File";
     streamFileButton.addEventListener("click", function() {
-        user.userType = UserType.STREAMER;
-        p2pChannel.startSession(roomId, user, null, setStreamingState());
+        p2pChannel.startSession(roomId, new User(null, UserType.STREAMER), null);
+        setStreamingState();
     });
     document.getElementById('container').appendChild(downloadFileButton);
     document.getElementById('container').appendChild(streamFileButton);
@@ -80,14 +82,14 @@ function setDownloadState() {
 }
 
 function setStreamingState() {
-    var audioPlayerElement = document.createElement("AUDIO");
+    var audioPlayerElement = document.createElement("audio");
     audioPlayerElement.controls = true;
     audioPlayerElement.id = "audioPlayer";
     document.getElementById('container').appendChild(audioPlayerElement);
-    var videoPlayerElement = document.createElement("VIDEO");
-    videoPlayerElement.controls = true;
-    videoPlayerElement.id = "videoPlayer";
-    document.getElementById('container').appendChild(videoPlayerElement);
+    //var videoPlayerElement = document.createElement("video");
+    //videoPlayerElement.controls = true;
+    //videoPlayerElement.id = "videoPlayer";
+    //document.getElementById('container').appendChild(videoPlayerElement);
 }
 
 function checkPathForRoomID() {

@@ -1,4 +1,3 @@
-signalling\WebSocketConfig.class
 signalling\SignallingServerApplication.class
 signalling\SignallingController.class
-signalling\SignallingMessage.class
+signalling\WebSocketConfig.class

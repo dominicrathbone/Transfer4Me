@@ -1,18 +1,18 @@
 var roomId = checkPathForRoomID();
-var p2pChannel = new p2p();
+var p2pChannel = new P2p();
 var UserType = {
     UPLOADER: 0,
     DOWNLOADER: 1,
     STREAMER: 2
-}
-
-function User(userId, userType) {
-    this.userId = userId,
-    this.userType = userType;
 };
 
+function User(userId, userType) {
+    this.userId = userId;
+    this.userType = userType;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-    if(roomId == null) {
+    if(roomId === null) {
         setFileUploadState();
     } else {
         setJoinRoomState();
@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function setFileUploadState() {
     var fileInput = document.createElement('input');
-    fileInput.id="fileInput";
-    fileInput.className="fileInput";
-    fileInput.type="file";
+    fileInput.id = "fileInput";
+    fileInput.className = "fileInput";
+    fileInput.type = "file";
     fileInput.addEventListener('change', function () {
         var file = this.files[0];
         if (file != null) {
@@ -35,8 +35,7 @@ function setFileUploadState() {
             alert("upload valid file");
         }
     });
-    var audioPlayerElement = document.createElement("audio");
-    document.getElementById("container").appendChild(audioPlayerElement);
+    document.getElementById("container").appendChild(document.createElement("audio"));
     document.getElementById("container").appendChild(fileInput);
 }
 
@@ -57,16 +56,16 @@ function setNewRoomState() {
 function setJoinRoomState() {
     var downloadFileButton = document.createElement("input");
     downloadFileButton.type = "button";
-    downloadFileButton.id="downloadFileButton";
-    downloadFileButton.value="Download File";
+    downloadFileButton.id = "downloadFileButton";
+    downloadFileButton.value = "Download File";
     downloadFileButton.addEventListener("click", function() {
         p2pChannel.startSession(roomId, new User(null, UserType.DOWNLOADER), null);
         setDownloadState();
     });
     var streamFileButton = document.createElement("input");
     streamFileButton.type = "button";
-    streamFileButton.id="streamFileButton";
-    streamFileButton.value="Stream File";
+    streamFileButton.id = "streamFileButton";
+    streamFileButton.value = "Stream File";
     streamFileButton.addEventListener("click", function() {
         p2pChannel.startSession(roomId, new User(null, UserType.STREAMER), null);
         setStreamingState();
@@ -93,9 +92,8 @@ function setStreamingState() {
 }
 
 function checkPathForRoomID() {
-    var pathname = window.location.pathname;
-    var roomId = pathname.split("/")[1];
-    if(roomId != null && roomId != "") {
+    var roomId = window.location.pathname.split("/")[1];
+    if(roomId !== null && roomId !== "") {
         return roomId;
     }
     return null;

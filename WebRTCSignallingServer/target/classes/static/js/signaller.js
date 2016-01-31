@@ -1,10 +1,11 @@
-function signaller() {
+function Signaller() {
     var stompClient = null;
     var roomUrl = null;
 
     this.connect = function(roomId, user, onsignal, onsuccess) {
         var socket = new SockJS('/signal');
         stompClient = Stomp.over(socket);
+        stompClient.debug = null;
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             if(user.userType == UserType.UPLOADER) {

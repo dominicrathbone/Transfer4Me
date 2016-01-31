@@ -1,6 +1,6 @@
-function p2p() {
+function P2p() {
     this.connection;
-    this.incomingConnections = []
+    this.incomingConnections = [];
     this.signallingChannel;
     this.roomId = null;
     this.fileName = null;
@@ -8,7 +8,7 @@ function p2p() {
     var that = this;
 
     this.startSession = function(roomId, user, file) {
-        that.signallingChannel = new signaller();
+        that.signallingChannel = new Signaller();
         if(roomId == null) {
             roomId = that.signallingChannel.addRoom();
         }
@@ -35,7 +35,7 @@ function p2p() {
         } else if(user.userType == UserType.UPLOADER) {
             that.file = file;
             var audioPlayer = document.querySelector("audio");
-            if(audioPlayer.canPlayType(file.type) !== "") {
+            if(!!audioPlayer.canPlayType(file.type)) {
                 prepareFileStream(file);
             }
         }
@@ -47,10 +47,12 @@ function p2p() {
             {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
             null
         );
-        this.peerConnection.onicecandidate = function (event) {
+        var that2 = this;
+        this.peerConnection.onicecandidate = function(event) {
             that.signallingChannel.send(JSON.stringify({
-                'user': this.user,
-                "candidate": event.candidate}));
+                'user': that2.user,
+                "candidate": event.candidate
+            }));
         };
     }
 
@@ -60,7 +62,7 @@ function p2p() {
         if(signal.user) {
             if(that.connection.user.userType == UserType.UPLOADER) {
                 if (signal.sdp) {
-                    var connection = getConnection(signal.user.userId);
+                    var connection = getConnection(signal.user);
                     if (signal.user.userType == UserType.STREAMER) {
                         connection.peerConnection.addStream(that.fileStream);
                     } else if (signal.user.userType == UserType.DOWNLOADER) {
@@ -69,7 +71,7 @@ function p2p() {
                     connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
                         function() {
-                            console.log(connection);
+                            //console.log(connection);
                             answerOffer(connection);
                         },
                         logErrorToConsole
@@ -80,12 +82,12 @@ function p2p() {
                     that.connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
                         function() {
-                            console.log(connection);
+                            //console.log(connection);
                         },
                         logErrorToConsole
                     );
                 } else if(signal.candidate) {
-                    that.peerConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                    that.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
             }
         }
@@ -108,6 +110,7 @@ function p2p() {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
                     that.signallingChannel.send(JSON.stringify({
+                        'user': connection.user,
                         'sdp': connection.peerConnection.localDescription
                     }));
                 }, logErrorToConsole);
@@ -193,13 +196,13 @@ function p2p() {
         }
     }
 
-    function getConnection(key){
+    function getConnection(user){
         for (var i=0; i < that.incomingConnections.length; i++) {
-            if (that.incomingConnections[i].user.userId === key) {
+            if (that.incomingConnections[i].user.userId === user.userId) {
                 return that.incomingConnections[i];
             }
         }
-        var connection = new Connection(key);
+        var connection = new Connection(user);
         that.incomingConnections.push(connection);
         return connection;
     }

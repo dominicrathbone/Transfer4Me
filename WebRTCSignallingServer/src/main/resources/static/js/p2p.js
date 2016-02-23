@@ -8,19 +8,19 @@ function P2p() {
     var that = this;
 
     this.startSession = function(roomId, user, file) {
-        that.signallingChannel = new Signaller();
-        if(roomId == null) {
-            roomId = that.signallingChannel.addRoom();
-        }
-        that.roomId = roomId;
+            that.signallingChannel = new Signaller();
+            if(roomId == null) {
+                roomId = that.signallingChannel.addRoom();
+            }
+            that.roomId = roomId;
 
-        if(user.userId == null) {
-            user.userId = that.signallingChannel.addUser(roomId);
-        }
+            if(user.userId == null) {
+                user.userId = that.signallingChannel.addUser(roomId);
+            }
 
-        that.signallingChannel.connect(roomId, user, onSignal, function() {
-            onSignallerConnect(roomId,user,file);
-        });
+            that.signallingChannel.connect(roomId, user, onSignal, function() {
+                onSignallerConnect(roomId,user,file);
+            });
     };
 
     function onSignallerConnect(roomId, user, file) {
@@ -47,10 +47,10 @@ function P2p() {
             {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
             null
         );
-        var that2 = this;
+        var connection = this;
         this.peerConnection.onicecandidate = function(event) {
-            that.signallingChannel.send(JSON.stringify({
-                'user': that2.user,
+            that.signallingChannel.send(1, JSON.stringify({
+                'user': connection.user,
                 "candidate": event.candidate
             }));
         };
@@ -76,18 +76,22 @@ function P2p() {
                         },
                         logErrorToConsole
                     );
-                }
-            } else {
-                if (signal.sdp) {
-                    that.connection.peerConnection.setRemoteDescription(
-                        new RTCSessionDescription(signal.sdp),
-                        function() {
-                            //console.log(connection);
-                        },
-                        logErrorToConsole
-                    );
                 } else if(signal.candidate) {
                     that.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                }
+            } else {
+                if(signal.user.userType == UserType.UPLOADER) {
+                    if (signal.sdp) {
+                        that.connection.peerConnection.setRemoteDescription(
+                            new RTCSessionDescription(signal.sdp),
+                            function () {
+                                //console.log(connection);
+                            },
+                            logErrorToConsole
+                        );
+                    } else if (signal.candidate) {
+                        that.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                    }
                 }
             }
         }
@@ -97,7 +101,7 @@ function P2p() {
         var connection = that.connection;
         connection.peerConnection.createOffer(function (description) {
             connection.peerConnection.setLocalDescription(description, function () {
-                that.signallingChannel.send(JSON.stringify({
+                that.signallingChannel.send(1, JSON.stringify({
                     'user': connection.user,
                     'sdp': connection.peerConnection.localDescription
                 }));
@@ -109,8 +113,8 @@ function P2p() {
         if(connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
-                    that.signallingChannel.send(JSON.stringify({
-                        'user': connection.user,
+                    that.signallingChannel.send(connection.user.userId, JSON.stringify({
+                        'user': that.connection.user,
                         'sdp': connection.peerConnection.localDescription
                     }));
                 }, logErrorToConsole);

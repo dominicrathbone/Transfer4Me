@@ -5,20 +5,14 @@ function Signaller() {
     this.connect = function(roomId, user, onsignal, onsuccess) {
         var socket = new SockJS('/signal');
         stompClient = Stomp.over(socket);
-        stompClient.debug = null;
+        //stompClient.debug = null;
         stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            if(user.userType == UserType.UPLOADER) {
-                stompClient.subscribe('/topic/' + roomId + 'u', function(data) {
-                    onsignal(data);
-                });
-                roomUrl = "/app/signal/" + roomId;
-            } else {
-                stompClient.subscribe('/topic/' + roomId, function(data) {
-                    onsignal(data);
-                });
-                roomUrl = "/app/signal/" + roomId + 'u';
-            }
+            var headers = {'selector' : user.userId.toString()};
+            console.log(headers);
+            stompClient.subscribe('/user/topic/' + roomId, function(data) {
+                onsignal(data);
+            }, headers);
+            roomUrl = "/app/signal/" + roomId;
             onsuccess();
         });
     };
@@ -30,8 +24,14 @@ function Signaller() {
         console.log("Disconnected");
     };
 
-    this.send = function(signal) {
-        stompClient.send(roomUrl, {}, signal);
+    this.send = function(userId, signal) {
+        if(userId != null) {
+            var headers = {'selector': userId.toString()};
+            console.log(headers);
+            stompClient.send(roomUrl, headers, signal);
+        } else {
+            stompClient.send(roomUrl, {}, signal);
+        }
     };
 
     this.addRoom = function() {
@@ -81,6 +81,4 @@ function Signaller() {
         });
         return result;
     }
-
-
 }

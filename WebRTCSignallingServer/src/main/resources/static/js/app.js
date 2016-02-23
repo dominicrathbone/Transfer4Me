@@ -51,6 +51,7 @@ function setNewRoomState() {
     roomUrlContainer.appendChild(roomUrlTextNode);
     roomUrlContainer.appendChild(roomUrlElement);
     document.getElementById('container').appendChild(roomUrlContainer);
+    document.getElementById('container').removeChild(document.getElementById('fileInput'));
 }
 
 function setJoinRoomState() {

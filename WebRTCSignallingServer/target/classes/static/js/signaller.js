@@ -9,7 +9,7 @@ function Signaller() {
         stompClient.connect({}, function (frame) {
             var headers = {'selector' : user.userId.toString()};
             console.log(headers);
-            stompClient.subscribe('/user/topic/' + roomId, function(data) {
+            stompClient.subscribe('/user/' + user.userId + '/topic/' + roomId, function(data) {
                 onsignal(data);
             }, headers);
             roomUrl = "/app/signal/" + roomId;

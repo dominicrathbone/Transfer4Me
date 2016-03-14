@@ -2,22 +2,24 @@ package signalling;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.BasicJsonParser;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.messaging.support.NativeMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sun.net.www.content.text.Generic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 public class SignallingController {
@@ -28,7 +30,8 @@ public class SignallingController {
     SimpMessagingTemplate simpMessagingTemplate;
     @MessageMapping("/signal/{room}")
     public void sendSignal(@DestinationVariable String room, GenericMessage signal) throws Exception {
-        String user = signal.getHeaders().get("selector").toString();
+        MultiValueMap<String, Object> nativeHeaders = (MultiValueMap<String, Object>) signal.getHeaders().get(StompHeaderAccessor.NATIVE_HEADERS);
+        String user = String.valueOf(nativeHeaders.get("selector").get(0));
         simpMessagingTemplate.convertAndSendToUser(user, "/topic/" + room, signal);
     }
 

@@ -1,7 +1,8 @@
 var roomId = checkPathForRoomID();
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
-var UserType = {
+
+var UserType = module.exports.UserType = {
     UPLOADER: 0,
     DOWNLOADER: 1,
     STREAMER: 2
@@ -42,7 +43,7 @@ function setFileUploadState() {
 
 
 function setNewRoomState() {
-    var roomUrl = "" + window.location.href + roomId;
+    var roomUrl = "" + window.location.href + "room/" + roomId;
     history.pushState(null,null,roomUrl);
     var roomUrlContainer = document.createElement("div");
     var roomUrlTextNode = document.createTextNode("Room URL:");
@@ -94,14 +95,15 @@ function setStreamingState() {
 }
 
 function checkPathForRoomID() {
-    var roomId = window.location.pathname.split("/")[1];
-    if(roomId !== null && roomId !== "") {
+    var roomId = window.location.pathname.split("/")[2];
+    if(roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
         return roomId;
     }
     return null;
 }
 
-function logErrorToConsole(error) {
+module.exports.logErrorToConsole = function logErrorToConsole(error) {
     console.error(error);
 }
+
 

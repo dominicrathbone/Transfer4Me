@@ -17100,7 +17100,8 @@ module.exports = yeast;
 var roomId = checkPathForRoomID();
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
-var UserType = {
+
+var UserType = module.exports.UserType = {
     UPLOADER: 0,
     DOWNLOADER: 1,
     STREAMER: 2
@@ -17141,7 +17142,7 @@ function setFileUploadState() {
 
 
 function setNewRoomState() {
-    var roomUrl = "" + window.location.href + roomId;
+    var roomUrl = "" + window.location.href + "room/" + roomId;
     history.pushState(null,null,roomUrl);
     var roomUrlContainer = document.createElement("div");
     var roomUrlTextNode = document.createTextNode("Room URL:");
@@ -17193,20 +17194,22 @@ function setStreamingState() {
 }
 
 function checkPathForRoomID() {
-    var roomId = window.location.pathname.split("/")[1];
-    if(roomId !== null && roomId !== "") {
+    var roomId = window.location.pathname.split("/")[2];
+    if(roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
         return roomId;
     }
     return null;
 }
 
-function logErrorToConsole(error) {
+module.exports.logErrorToConsole = function logErrorToConsole(error) {
     console.error(error);
 }
 
 
+
 },{"./p2p.js":54}],54:[function(require,module,exports){
 var signaller = require('./signaller.js');
+var app = require('./app.js');
 
 module.exports = function() {
     this.connection;
@@ -17215,35 +17218,37 @@ module.exports = function() {
     this.roomId = null;
     this.fileName = null;
     this.fileStream = null;
-    var that = this;
+    var p2p = this;
 
     this.startSession = function(roomId, user, file) {
-            that.signallingChannel = new signaller();
+            p2p.signallingChannel = new signaller();
             if(roomId == null) {
-                roomId = that.signallingChannel.addRoom().roomId;
+                roomId = p2p.signallingChannel.addRoom().roomId;
             }
-            that.roomId = roomId;
+            p2p.roomId = roomId;
 
-            if(user.userId == null) {
-                user.userId = that.signallingChannel.addUser(roomId);
-            }
-
-            that.signallingChannel.connect(roomId, user, onSignal, function() {
+            p2p.signallingChannel.connect(roomId, onSignal, function(socket) {
+                if(user.userId == null) {
+                    console.log(user);
+                    console.log(socket.io.engine.id);
+                    user.userId = socket.io.engine.id;
+                    console.log(user);
+                }
                 onSignallerConnect(roomId,user,file);
             });
     };
 
     function onSignallerConnect(roomId, user, file) {
-        that.connection = new Connection(user);
-        if(user.userType == UserType.DOWNLOADER || user.userType == UserType.STREAMER) {
-            if (user.userType == UserType.DOWNLOADER) {
+        p2p.connection = new Connection(user);
+        if(user.userType == app.UserType.DOWNLOADER || user.userType == app.UserType.STREAMER) {
+            if (user.userType == app.UserType.DOWNLOADER) {
                 prepareForDownload(roomId);
-            } else if (user.userType == UserType.STREAMER) {
+            } else if (user.userType == app.UserType.STREAMER) {
                 prepareForMediaStream();
             }
             sendOffer();
-        } else if(user.userType == UserType.UPLOADER) {
-            that.file = file;
+        } else if(user.userType == app.UserType.UPLOADER) {
+            p2p.file = file;
             var audioPlayer = document.querySelector("audio");
             if(!!audioPlayer.canPlayType(file.type)) {
                 prepareFileStream(file);
@@ -17253,13 +17258,13 @@ module.exports = function() {
 
     function Connection(user) {
         this.user = user;
+        var connection = this;
         this.peerConnection = new RTCPeerConnection(
             {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
             null
         );
-        var connection = this;
         this.peerConnection.onicecandidate = function(event) {
-            that.signallingChannel.send(1, JSON.stringify({
+            p2p.signallingChannel.send(1, JSON.stringify({
                 'user': connection.user,
                 "candidate": event.candidate
             }));
@@ -17270,13 +17275,13 @@ module.exports = function() {
         var signal = JSON.parse(data.body);
         console.log(signal);
         if(signal.user) {
-            if(that.connection.user.userType == UserType.UPLOADER) {
+            if(p2p.connection.user.userType == UserType.UPLOADER) {
                 if (signal.sdp) {
                     var connection = getConnection(signal.user);
                     if (signal.user.userType == UserType.STREAMER) {
-                        connection.peerConnection.addStream(that.fileStream);
+                        connection.peerConnection.addStream(p2p.fileStream);
                     } else if (signal.user.userType == UserType.DOWNLOADER) {
-                        sendFileOnDataChannel(connection, that.file);
+                        sendFileOnDataChannel(connection, p2p.file);
                     }
                     connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
@@ -17284,23 +17289,23 @@ module.exports = function() {
                             //console.log(connection);
                             answerOffer(connection);
                         },
-                        logErrorToConsole
+                        app.logErrorToConsole
                     );
                 } else if(signal.candidate) {
-                    that.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                    p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
             } else {
                 if(signal.user.userType == UserType.UPLOADER) {
                     if (signal.sdp) {
-                        that.connection.peerConnection.setRemoteDescription(
+                        p2p.connection.peerConnection.setRemoteDescription(
                             new RTCSessionDescription(signal.sdp),
                             function () {
                                 //console.log(connection);
                             },
-                            logErrorToConsole
+                            app.logErrorToConsole
                         );
                     } else if (signal.candidate) {
-                        that.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                        p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                     }
                 }
             }
@@ -17308,32 +17313,32 @@ module.exports = function() {
     }
 
     function sendOffer() {
-        var connection = that.connection;
+        var connection = p2p.connection;
         connection.peerConnection.createOffer(function (description) {
             connection.peerConnection.setLocalDescription(description, function () {
-                that.signallingChannel.send(1, JSON.stringify({
+                p2p.signallingChannel.send(1, JSON.stringify({
                     'user': connection.user,
                     'sdp': connection.peerConnection.localDescription
                 }));
-            }, logErrorToConsole);
-        }, logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
+            }, app.logErrorToConsole);
+        }, app.logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
     }
 
     function answerOffer(connection) {
         if(connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
-                    that.signallingChannel.send(connection.user.userId, JSON.stringify({
-                        'user': that.connection.user,
+                    p2p.signallingChannel.send(connection.user.userId, JSON.stringify({
+                        'user': p2p.connection.user,
                         'sdp': connection.peerConnection.localDescription
                     }));
-                }, logErrorToConsole);
-            }, logErrorToConsole);
+                }, app.logErrorToConsole);
+            }, app.logErrorToConsole);
         }
     };
 
     function prepareForMediaStream() {
-        that.connection.peerConnection.onaddstream = function (event) {
+        p2p.connection.peerConnection.onaddstream = function (event) {
             var audioPlayer = document.querySelector("audio");
             audioPlayer.src = window.URL.createObjectURL(event.stream);
             audioPlayer.play();
@@ -17351,7 +17356,7 @@ module.exports = function() {
                 source.buffer = buffer;
                 source.start(0);
                 source.connect(destination);
-                that.fileStream = destination.stream;
+                p2p.fileStream = destination.stream;
             });
         });
         reader.readAsArrayBuffer(file);
@@ -17368,18 +17373,18 @@ module.exports = function() {
     }
 
     function prepareForDownload(roomId) {
-        var dataChannel = that.connection.peerConnection.createDataChannel(roomId, null);
+        var dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
         dataChannel.onopen = function () {
             dataChannel.onmessage = function (event) {
                 var data = event.data;
                 if (typeof data === 'string' || data instanceof String)  {
-                    that.fileName = data;
+                    p2p.fileName = data;
                 } else {
                     var reader = new window.FileReader();
                     reader.readAsDataURL(data);
                     reader.onload = function (event) {
                         var fileDataURL = event.target.result; // it is Data URL...can be saved to disk
-                        saveToDisk(fileDataURL, that.fileName);
+                        saveToDisk(fileDataURL, p2p.fileName);
                     };
                 }
             };
@@ -17411,13 +17416,13 @@ module.exports = function() {
     }
 
     function getConnection(user){
-        for (var i=0; i < that.incomingConnections.length; i++) {
-            if (that.incomingConnections[i].user.userId === user.userId) {
-                return that.incomingConnections[i];
+        for (var i=0; i < p2p.incomingConnections.length; i++) {
+            if (p2p.incomingConnections[i].user.userId === user.userId) {
+                return p2p.incomingConnections[i];
             }
         }
         var connection = new Connection(user);
-        that.incomingConnections.push(connection);
+        p2p.incomingConnections.push(connection);
         return connection;
     }
 }
@@ -17446,7 +17451,7 @@ module.exports = function() {
     //        data.last = true;
     //    }
     //
-    //    that.dataChannel.send(JSON.stringify(data));
+    //    p2p.dataChannel.send(JSON.stringify(data));
     //
     //    var remainingDataURL = text.slice(data.message.length);
     //
@@ -17459,42 +17464,38 @@ module.exports = function() {
     //
     //function storeFile(data) {
     //    console.log(data);
-    //    that.transferedFile.push(data.message);
+    //    p2p.transferedFile.push(data.message);
     //    if (data.last) {
-    //        saveToDisk(that.transferedFile.join(''), data.fileName);
+    //        saveToDisk(p2p.transferedFile.join(''), data.fileName);
     //    }
     //}
     //
     //function transferFile(file) {
     //    if (window.File && window.FileReader && window.FileList && window.Blob) {
     //        if (file === undefined || file === null) {
-    //            logErrorToConsole("file is undefined or null");
+    //            app.logErrorToConsole("file is undefined or null");
     //        } else {
-    //            that.dataChannel.send(file);
+    //            p2p.dataChannel.send(file);
     //        }
     //    } else {
-    //        logErrorToConsole("HTML5 File API is not supported in this browser");
+    //        app.logErrorToConsole("HTML5 File API is not supported in this browser");
     //    }
     //}
 
 
 
-},{"./signaller.js":55}],55:[function(require,module,exports){
+},{"./app.js":53,"./signaller.js":55}],55:[function(require,module,exports){
 module.exports = function() {
-    var client = null;
-    var roomUrl = null;
+    var socket = null;
     var $ = require('jquery');
 
-
-    this.connect = function(roomId, user, onsignal, onsuccess) {
-        client = require('socket.io-client');
-        client.on('connect', function (frame) {
-            client.subscribe('/topic/' + roomId, function(data) {
-                onsignal(data);
-            });
-            roomUrl = "/app/signal/" + roomId;
-            onsuccess();
+    this.connect = function(roomId, onsignal, onsuccess) {
+        socket = require('socket.io-client')("/room/" + roomId);
+        socket.on('signal', function(data) {
+            onsignal(data);
         });
+        console.log(socket.id);
+        onsuccess(socket);
     };
 
     this.disconnect = function() {
@@ -17505,7 +17506,7 @@ module.exports = function() {
     };
 
     this.send = function(userId, signal) {
-            stompClient.send(roomUrl, {}, signal);
+        socket.emit('signal', signal);
     };
 
     this.addRoom = function() {
@@ -17547,7 +17548,7 @@ module.exports = function() {
     this.removeUser = function(roomId, userId) {
         var result = null;
         $.ajax({
-            url: "/"+ roomId +"/addUser/" + userId,
+            url: "/"+ roomId +"/removeUser/" + userId,
             async: false,
             success: function (data) {
                 result = data;

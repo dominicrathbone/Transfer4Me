@@ -1,18 +1,14 @@
 module.exports = function() {
-    var client = null;
-    var roomUrl = null;
+    var socket = null;
     var $ = require('jquery');
 
-
-    this.connect = function(roomId, user, onsignal, onsuccess) {
-        client = require('socket.io-client');
-        client.on('connect', function (frame) {
-            client.subscribe('/topic/' + roomId, function(data) {
-                onsignal(data);
-            });
-            roomUrl = "/app/signal/" + roomId;
-            onsuccess();
+    this.connect = function(roomId, onsignal, onsuccess) {
+        socket = require('socket.io-client')("/room/" + roomId);
+        socket.on('signal', function(data) {
+            onsignal(data);
         });
+        console.log(socket.id);
+        onsuccess(socket);
     };
 
     this.disconnect = function() {
@@ -23,7 +19,7 @@ module.exports = function() {
     };
 
     this.send = function(userId, signal) {
-            stompClient.send(roomUrl, {}, signal);
+        socket.emit('signal', signal);
     };
 
     this.addRoom = function() {
@@ -65,7 +61,7 @@ module.exports = function() {
     this.removeUser = function(roomId, userId) {
         var result = null;
         $.ajax({
-            url: "/"+ roomId +"/addUser/" + userId,
+            url: "/"+ roomId +"/removeUser/" + userId,
             async: false,
             success: function (data) {
                 result = data;

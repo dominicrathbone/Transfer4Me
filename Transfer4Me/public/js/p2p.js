@@ -1,5 +1,6 @@
 var signaller = require('./signaller.js');
 var app = require('./app.js');
+require("webrtc-adapter");
 
 module.exports = function() {
     this.connection;
@@ -9,23 +10,22 @@ module.exports = function() {
     this.fileName = null;
     this.fileStream = null;
     var p2p = this;
+    var dataChannel;
 
     this.startSession = function(roomId, user, file) {
-            p2p.signallingChannel = new signaller();
-            if(roomId == null) {
-                roomId = p2p.signallingChannel.addRoom().roomId;
-            }
-            p2p.roomId = roomId;
+        p2p.signallingChannel = new signaller();
+        if(roomId == null) {
+            roomId = p2p.signallingChannel.addRoom().roomId;
+        }
+        p2p.roomId = roomId;
 
-            p2p.signallingChannel.connect(roomId, onSignal, function(socket) {
-                if(user.userId == null) {
-                    console.log(user);
-                    console.log(socket.io.engine.id);
-                    user.userId = socket.io.engine.id;
-                    console.log(user);
-                }
-                onSignallerConnect(roomId,user,file);
-            });
+        p2p.signallingChannel.connect(roomId, onSignal, function(id) {
+            if(user.userId == null) {
+                user.userId = id;
+            }
+            onSignallerConnect(roomId,user,file);
+
+        });
     };
 
     function onSignallerConnect(roomId, user, file) {
@@ -33,10 +33,12 @@ module.exports = function() {
         if(user.userType == app.UserType.DOWNLOADER || user.userType == app.UserType.STREAMER) {
             if (user.userType == app.UserType.DOWNLOADER) {
                 prepareForDownload(roomId);
+
             } else if (user.userType == app.UserType.STREAMER) {
                 prepareForMediaStream();
             }
             sendOffer();
+
         } else if(user.userType == app.UserType.UPLOADER) {
             p2p.file = file;
             var audioPlayer = document.querySelector("audio");
@@ -47,36 +49,39 @@ module.exports = function() {
     }
 
     function Connection(user) {
-        this.user = user;
         var connection = this;
+        this.user = user;
         this.peerConnection = new RTCPeerConnection(
             {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
             null
         );
         this.peerConnection.onicecandidate = function(event) {
-            p2p.signallingChannel.send(1, JSON.stringify({
-                'user': connection.user,
-                "candidate": event.candidate
-            }));
+            if(event.candidate) {
+                p2p.signallingChannel.send(1, JSON.stringify({
+                    'user': connection.user,
+                    "candidate": event.candidate
+                }));
+            } else {
+                console.log(dataChannel);
+            }
         };
     }
 
     function onSignal(data) {
-        var signal = JSON.parse(data.body);
+        var signal = JSON.parse(data);
         console.log(signal);
         if(signal.user) {
-            if(p2p.connection.user.userType == UserType.UPLOADER) {
+            if(p2p.connection.user.userType == app.UserType.UPLOADER) {
                 if (signal.sdp) {
-                    var connection = getConnection(signal.user);
-                    if (signal.user.userType == UserType.STREAMER) {
+                    var connection = new Connection(signal.user);
+                    if (signal.user.userType == app.UserType.STREAMER) {
                         connection.peerConnection.addStream(p2p.fileStream);
-                    } else if (signal.user.userType == UserType.DOWNLOADER) {
+                    } else if (signal.user.userType == app.UserType.DOWNLOADER) {
                         sendFileOnDataChannel(connection, p2p.file);
                     }
                     connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
                         function() {
-                            //console.log(connection);
                             answerOffer(connection);
                         },
                         app.logErrorToConsole
@@ -85,12 +90,12 @@ module.exports = function() {
                     p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
             } else {
-                if(signal.user.userType == UserType.UPLOADER) {
+                if(signal.user.userType == app.UserType.UPLOADER) {
                     if (signal.sdp) {
                         p2p.connection.peerConnection.setRemoteDescription(
                             new RTCSessionDescription(signal.sdp),
                             function () {
-                                //console.log(connection);
+                                console.log(p2p);
                             },
                             app.logErrorToConsole
                         );
@@ -112,6 +117,7 @@ module.exports = function() {
                 }));
             }, app.logErrorToConsole);
         }, app.logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
+        console.log("OFFER SENT");
     }
 
     function answerOffer(connection) {
@@ -124,6 +130,7 @@ module.exports = function() {
                     }));
                 }, app.logErrorToConsole);
             }, app.logErrorToConsole);
+            console.log("ANSWER SENT");
         }
     };
 
@@ -154,8 +161,9 @@ module.exports = function() {
 
     function sendFileOnDataChannel(connection, file) {
         connection.peerConnection.ondatachannel = function(event) {
-            var dataChannel = event.channel;
+            dataChannel = event.channel;
             dataChannel.onopen = function() {
+                console.log("SENDING FILE");
                 dataChannel.send(file.name);
                 dataChannel.send(file);
             }
@@ -163,9 +171,11 @@ module.exports = function() {
     }
 
     function prepareForDownload(roomId) {
-        var dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
+        dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
         dataChannel.onopen = function () {
+            console.log("DATA CHANNEL OPEN");
             dataChannel.onmessage = function (event) {
+                console.log("FILE RECEIVED");
                 var data = event.data;
                 if (typeof data === 'string' || data instanceof String)  {
                     p2p.fileName = data;
@@ -179,6 +189,7 @@ module.exports = function() {
                 }
             };
         }
+
     }
 
     function saveToDisk(fileUrl, fileName) {

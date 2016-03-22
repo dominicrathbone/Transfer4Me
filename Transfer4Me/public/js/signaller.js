@@ -4,16 +4,17 @@ module.exports = function() {
 
     this.connect = function(roomId, onsignal, onsuccess) {
         socket = require('socket.io-client')("/room/" + roomId);
+        socket.on('connect', function() {
+            onsuccess(socket.id);
+        })
         socket.on('signal', function(data) {
             onsignal(data);
         });
-        console.log(socket.id);
-        onsuccess(socket);
     };
 
     this.disconnect = function() {
-        if (client != null) {
-            client.disconnect();
+        if (socket != null) {
+            socket.disconnect();
         }
         console.log("Disconnected");
     };

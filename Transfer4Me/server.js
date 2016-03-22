@@ -9,33 +9,40 @@ var rooms = [];
 function Room(id) {
   this.namespace = io.of("/room/" + id);
   this.id = id;
-  this.users = [];
   var room = this;
 
   this.namespace.on('connection', function(socket) {
-    room.users.push(socket.client.id);
-
-    console.log("user joined room");
+    console.log(socket.client.id + " connected to room: " + room.id);
 
     socket.on('disconnect', function(){
-      console.log('user disconnected');
+      console.log(this.client.id + " disconnected from room: " + room.id);
     });
 
     socket.on('signal', function(signal) {
       console.log(signal);
-      socket.broadcast.emit(signal);
+      socket.broadcast.emit('signal',signal);
     });
 
   });
 }
-
 
 app.get('/', function(req, res){
   res.sendFile("public/index.html", {"root": __dirname});
 });
 
 app.get('/room/:room', function(req, res){
-  res.sendFile("public/index.html", {"root": __dirname});
+  var roomFound = false;
+  for(
+      var i = 0; i < rooms.length; i++) {
+    if(rooms[i].id == (req.params.room)) {
+      res.sendFile("public/index.html", {"root": __dirname});
+      roomFound = true;
+    }
+  }
+  if(!roomFound) {
+    res.sendStatus(404);
+  }
+
 });
 
 app.get('/addRoom', function(req, res){

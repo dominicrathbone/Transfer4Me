@@ -19481,28 +19481,25 @@ module.exports = function() {
                     'user': connection.user,
                     "candidate": event.candidate
                 }));
-            } else {
-                console.log(dataChannel);
             }
         };
     }
 
     function onSignal(data) {
         var signal = JSON.parse(data);
-        console.log(signal);
         if(signal.user) {
             if(p2p.connection.user.userType == app.UserType.UPLOADER) {
                 if (signal.sdp) {
-                    var connection = new Connection(signal.user);
                     if (signal.user.userType == app.UserType.STREAMER) {
-                        connection.peerConnection.addStream(p2p.fileStream);
+                        p2p.connection.peerConnection.addStream(p2p.fileStream);
                     } else if (signal.user.userType == app.UserType.DOWNLOADER) {
-                        sendFileOnDataChannel(connection, p2p.file);
+                        sendFileOnDataChannel(p2p.connection, p2p.file);
                     }
-                    connection.peerConnection.setRemoteDescription(
+                    p2p.connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
                         function() {
-                            answerOffer(connection);
+                            console.log(p2p);
+                            answerOffer(p2p.connection);
                         },
                         app.logErrorToConsole
                     );

@@ -4,14 +4,21 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var uuid = require('node-uuid');
 app.use(express.static(__dirname + '/public/'));
+
+var baseUrl = "/room/"
 var rooms = [];
 
 function Room(id) {
-  this.namespace = io.of("/room/" + id);
+  this.namespace = io.of(baseUrl.concat(id));
   this.id = id;
+  this.uploader = null;
   var room = this;
 
   this.namespace.on('connection', function(socket) {
+    if(!room.uploader) {
+      room.uploader = socket.id;
+    }
+
     console.log(socket.client.id + " connected to room: " + room.id);
 
     socket.on('disconnect', function(){
@@ -19,8 +26,13 @@ function Room(id) {
     });
 
     socket.on('signal', function(signal) {
+      var parsedSignal = JSON.parse(signal);
       console.log(signal);
-      socket.broadcast.emit('signal',signal);
+      if(parsedSignal.toUser) {
+        room.namespace.to(room.namespace.name.concat("#",parsedSignal.toUser.userId)).emit('signal',signal);
+      } else {
+        room.namespace.to(room.uploader).emit('signal',signal);
+      }
     });
 
   });

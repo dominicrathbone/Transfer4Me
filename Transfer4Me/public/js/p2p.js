@@ -3,6 +3,7 @@ var app = require('./app.js');
 require("webrtc-adapter");
 
 module.exports = function() {
+    this.user;
     this.connection;
     this.incomingConnections = [];
     this.signallingChannel;
@@ -29,8 +30,9 @@ module.exports = function() {
     };
 
     function onSignallerConnect(roomId, user, file) {
-        p2p.connection = new Connection(user);
+        p2p.user = user;
         if(user.userType == app.UserType.DOWNLOADER || user.userType == app.UserType.STREAMER) {
+            p2p.connection = new Connection(null);
             if (user.userType == app.UserType.DOWNLOADER) {
                 prepareForDownload(roomId);
 
@@ -48,17 +50,18 @@ module.exports = function() {
         }
     }
 
-    function Connection(user) {
+    function Connection(toUser) {
         var connection = this;
-        this.user = user;
+        this.toUser = toUser;
         this.peerConnection = new RTCPeerConnection(
             {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]},
             null
         );
         this.peerConnection.onicecandidate = function(event) {
             if(event.candidate) {
-                p2p.signallingChannel.send(1, JSON.stringify({
-                    'user': connection.user,
+                p2p.signallingChannel.send(JSON.stringify({
+                    'user': p2p.user,
+                    'toUser': connection.toUser,
                     "candidate": event.candidate
                 }));
             }
@@ -67,8 +70,10 @@ module.exports = function() {
 
     function onSignal(data) {
         var signal = JSON.parse(data);
+        console.log(signal);
         if(signal.user) {
-            if(p2p.connection.user.userType == app.UserType.UPLOADER) {
+            if(signal.user.userType == app.UserType.STREAMER || signal.user.userType == app.UserType.DOWNLOADER) {
+                p2p.connection = getConnection(signal.user);
                 if (signal.sdp) {
                     if (signal.user.userType == app.UserType.STREAMER) {
                         p2p.connection.peerConnection.addStream(p2p.fileStream);
@@ -86,31 +91,30 @@ module.exports = function() {
                 } else if(signal.candidate) {
                     p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
-            } else {
-                if(signal.user.userType == app.UserType.UPLOADER) {
-                    if (signal.sdp) {
-                        p2p.connection.peerConnection.setRemoteDescription(
-                            new RTCSessionDescription(signal.sdp),
-                            function () {
-                                console.log(p2p);
-                            },
-                            app.logErrorToConsole
-                        );
-                    } else if (signal.candidate) {
-                        p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
-                    }
+            } else if(signal.user.userType == app.UserType.UPLOADER) {
+                p2p.connection.toUser = signal.user;
+                if (signal.sdp) {
+                    p2p.connection.peerConnection.setRemoteDescription(
+                        new RTCSessionDescription(signal.sdp),
+                        function () {
+                            console.log(p2p);
+                        },
+                        app.logErrorToConsole
+                    );
+                } else if (signal.candidate) {
+                    p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
             }
         }
     }
 
     function sendOffer() {
-        var connection = p2p.connection;
-        connection.peerConnection.createOffer(function (description) {
-            connection.peerConnection.setLocalDescription(description, function () {
-                p2p.signallingChannel.send(1, JSON.stringify({
-                    'user': connection.user,
-                    'sdp': connection.peerConnection.localDescription
+        p2p.connection.peerConnection.createOffer(function (description) {
+            p2p.connection.peerConnection.setLocalDescription(description, function () {
+                p2p.signallingChannel.send(JSON.stringify({
+                    'user': p2p.user,
+                    'toUser': p2p.connection.toUser,
+                    'sdp': p2p.connection.peerConnection.localDescription
                 }));
             }, app.logErrorToConsole);
         }, app.logErrorToConsole, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
@@ -121,8 +125,9 @@ module.exports = function() {
         if(connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
-                    p2p.signallingChannel.send(connection.user.userId, JSON.stringify({
-                        'user': p2p.connection.user,
+                    p2p.signallingChannel.send(JSON.stringify({
+                        'user': p2p.user,
+                        'toUser': connection.toUser,
                         'sdp': connection.peerConnection.localDescription
                     }));
                 }, app.logErrorToConsole);
@@ -213,13 +218,13 @@ module.exports = function() {
         }
     }
 
-    function getConnection(user){
+    function getConnection(toUser){
         for (var i=0; i < p2p.incomingConnections.length; i++) {
-            if (p2p.incomingConnections[i].user.userId === user.userId) {
+            if (p2p.incomingConnections[i].toUser.userId === toUser.userId) {
                 return p2p.incomingConnections[i];
             }
         }
-        var connection = new Connection(user);
+        var connection = new Connection(toUser);
         p2p.incomingConnections.push(connection);
         return connection;
     }

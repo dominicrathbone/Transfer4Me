@@ -19,7 +19,7 @@ module.exports = function() {
         console.log("Disconnected");
     };
 
-    this.send = function(userId, signal) {
+    this.send = function(signal) {
         socket.emit('signal', signal);
     };
 

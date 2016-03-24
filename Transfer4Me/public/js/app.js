@@ -1,4 +1,5 @@
 var roomId = checkPathForRoomID();
+var Dropzone = require('dropzone');
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
 
@@ -22,12 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function setFileUploadState() {
-    var fileInput = document.createElement('input');
-    fileInput.id = "fileInput";
-    fileInput.className = "fileInput";
-    fileInput.type = "file";
-    fileInput.addEventListener('change', function() {
-        var file = this.files[0];
+    var fileInput = new Dropzone("div#fileInput", {url:"fileInput"});
+    fileInput.on("addedfile", function(file) {
         if (file != null) {
             p2pChannel.startSession(roomId, new User(null, UserType.UPLOADER), file);
             roomId = p2pChannel.roomId;
@@ -38,7 +35,6 @@ function setFileUploadState() {
         }
     });
     document.getElementById("container").appendChild(document.createElement("audio"));
-    document.getElementById("container").appendChild(fileInput);
 }
 
 

@@ -1,98 +1,102 @@
-var roomId = checkPathForRoomID();
+//@sourceURL=app.js
 var Dropzone = require('dropzone');
+global.$ = global.jQuery = require('jquery');
+require("what-input");
+require('./foundation.min.js');
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
-
-var UserType = module.exports.UserType = {
-    UPLOADER: 0,
-    DOWNLOADER: 1,
-    STREAMER: 2
-};
+var content = $("#content");
 
 function User(userId, userType) {
     this.userId = userId;
     this.userType = userType;
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    if(roomId === null) {
-        setFileUploadState();
+$(document).ready(function () {
+    $(document).foundation();
+    var roomId = checkPathForRoomID();
+    if (roomId === null) {
+        setFileUploadState(roomId);
     } else {
-        setJoinRoomState();
+        setJoinRoomState(roomId);
     }
 });
 
-function setFileUploadState() {
-    var fileInput = new Dropzone("div#fileInput", {url:"fileInput"});
-    fileInput.on("addedfile", function(file) {
+function setFileUploadState(roomId) {
+    var fileInput = $("<div id='fileInput' class='fileInput'><p id='upload-text'>Drag and drop (or click) to upload.</p></div>");
+    content.append(fileInput);
+    var dropzone = new Dropzone("div#fileInput", {url: "#", maxFiles: 1});
+    dropzone.on("maxfilesexceeded", function(file) {
+        this.removeFile(file);
+    });
+    dropzone.on("addedfile", function (file) {
         if (file != null) {
-            p2pChannel.startSession(roomId, new User(null, UserType.UPLOADER), file);
-            roomId = p2pChannel.roomId;
-            setNewRoomState();
+            $('.dz-preview').remove();
+            p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId) {
+                $("#app").one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
+                    fileInput.remove();
+                    setNewRoomState(roomId, file.name);
+                    $("#app").removeClass("bounceOutThenIn");
+                });
+                $("#app").addClass("bounceOutThenIn");
+            });
         }
         else {
-            alert("upload valid file");
+            alert("Upload valid file");
         }
     });
-    document.getElementById("container").appendChild(document.createElement("audio"));
+    content.append($("<audio></audio>"));
 }
 
-
-function setNewRoomState() {
+function setNewRoomState(roomId, fileName) {
     var roomUrl = "" + window.location.href + "room/" + roomId;
-    history.pushState(null,null,roomUrl);
-    var roomUrlContainer = document.createElement("div");
-    var roomUrlTextNode = document.createTextNode("Room URL:");
-    var roomUrlElement = document.createElement("textarea");
-    roomUrlElement.setAttribute("readOnly","true");
-    roomUrlElement.value = roomUrl;
-    roomUrlContainer.appendChild(roomUrlTextNode);
-    roomUrlContainer.appendChild(roomUrlElement);
-    document.getElementById('container').appendChild(roomUrlContainer);
-    document.getElementById('container').removeChild(document.getElementById('fileInput'));
+    history.pushState(null, null, roomUrl);
+    var roomContainer = $("<div id='room' class='room'></div>");
+    roomContainer.append($("<p class='subtitle'>You have uploaded " + fileName + "</p>"));
+    roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
+    roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
+    var shareContainer = $("<div id='share' class='share'></div>");
+    roomContainer.append($("<p>Share URL: <p class='shareUrl'> " + roomUrl + "</p></p>"));
+    shareContainer.append($("<a id='facebook' class='shareBtn' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(roomUrl) + "'></a>"));
+    shareContainer.append($("<a id='twitter' class='shareBtn' target='_blank' href='https://twitter.com/home?status=" + encodeURIComponent(roomUrl) + "'></a>"));
+    shareContainer.append($("<a id='google' class='shareBtn' target='_blank' href='https://plus.google.com/share?url=" + encodeURIComponent(roomUrl) + "'></a>"));
+    roomContainer.append(shareContainer);
+    content.append(roomContainer);
 }
 
-function setJoinRoomState() {
-    var downloadFileButton = document.createElement("input");
-    downloadFileButton.type = "button";
-    downloadFileButton.id = "downloadFileButton";
-    downloadFileButton.value = "Download File";
-    downloadFileButton.addEventListener("click", function() {
-        p2pChannel.startSession(roomId, new User(null, UserType.DOWNLOADER), null);
-        setDownloadState();
+function setJoinRoomState(roomId) {
+    var roomContainer = $("<div id='room' class='room rowedState'></div>")
+    var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
+    var downloadButton = $("<div class='joinedIcon'><input type='button' id='downloadButton' class='downloadButton'><p class='subtitle'>Download</p></input></div>");
+    downloadButton.click(function () {
+        p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
     });
-    var streamFileButton = document.createElement("input");
-    streamFileButton.type = "button";
-    streamFileButton.id = "streamFileButton";
-    streamFileButton.value = "Stream File";
-    streamFileButton.addEventListener("click", function() {
-        p2pChannel.startSession(roomId, new User(null, UserType.STREAMER), null);
-        setStreamingState();
+    var streamButton = $("<div class='joinedIcon'><input type='button' id='streamButton' class='streamButton'><p class='subtitle'>Stream</p></input></div>");
+    streamButton.click(function () {
+        p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
     });
-    document.getElementById('container').appendChild(downloadFileButton);
-    document.getElementById('container').appendChild(streamFileButton);
-
+    roomContainer.append(audioPlayerElement);
+    roomContainer.append(downloadButton);
+    roomContainer.append(streamButton);
+    content.append(roomContainer);
 }
 
 function setDownloadState() {
-    var downloadingFileTextNode = document.createTextNode("FILE IS DOWNLOADING...");
-    document.getElementById('container').appendChild(downloadingFileTextNode);
+    var roomContainer = $('.room');
+    roomContainer.empty();
+    roomContainer.removeClass("rowedState");
+    roomContainer.append($("<p id='progress-text' class='subtitle'>File is downloading...</p>"));
+    roomContainer.append($('<progress max="100" value="0"></progress>'));
 }
 
 function setStreamingState() {
-    var audioPlayerElement = document.createElement("audio");
-    audioPlayerElement.controls = true;
-    audioPlayerElement.id = "audioPlayer";
-    document.getElementById('container').appendChild(audioPlayerElement);
-    //var videoPlayerElement = document.createElement("video");
-    //videoPlayerElement.controls = true;
-    //videoPlayerElement.id = "videoPlayer";
-    //document.getElementById('container').appendChild(videoPlayerElement);
+    $('.joinedIcon').remove();
+    $('#audioPlayer').removeClass('hidden');
 }
 
 function checkPathForRoomID() {
     var roomId = window.location.pathname.split("/")[2];
-    if(roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
+    if (roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
         return roomId;
     }
     return null;

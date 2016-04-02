@@ -1,29 +1,28 @@
-module.exports = function() {
+module.exports = function () {
     var socket = null;
-    var $ = require('jquery');
 
-    this.connect = function(roomId, onsignal, onsuccess) {
+    this.connect = function (roomId, onsignal, onsuccess) {
         socket = require('socket.io-client')("/room/" + roomId);
-        socket.on('connect', function() {
+        socket.on('connect', function () {
             onsuccess(socket.id);
         })
-        socket.on('signal', function(data) {
+        socket.on('signal', function (data) {
             onsignal(data);
         });
     };
 
-    this.disconnect = function() {
+    this.disconnect = function () {
         if (socket != null) {
             socket.disconnect();
         }
         console.log("Disconnected");
     };
 
-    this.send = function(signal) {
+    this.send = function (signal) {
         socket.emit('signal', signal);
     };
 
-    this.addRoom = function() {
+    this.addRoom = function () {
         var result = null;
         $.ajax({
             url: "/addRoom",
@@ -35,7 +34,7 @@ module.exports = function() {
         return JSON.parse(result);
     };
 
-    this.removeRoom = function(roomId) {
+    this.removeRoom = function (roomId) {
         var result = null;
         $.ajax({
             url: "/removeRoom/" + roomId,
@@ -47,10 +46,10 @@ module.exports = function() {
         return result;
     }
 
-    this.addUser = function(roomId) {
+    this.addUser = function (roomId) {
         var result = null;
         $.ajax({
-            url: "/"+ roomId +"/addUser",
+            url: "/" + roomId + "/addUser",
             async: false,
             success: function (data) {
                 result = data;
@@ -59,10 +58,10 @@ module.exports = function() {
         return result;
     }
 
-    this.removeUser = function(roomId, userId) {
+    this.removeUser = function (roomId, userId) {
         var result = null;
         $.ajax({
-            url: "/"+ roomId +"/removeUser/" + userId,
+            url: "/" + roomId + "/removeUser/" + userId,
             async: false,
             success: function (data) {
                 result = data;

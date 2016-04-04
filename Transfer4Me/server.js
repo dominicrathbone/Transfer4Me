@@ -1,16 +1,26 @@
 var express = require('express');
+var uuid = require('node-uuid');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')
+
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var uuid = require('node-uuid');
+
 app.use(express.static(__dirname + '/public/'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 var baseUrl = "/room/"
 var rooms = [];
 
-function Room(id) {
+function Room(id, password) {
     this.namespace = io.of(baseUrl.concat(id));
     this.id = id;
+    if(password) {
+        this.password = password;
+    }
     this.uploader = null;
     this.users = 0;
     var room = this;
@@ -37,10 +47,11 @@ function Room(id) {
                 for(var i = 0; i < rooms.length; i++) {
                     if(rooms[i].uploader == this.client.id) {
                         rooms.splice(i,1);
+                        break;
                     }
                 }
             } else {
-                http://localhost:8080/room/0534a2f0-f925-11e5-8f07-25f6c3689bf1room.users--;
+                room.users--;
                 room.namespace.to(room.namespace.name.concat("#",room.uploader)).emit('signal', JSON.stringify({
                     'user': "SERVER",
                     'toUser': room.uploader,
@@ -69,20 +80,56 @@ app.get('/room/:room', function(req, res){
     var roomFound = false;
     for(var i = 0; i < rooms.length; i++) {
         if(rooms[i].id == (req.params.room)) {
-            res.sendFile("public/index.html", {"root": __dirname});
             roomFound = true;
+            if(rooms[i].password == req.cookies.password) {
+                res.sendFile("public/index.html", {"root": __dirname});
+                break;
+            } else if(rooms[i].password !== null) {
+                res.sendFile("public/password.html", {"root": __dirname});
+                break;
+            }
         }
     }
+
     if(!roomFound) {
         res.sendStatus(404);
     }
-
 });
 
-app.get('/addRoom', function(req, res){
+app.get('/room', function(req, res){
     var roomId = uuid.v1();
-    rooms.push(new Room(roomId));
-    res.json('{"roomId":"' + roomId + '"}');
+    var password;
+    if(req.query.passworded) {
+        var randomString = require('just.randomstring');
+        password = randomString();
+    }
+
+    rooms.push(new Room(roomId, password));
+
+    var result = new Object();
+    result.roomId = roomId;
+    result.password = password;
+
+    res.json(JSON.stringify(result));
+});
+
+app.post('/room/:room/password', function(req, res){
+    for(var i = 0; i < rooms.length; i++) {
+        if(rooms[i].id == (req.params.room)) {
+            var password = req.body.password;
+            if(rooms[i].password == password) {
+                res.cookie("password", password);
+                var result = new Object();
+                result.accepted = true;
+                result.roomId = rooms[i].id;
+                res.json(JSON.stringify(result));
+                break;
+            } else {
+                res.sendStatus(401);
+                break;
+            }
+        }
+    }
 });
 
 http.listen(8080, function(){

@@ -82,14 +82,16 @@ body {
     box-shadow: 0px 11px 0px -7px rgba(0, 0, 0, 0.15);
     display: -webkit-flex;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: column;
+
 }
 
 .fileInput {
-    border: 2px dashed rgba(51, 59, 60, 0.1);
+    border: 4px dashed rgba(51, 59, 60, 0.1);
     width: 97.5%;
-    height: 97.5%;
+    height: 87.5%;
     background: url("../img/arrow.png") center no-repeat;
     display: -webkit-flex;
     display: flex;
@@ -98,10 +100,18 @@ body {
     transition-duration: 0.3s;
 }
 
-.fileInput:hover {
-    transition-duration: 0.3s;
-    width: 95.5%;
-    height: 95.5%;
+#passwordInput {
+    margin-top:2.5%;
+    width:97.5%;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+#passwordCheckBox {
+    margin-right:5px;
 }
 
 .room {

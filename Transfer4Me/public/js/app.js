@@ -15,44 +15,47 @@ function User(userId, userType) {
 $(document).ready(function () {
     $(document).foundation();
     var roomId = checkPathForRoomID();
-    if (roomId === null) {
-        setFileUploadState(roomId);
+    if (roomId == null) {
+        setFileUploadState();
     } else {
         setJoinRoomState(roomId);
     }
 });
 
-function setFileUploadState(roomId) {
+function setFileUploadState() {
+    var passwordFileInput = $("<div id='passwordInput'>" +
+        "<input type='checkbox' id='passwordCheckBox'>" +
+        "<p id='passwordCheckBoxText' class='subtitle'>Password your file download.</p>" +
+        "</div>");
     var fileInput = $("<div id='fileInput' class='fileInput'><p id='upload-text'>Drag and drop (or click) to upload.</p></div>");
+    content.append(passwordFileInput);
     content.append(fileInput);
+
     var dropzone = new Dropzone("div#fileInput", {url: "#", maxFiles: 1});
-    dropzone.on("maxfilesexceeded", function(file) {
-        this.removeFile(file);
-    });
     dropzone.on("addedfile", function (file) {
-        if (file != null) {
-            $('.dz-preview').remove();
-            p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId) {
-                $("#app").one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
-                    fileInput.remove();
-                    setNewRoomState(roomId, file.name);
-                    $("#app").removeClass("bounceOutThenIn");
-                });
-                $("#app").addClass("bounceOutThenIn");
+        $('.dz-preview').remove();
+        var passworded = $("#passwordCheckBox").is(':checked');
+        p2pChannel.startSession(null, passworded, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId, password) {
+            $("#app").one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
+                passwordFileInput.remove();
+                fileInput.remove();
+                setNewRoomState(roomId, password, file.name);
+                $("#app").removeClass("bounceOutThenIn");
             });
-        }
-        else {
-            alert("Upload valid file");
-        }
+            $("#app").addClass("bounceOutThenIn");
+        });
     });
     content.append($("<audio></audio>"));
 }
 
-function setNewRoomState(roomId, fileName) {
+function setNewRoomState(roomId, password, fileName) {
     var roomUrl = "" + window.location.href + "room/" + roomId;
     history.pushState(null, null, roomUrl);
     var roomContainer = $("<div id='room' class='room'></div>");
     roomContainer.append($("<p class='subtitle'>You have uploaded " + fileName + "</p>"));
+    if(password) {
+        roomContainer.append($("<p class='subtitle'>password: " + password + "</p>"));
+    }
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
     var shareContainer = $("<div id='share' class='share'></div>");
@@ -69,11 +72,11 @@ function setJoinRoomState(roomId) {
     var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
     var downloadButton = $("<div class='joinedIcon'><input type='button' id='downloadButton' class='downloadButton'><p class='subtitle'>Download</p></input></div>");
     downloadButton.click(function () {
-        p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
+        p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
     });
     var streamButton = $("<div class='joinedIcon'><input type='button' id='streamButton' class='streamButton'><p class='subtitle'>Stream</p></input></div>");
     streamButton.click(function () {
-        p2pChannel.startSession(roomId, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
+        p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
     });
     roomContainer.append(audioPlayerElement);
     roomContainer.append(downloadButton);

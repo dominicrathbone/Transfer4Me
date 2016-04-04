@@ -22,10 +22,14 @@ module.exports = function () {
         socket.emit('signal', signal);
     };
 
-    this.addRoom = function () {
+    this.addRoom = function (passworded) {
         var result = null;
+        var url ="/room";
+        if(passworded) {
+            url = url.concat("?passworded=true")
+        }
         $.ajax({
-            url: "/addRoom",
+            url: url,
             async: false,
             success: function (data) {
                 result = data;
@@ -34,39 +38,5 @@ module.exports = function () {
         return JSON.parse(result);
     };
 
-    this.removeRoom = function (roomId) {
-        var result = null;
-        $.ajax({
-            url: "/removeRoom/" + roomId,
-            async: false,
-            success: function (data) {
-                result = data;
-            }
-        });
-        return result;
-    }
 
-    this.addUser = function (roomId) {
-        var result = null;
-        $.ajax({
-            url: "/" + roomId + "/addUser",
-            async: false,
-            success: function (data) {
-                result = data;
-            }
-        });
-        return result;
-    }
-
-    this.removeUser = function (roomId, userId) {
-        var result = null;
-        $.ajax({
-            url: "/" + roomId + "/removeUser/" + userId,
-            async: false,
-            success: function (data) {
-                result = data;
-            }
-        });
-        return result;
-    }
 }

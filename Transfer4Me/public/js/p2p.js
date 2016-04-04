@@ -11,16 +11,18 @@ module.exports = function () {
     this.user;
     this.connection;
     this.incomingConnections = [];
-    this.signallingChannel;
+    this.signallingChannel = new signaller();
     this.roomId = null;
     this.fileName = null;
     var p2p = this;
     var dataChannel;
 
-    this.startSession = function (roomId, user, file, callback) {
-        p2p.signallingChannel = new signaller();
+    this.startSession = function (roomId, passworded, user, file, callback) {
+        var password;
         if (roomId == null) {
-            roomId = p2p.signallingChannel.addRoom().roomId;
+            var result = p2p.signallingChannel.addRoom(passworded);
+            roomId = result.roomId;
+            password = result.password;
         }
         p2p.roomId = roomId;
 
@@ -30,7 +32,7 @@ module.exports = function () {
             }
             onSignallerConnect(roomId, user, file);
             if (callback != null) {
-                callback(roomId);
+                callback(roomId, password);
             }
         });
     };

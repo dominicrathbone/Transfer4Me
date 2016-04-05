@@ -2,62 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1fa73087-a05f-462e-86d7-77cefa9574e9" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../Doc/.~lock.Interim Report.odt#" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/.name" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/jsLibraryMappings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/libraries/src_dropzone_node_modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/src-dropzone.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/watcherTasks.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.idea/workspace.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.npmignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.tagconfig" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/.travis.yml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/AMD_footer" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/AMD_header" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/CONTRIBUTING.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/Gruntfile.coffee" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/LICENSE" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/bower.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/component.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/composer.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/basic.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/dropzone-amd-module.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/dropzone.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/dropzone.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/min/basic.min.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/min/dropzone-amd-module.min.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/min/dropzone.min.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/min/dropzone.min.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/dist/readme.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/index.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/package.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/src/basic.scss" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/src/dropzone.coffee" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/src/dropzone.scss" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test/test.coffee" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test/test.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test/test.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../node_modules/dropzone/test2.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/img/arrow.png" afterPath="$PROJECT_DIR$/public/img/arrow.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/browser-pack/package.json" afterPath="$PROJECT_DIR$/node_modules/browser-pack/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/animations.css" afterPath="$PROJECT_DIR$/public/css/animations.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/index.css" afterPath="$PROJECT_DIR$/public/css/index.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/app.js" afterPath="$PROJECT_DIR$/public/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/dist/bundle.js" afterPath="$PROJECT_DIR$/public/js/dist/bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/dist/bundle.js.map" afterPath="$PROJECT_DIR$/public/js/dist/bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/p2p.js" afterPath="$PROJECT_DIR$/public/js/p2p.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/signaller.js" afterPath="$PROJECT_DIR$/public/js/signaller.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
     </list>
     <ignored path="Transfer4Me.iws" />
@@ -82,46 +27,41 @@
       <file leaf-file-name="server.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.67712176">
-              <caret line="42" column="79" selection-start-line="42" selection-start-column="79" selection-end-line="42" selection-end-column="79" />
+            <state vertical-scroll-proportion="0.8662921">
+              <caret line="133" column="34" selection-start-line="133" selection-start-column="34" selection-end-line="133" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="signaller.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/js/signaller.js">
+      <file leaf-file-name="index.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/css/index.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+            <state vertical-scroll-proportion="-1.3076923">
+              <caret line="2" column="29" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/js/app.js">
+      <file leaf-file-name="password.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/password.html">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="55" column="68" selection-start-line="55" selection-start-column="68" selection-end-line="55" selection-end-column="68" />
-              <folding>
-                <marker date="1459632436496" expanded="true" signature="4196:4200" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="p2p.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="120" column="78" selection-start-line="120" selection-start-column="78" selection-end-line="120" selection-end-column="78" />
+              <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -137,11 +77,14 @@
         <option value="$PROJECT_DIR$/gulpfile.js" />
         <option value="$PROJECT_DIR$/public/js/dist/bundle.js" />
         <option value="$PROJECT_DIR$/public/css/animations.css" />
-        <option value="$PROJECT_DIR$/public/js/signaller.js" />
-        <option value="$PROJECT_DIR$/public/css/index.css" />
         <option value="$PROJECT_DIR$/public/index.html" />
-        <option value="$PROJECT_DIR$/public/js/app.js" />
+        <option value="$PROJECT_DIR$/public/css/index.css" />
         <option value="$PROJECT_DIR$/public/js/p2p.js" />
+        <option value="$PROJECT_DIR$/public/js/password.js" />
+        <option value="$PROJECT_DIR$/public/js/signaller.js" />
+        <option value="$PROJECT_DIR$/public/js/app.js" />
+        <option value="$PROJECT_DIR$/public/js/dist/password.js" />
+        <option value="$PROJECT_DIR$/public/password.html" />
         <option value="$PROJECT_DIR$/server.js" />
       </list>
     </option>
@@ -186,8 +129,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -294,14 +237,15 @@
     <property name="js.buildTools.gulp.gulp_package_dir" value="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\node_modules\gulp" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public" />
+      <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public\css" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public\js\vendor" />
       <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public\js" />
       <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me" />
       <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\server" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public\css" />
     </key>
   </component>
   <component name="RunManager" selected="Node.js.server.js">
@@ -397,18 +341,18 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39809927" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39809927" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -424,23 +368,15 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="50" />
+      <option name="time" value="71" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
+    <entry file="file://$PROJECT_DIR$/public/password.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/index.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="227" column="31" selection-start-line="227" selection-start-column="31" selection-end-line="227" selection-end-column="31" />
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
           <folding />
         </state>
       </provider>
@@ -470,7 +406,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -478,9 +413,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1459632436496" expanded="true" signature="4196:4200" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -509,7 +441,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -517,9 +448,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="44" column="23" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="43" />
-          <folding>
-            <marker date="1459632436496" expanded="true" signature="4196:4200" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -541,7 +469,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -556,9 +483,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="28" selection-start-line="26" selection-start-column="28" selection-end-line="26" selection-end-column="28" />
-          <folding>
-            <marker date="1459632436496" expanded="true" signature="4196:4200" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -587,7 +511,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -750,7 +673,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="33.765923">
           <caret line="1187" column="35" selection-start-line="1187" selection-start-column="35" selection-end-line="1187" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -762,52 +684,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/index.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.65384614">
-          <caret line="227" column="31" selection-start-line="227" selection-start-column="31" selection-end-line="227" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.423077">
-          <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/app.js">
+    <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="68" selection-start-line="55" selection-start-column="68" selection-end-line="55" selection-end-column="68" />
-          <folding>
-            <marker date="1459632436496" expanded="true" signature="4196:4200" placeholder="..." />
-          </folding>
+          <caret line="13" column="26" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/signaller.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+          <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="92" column="1" selection-start-line="92" selection-start-column="1" selection-end-line="92" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.538462">
+          <caret line="31" column="14" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/password.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
+    <entry file="file://$PROJECT_DIR$/public/css/index.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="120" column="78" selection-start-line="120" selection-start-column="78" selection-end-line="120" selection-end-column="78" />
+        <state vertical-scroll-proportion="-1.3076923">
+          <caret line="2" column="29" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.67712176">
-          <caret line="42" column="79" selection-start-line="42" selection-start-column="79" selection-end-line="42" selection-end-column="79" />
+        <state vertical-scroll-proportion="0.8662921">
+          <caret line="133" column="34" selection-start-line="133" selection-start-column="34" selection-end-line="133" selection-end-column="34" />
           <folding />
         </state>
       </provider>

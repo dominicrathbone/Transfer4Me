@@ -37,8 +37,6 @@ function Room(id, password) {
             }));
         }
 
-
-
         console.log(socket.client.id + " connected to room: " + room.id);
 
         socket.on('disconnect', function(){
@@ -132,6 +130,6 @@ app.post('/room/:room/password', function(req, res){
     }
 });
 
-http.listen(8080, function(){
-    console.log('listening on *:8080');
+http.listen(80, function(){
+    console.log('listening on *:80');
 });

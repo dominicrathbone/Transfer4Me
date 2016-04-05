@@ -1,8 +1,6 @@
 //@sourceURL=app.js
-var Dropzone = require('dropzone');
 global.$ = global.jQuery = require('jquery');
-require("what-input");
-require('./foundation.min.js');
+var Dropzone = require('dropzone');
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
 var content = $("#content");
@@ -13,7 +11,6 @@ function User(userId, userType) {
 }
 
 $(document).ready(function () {
-    $(document).foundation();
     var roomId = checkPathForRoomID();
     if (roomId == null) {
         setFileUploadState();
@@ -23,11 +20,11 @@ $(document).ready(function () {
 });
 
 function setFileUploadState() {
-    var passwordFileInput = $("<div id='passwordInput'>" +
+    var passwordFileInput = $("<div id='passwordInput' class='centered row'>" +
         "<input type='checkbox' id='passwordCheckBox'>" +
-        "<p id='passwordCheckBoxText' class='subtitle'>Password your file download.</p>" +
+        "<p id='passwordCheckBoxText' class='bold'>Password your file download.</p>" +
         "</div>");
-    var fileInput = $("<div id='fileInput' class='fileInput'><p id='upload-text'>Drag and drop (or click) to upload.</p></div>");
+    var fileInput = $("<div id='fileInput' class='fileInput centered column'><img src='../img/arrow.png'/><p id='upload-text'>Drag and drop (or click) to upload.</p></div>");
     content.append(passwordFileInput);
     content.append(fileInput);
 
@@ -51,10 +48,10 @@ function setFileUploadState() {
 function setNewRoomState(roomId, password, fileName) {
     var roomUrl = "" + window.location.href + "room/" + roomId;
     history.pushState(null, null, roomUrl);
-    var roomContainer = $("<div id='room' class='room'></div>");
-    roomContainer.append($("<p class='subtitle'>You have uploaded " + fileName + "</p>"));
+    var roomContainer = $("<div id='room' class='room column'></div>");
+    roomContainer.append($("<p class='bold'>You have uploaded " + fileName + "</p>"));
     if(password) {
-        roomContainer.append($("<p class='subtitle'>password: " + password + "</p>"));
+        roomContainer.append($("<p class='bold'>password: " + password + "</p>"));
     }
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
@@ -68,13 +65,13 @@ function setNewRoomState(roomId, password, fileName) {
 }
 
 function setJoinRoomState(roomId) {
-    var roomContainer = $("<div id='room' class='room rowedState'></div>")
+    var roomContainer = $("<div id='room' class='room row'></div>")
     var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
-    var downloadButton = $("<div class='joinedIcon'><input type='button' id='downloadButton' class='downloadButton'><p class='subtitle'>Download</p></input></div>");
+    var downloadButton = $("<di class='icon centered column'><input type='button' id='downloadButton' class='downloadButton'><p class='bold'>Download</p></input></div>");
     downloadButton.click(function () {
         p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
     });
-    var streamButton = $("<div class='joinedIcon'><input type='button' id='streamButton' class='streamButton'><p class='subtitle'>Stream</p></input></div>");
+    var streamButton = $("<div class='icon centered column'><input type='button' id='streamButton' class='streamButton'><p class='bold'>Stream</p></input></div>");
     streamButton.click(function () {
         p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
     });
@@ -87,13 +84,14 @@ function setJoinRoomState(roomId) {
 function setDownloadState() {
     var roomContainer = $('.room');
     roomContainer.empty();
-    roomContainer.removeClass("rowedState");
-    roomContainer.append($("<p id='progress-text' class='subtitle'>File is downloading...</p>"));
+    roomContainer.removeClass("row");
+    roomContainer.addClass("column");
+    roomContainer.append($("<p id='progress-text' class='bold'>File is downloading...</p>"));
     roomContainer.append($('<progress max="100" value="0"></progress>'));
 }
 
 function setStreamingState() {
-    $('.joinedIcon').remove();
+    $('.icon').remove();
     $('#audioPlayer').removeClass('hidden');
 }
 

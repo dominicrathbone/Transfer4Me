@@ -21129,13 +21129,13 @@ function setNewRoomState(roomId, password, fileName) {
     history.pushState(null, null, roomUrl);
     var roomContainer = $("<div id='room' class='room column'></div>");
     roomContainer.append($("<p class='bold'>You have uploaded " + fileName + "</p>"));
-    if(password) {
-        roomContainer.append($("<p class='bold'>password: " + password + "</p>"));
-    }
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
     var shareContainer = $("<div id='share' class='share'></div>");
     roomContainer.append($("<p>Share URL: <p class='shareUrl'> " + roomUrl + "</p></p>"));
+    if(password) {
+        roomContainer.append($("<p>Password: <p class='shareUrl'>" + password + "</p></p>"));
+    }
     shareContainer.append($("<a id='facebook' class='shareBtn' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='twitter' class='shareBtn' target='_blank' href='https://twitter.com/home?status=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='google' class='shareBtn' target='_blank' href='https://plus.google.com/share?url=" + encodeURIComponent(roomUrl) + "'></a>"));
@@ -21145,19 +21145,24 @@ function setNewRoomState(roomId, password, fileName) {
 
 function setJoinRoomState(roomId) {
     var roomContainer = $("<div id='room' class='room row'></div>")
-    var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
+    content.append(roomContainer);
+
     var downloadButton = $("<di class='icon centered column'><input type='button' id='downloadButton' class='downloadButton'><p class='bold'>Download</p></input></div>");
     downloadButton.click(function () {
         p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
     });
-    var streamButton = $("<div class='icon centered column'><input type='button' id='streamButton' class='streamButton'><p class='bold'>Stream</p></input></div>");
-    streamButton.click(function () {
-        p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
-    });
-    roomContainer.append(audioPlayerElement);
     roomContainer.append(downloadButton);
-    roomContainer.append(streamButton);
-    content.append(roomContainer);
+
+    var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
+    roomContainer.append(audioPlayerElement);
+    var fileType = p2pChannel.signallingChannel.getFileType(roomId).fileType;
+    if(document.querySelector("audio").canPlayType(fileType) !== "") {
+        var streamButton = $("<div class='icon centered column'><input type='button' id='streamButton' class='streamButton'><p class='bold'>Stream</p></input></div>");
+        streamButton.click(function () {
+            p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
+        });
+        roomContainer.append(streamButton);
+    }
 }
 
 function setDownloadState() {
@@ -21207,8 +21212,8 @@ module.exports = function () {
     this.signallingChannel = new signaller();
     this.roomId = null;
     this.fileName = null;
-    var p2p = this;
     var dataChannel;
+    var p2p = this;
 
     this.startSession = function (roomId, passworded, user, file, callback) {
         var password;
@@ -21224,6 +21229,7 @@ module.exports = function () {
                 user.userId = id;
             }
             onSignallerConnect(roomId, user, file);
+
             if (callback != null) {
                 callback(roomId, password);
             }
@@ -21242,6 +21248,7 @@ module.exports = function () {
             sendOffer();
         } else if (user.userType == p2p.UserType.UPLOADER) {
             p2p.file = file;
+            p2p.signallingChannel.send('fileType', JSON.stringify({"fileType" : file.type}));
         }
     }
 
@@ -21254,7 +21261,7 @@ module.exports = function () {
         );
         this.peerConnection.onicecandidate = function(event) {
             if (event.candidate) {
-                p2p.signallingChannel.send(JSON.stringify({
+                p2p.signallingChannel.send('signal', JSON.stringify({
                     'user': p2p.user,
                     'toUser': connection.toUser,
                     "candidate": event.candidate
@@ -21321,7 +21328,7 @@ module.exports = function () {
     function sendOffer() {
         p2p.connection.peerConnection.createOffer(function (description) {
             p2p.connection.peerConnection.setLocalDescription(description, function () {
-                p2p.signallingChannel.send(JSON.stringify({
+                p2p.signallingChannel.send('signal', JSON.stringify({
                     'user': p2p.user,
                     'toUser': p2p.connection.toUser,
                     'sdp': p2p.connection.peerConnection.localDescription
@@ -21335,7 +21342,7 @@ module.exports = function () {
         if (connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
-                    p2p.signallingChannel.send(JSON.stringify({
+                    p2p.signallingChannel.send('signal', JSON.stringify({
                         'user': p2p.user,
                         'toUser': connection.toUser,
                         'sdp': connection.peerConnection.localDescription
@@ -21553,8 +21560,8 @@ module.exports = function () {
         console.log("Disconnected");
     };
 
-    this.send = function (signal) {
-        socket.emit('signal', signal);
+    this.send = function(event, signal) {
+        socket.emit(event, signal);
     };
 
     this.addRoom = function (passworded) {
@@ -21563,6 +21570,19 @@ module.exports = function () {
         if(passworded) {
             url = url.concat("?passworded=true")
         }
+        $.ajax({
+            url: url,
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return JSON.parse(result);
+    };
+
+    this.getFileType = function (roomId) {
+        var result = null;
+        var url ="/room/".concat(roomId, "/fileType");
         $.ajax({
             url: url,
             async: false,

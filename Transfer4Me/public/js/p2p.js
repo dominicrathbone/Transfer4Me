@@ -14,8 +14,8 @@ module.exports = function () {
     this.signallingChannel = new signaller();
     this.roomId = null;
     this.fileName = null;
-    var p2p = this;
     var dataChannel;
+    var p2p = this;
 
     this.startSession = function (roomId, passworded, user, file, callback) {
         var password;
@@ -31,6 +31,7 @@ module.exports = function () {
                 user.userId = id;
             }
             onSignallerConnect(roomId, user, file);
+
             if (callback != null) {
                 callback(roomId, password);
             }
@@ -49,6 +50,7 @@ module.exports = function () {
             sendOffer();
         } else if (user.userType == p2p.UserType.UPLOADER) {
             p2p.file = file;
+            p2p.signallingChannel.send('fileType', JSON.stringify({"fileType" : file.type}));
         }
     }
 
@@ -61,7 +63,7 @@ module.exports = function () {
         );
         this.peerConnection.onicecandidate = function(event) {
             if (event.candidate) {
-                p2p.signallingChannel.send(JSON.stringify({
+                p2p.signallingChannel.send('signal', JSON.stringify({
                     'user': p2p.user,
                     'toUser': connection.toUser,
                     "candidate": event.candidate
@@ -128,7 +130,7 @@ module.exports = function () {
     function sendOffer() {
         p2p.connection.peerConnection.createOffer(function (description) {
             p2p.connection.peerConnection.setLocalDescription(description, function () {
-                p2p.signallingChannel.send(JSON.stringify({
+                p2p.signallingChannel.send('signal', JSON.stringify({
                     'user': p2p.user,
                     'toUser': p2p.connection.toUser,
                     'sdp': p2p.connection.peerConnection.localDescription
@@ -142,7 +144,7 @@ module.exports = function () {
         if (connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
-                    p2p.signallingChannel.send(JSON.stringify({
+                    p2p.signallingChannel.send('signal', JSON.stringify({
                         'user': p2p.user,
                         'toUser': connection.toUser,
                         'sdp': connection.peerConnection.localDescription

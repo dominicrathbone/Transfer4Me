@@ -50,13 +50,13 @@ function setNewRoomState(roomId, password, fileName) {
     history.pushState(null, null, roomUrl);
     var roomContainer = $("<div id='room' class='room column'></div>");
     roomContainer.append($("<p class='bold'>You have uploaded " + fileName + "</p>"));
-    if(password) {
-        roomContainer.append($("<p class='bold'>password: " + password + "</p>"));
-    }
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
     var shareContainer = $("<div id='share' class='share'></div>");
     roomContainer.append($("<p>Share URL: <p class='shareUrl'> " + roomUrl + "</p></p>"));
+    if(password) {
+        roomContainer.append($("<p>Password: <p class='shareUrl'>" + password + "</p></p>"));
+    }
     shareContainer.append($("<a id='facebook' class='shareBtn' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='twitter' class='shareBtn' target='_blank' href='https://twitter.com/home?status=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='google' class='shareBtn' target='_blank' href='https://plus.google.com/share?url=" + encodeURIComponent(roomUrl) + "'></a>"));
@@ -66,19 +66,24 @@ function setNewRoomState(roomId, password, fileName) {
 
 function setJoinRoomState(roomId) {
     var roomContainer = $("<div id='room' class='room row'></div>")
-    var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
+    content.append(roomContainer);
+
     var downloadButton = $("<di class='icon centered column'><input type='button' id='downloadButton' class='downloadButton'><p class='bold'>Download</p></input></div>");
     downloadButton.click(function () {
         p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.DOWNLOADER), null, setDownloadState);
     });
-    var streamButton = $("<div class='icon centered column'><input type='button' id='streamButton' class='streamButton'><p class='bold'>Stream</p></input></div>");
-    streamButton.click(function () {
-        p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
-    });
-    roomContainer.append(audioPlayerElement);
     roomContainer.append(downloadButton);
-    roomContainer.append(streamButton);
-    content.append(roomContainer);
+
+    var audioPlayerElement = $("<audio class='hidden' controls='true' id='audioPlayer'></audio>");
+    roomContainer.append(audioPlayerElement);
+    var fileType = p2pChannel.signallingChannel.getFileType(roomId).fileType;
+    if(document.querySelector("audio").canPlayType(fileType) !== "") {
+        var streamButton = $("<div class='icon centered column'><input type='button' id='streamButton' class='streamButton'><p class='bold'>Stream</p></input></div>");
+        streamButton.click(function () {
+            p2pChannel.startSession(roomId, null, new User(null, p2pChannel.UserType.STREAMER), null, setStreamingState);
+        });
+        roomContainer.append(streamButton);
+    }
 }
 
 function setDownloadState() {

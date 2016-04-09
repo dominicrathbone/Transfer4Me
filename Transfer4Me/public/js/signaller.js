@@ -18,8 +18,8 @@ module.exports = function () {
         console.log("Disconnected");
     };
 
-    this.send = function (signal) {
-        socket.emit('signal', signal);
+    this.send = function(event, signal) {
+        socket.emit(event, signal);
     };
 
     this.addRoom = function (passworded) {
@@ -28,6 +28,19 @@ module.exports = function () {
         if(passworded) {
             url = url.concat("?passworded=true")
         }
+        $.ajax({
+            url: url,
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return JSON.parse(result);
+    };
+
+    this.getFileType = function (roomId) {
+        var result = null;
+        var url ="/room/".concat(roomId, "/fileType");
         $.ajax({
             url: url,
             async: false,

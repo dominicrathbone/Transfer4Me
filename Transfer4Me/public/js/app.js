@@ -22,7 +22,7 @@ $(document).ready(function () {
 function setFileUploadState() {
     var passwordFileInput = $("<div id='passwordInput' class='centered row'>" +
         "<input type='checkbox' id='passwordCheckBox'>" +
-        "<p id='passwordCheckBoxText' class='bold'>Password your file download.</p>" +
+        "<p id='passwordCheckBoxText' class='bold'>Password protect.</p>" +
         "</div>");
     var fileInput = $("<div id='fileInput' class='fileInput centered column'><img src='../img/arrow.png'/><p id='upload-text'>Drag and drop (or click) to upload.</p></div>");
     content.append(passwordFileInput);

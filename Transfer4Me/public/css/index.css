@@ -1,5 +1,3 @@
-
-
 body {
     background-color: #678689 !important;
     overflow-x:hidden;
@@ -35,19 +33,16 @@ p {
 }
 
 #app {
-    width:45%;
+    width:100vh;
 }
 
 #information {
-    vertical-align: top;
-    margin-right: 2%;
-    max-width:30%;
-    min-height: 60vh;
+    margin-bottom:50px;
+    max-width:100vh;
 }
 
 #information p {
-    vertical-align: top;
-    text-align: right;
+    text-align: center;
     color: #FFFFFF;
 }
 

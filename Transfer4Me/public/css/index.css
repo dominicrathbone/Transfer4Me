@@ -1,5 +1,5 @@
 body {
-    background-color: #678689 !important;
+    background-color: #A3D3D8 !important;
     overflow-x:hidden;
     height: 100vh;
     margin:0px;
@@ -37,13 +37,18 @@ p {
 }
 
 #information {
-    margin-bottom:50px;
+    margin-bottom:25px;
     max-width:100vh;
+}
+
+#information .title {
+    font-family: 'Rancho';
+    font-size: 5em;
 }
 
 #information p {
     text-align: center;
-    color: #FFFFFF;
+    color: #002F2F;
 }
 
 #upload-text {

@@ -107,7 +107,7 @@
 			\item getUserMedia:
 			"Prompts the user for permission to use one video and/or one audio input device such as a camera or screensharing and/or a microphone. If the user provides permission, then the successCallback is invoked with the resulting MediaStream object as its argument. If the user denies permission or media is not available, then the errorCallback is called with PermissionDeniedError or NotFoundError respectively. Note that it is possible for neither completion callback to be called, as the user is not required to make a choice."\cite{Mozilla Web API}
 		\end{itemize}
-	In order to achieve it's aim, the application will utilize the RTCPeerConnection and RTCDataChannel APIs. The former to establish a peer connection between two clients and the latter to create a data channel over this peer connection to transfer data.
+	In order to achieve it's aim, the application will utilize the RTCPeerConnection and RTCDataChannel APIs. The former to establish a peer connection between two clients and to stream whilst the latter will be used to create a data channel over this peer connection to transfer data.
 			
 	As mentioned in the Javascript Session Establishment Protocol (JSEP) \cite{JSEP}, although WebRTC and the browser is used to transfer the data between two peers, it purposely does not handle signalling. This is a concept that came from telecommunications and utilised in VoIP and is the process of organising the communication between two clients, handling the exchange of metadata that creates and manages a session. The rationale behind WebRTC being signalling protocol-agnostic is that different applications will require particular protocols in order to, for example, fit into previously existing architecture. In the case of my application, to handle signalling, Session Initiation Protocol (SIP) over WebSockets will be used.
 	
@@ -190,17 +190,19 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 	\newpage	
 	
 \section{Risk Analysis}
-		\scalebox{0.6}{\begin{tabular}{@{}|l|l|l|l|l|@{}}
-				\toprule
-				\textbf{Risk}                                      & \textbf{Probability (1-5)} & \textbf{Impact (1-5)} & \textbf{Mitigation}                                                                                                  & \textbf{Contingency}                                                                            \\ \midrule
-				Illness/Injury                                     & 4                          & 3                     & \begin{tabular}[c]{@{}l@{}}Reserve time for illness\\ Be hygienic\\ Eat healthy\\ Exercise\end{tabular}              & \begin{tabular}[c]{@{}l@{}}Allow time for recovery\\ Take medicine to aid recovery\end{tabular} \\ \midrule
-				Inaccurate estimations                             & 3                          & 3                     & \begin{tabular}[c]{@{}l@{}}Be liberal with estimations\\ Reserve time for deliverables behind schedule\end{tabular}  & Adjust scope of project                                                                         \\ \midrule
-				Data loss                                          & 1                          & 5                     & \begin{tabular}[c]{@{}l@{}}Use a version control system\\ Keep local backups\end{tabular}                            & Recover data from Git                                                                           \\ \midrule
-				Uncommunicative stakeholder                        & 1                          & 3                     & Ensure regular meetings with stakeholder                                                                             &                                                                                                 \\ \midrule
-				Stakeholder turnover                               & 1                          & 4                     & N/A (out of my control)                                                                                              & Get new stakeholders                                                                            \\ \midrule
-				Project scope too large                            & 3                          & 4                     & \begin{tabular}[c]{@{}l@{}}Research enough to be certain in project scope\\ Be liberal with estimations\end{tabular} & Adjust scope of project                                                                         \\ \midrule
-				Technologies too immature/insufficient for project & 2                          & 4                     & Research technologies beforehand                                                                                     & \begin{tabular}[c]{@{}l@{}}Find alternative technologies\\ Adjust scope of project\end{tabular} \\ \bottomrule
-			\end{tabular}}
+	\scalebox{0.6}{
+		\begin{tabular}{@{}|l|l|l|l|l|@{}}
+			\toprule
+			\textbf{Risk}                                      & \textbf{Probability (1-5)} & \textbf{Impact (1-5)} & \textbf{Mitigation}                                                                                                  & \textbf{Contingency}                                                                            \\ \midrule
+			Illness/Injury                                     & 4                          & 3                     & \begin{tabular}[c]{@{}l@{}}Reserve time for illness\\ Be hygienic\\ Eat healthy\\ Exercise\end{tabular}              & \begin{tabular}[c]{@{}l@{}}Allow time for recovery\\ Take medicine to aid recovery\end{tabular} \\ \midrule
+			Inaccurate estimations                             & 3                          & 3                     & \begin{tabular}[c]{@{}l@{}}Be liberal with estimations\\ Reserve time for deliverables behind schedule\end{tabular}  & Adjust scope of project                                                                         \\ \midrule
+			Data loss                                          & 1                          & 5                     & \begin{tabular}[c]{@{}l@{}}Use a version control system\\ Keep local backups\end{tabular}                            & Recover data from Git                                                                           \\ \midrule
+			Uncommunicative stakeholder                        & 1                          & 3                     & Ensure regular meetings with stakeholder                                                                             &                                                                                                 \\ \midrule
+			Stakeholder turnover                               & 1                          & 4                     & N/A (out of my control)                                                                                              & Get new stakeholders                                                                            \\ \midrule
+			Project scope too large                            & 3                          & 4                     & \begin{tabular}[c]{@{}l@{}}Research enough to be certain in project scope\\ Be liberal with estimations\end{tabular} & Adjust scope of project                                                                         \\ \midrule
+			Technologies too immature/insufficient for project & 2                          & 4                     & Research technologies beforehand                                                                                     & \begin{tabular}[c]{@{}l@{}}Find alternative technologies\\ Adjust scope of project\end{tabular} \\ \bottomrule
+		\end{tabular}
+	}
 
 	\section{Quality Analysis}
 	The main measure of success will be the web application's performance in it's ability to transfer \& stream data between two peers. To track this, I will implement metrics using the WebRTC "getStats" statistics API, which allows for monitoring of the bandwidth usage, packets lost and network delay within a data channel between two peers. I will then gather these statistics in two different cases, one where there is no formal network structure (to find a baseline) and then when the many-to-many network has been implemented to compare if the structured peer-to-peer network does improve performance of the application. This network will also have it's own monitoring to ensure that peers are being correctly organised. Further to this, I will also compare the speeds of file transfer with other services such as DropBox through their API, however this may prove unrealistic as these services will be running on more powerful servers. To certify that the user-experience is acceptable, the application will also be user-tested. The signalling server will be load tested in isolation to make certain it can handle multiple requests to ensure it does not bottleneck the application. 
@@ -230,48 +232,117 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 	\end{figure}
 	During the "Code Review" step, I plan to self-evaluate the task I have completed. On top of this, I will run static code analysis tools (such as FindBugs/PMD for Java) if the task is a coding task and use the code review section StackExchange to get second opinions. If it passes the code review step and it is possible to do so, I will black-box test the task from a user's perspective to see that it actually works as intended. Once every task forming a feature is completed, I will manually test the feature as a whole to see that each task has integrated together as planned.
 	
-	To visualise this workflow, I will use the open source web application "Kanboard" which I have hosted on an AWS EC2 Instance. This will allow me to keep track of progress throughout the duration of the project. To manage the actual changes made to the project files, I have utilised the version control system Git with a private GitHub repository containing my project.
+	To visualise this workflow, I will use the open source web application "Kanboard" which I have hosted on an Amazon Web Instances EC2 Instance. This will allow me to keep track of progress throughout the duration of the project. To manage the actual changes made to the project files, I have utilised the version control system Git with a private GitHub repository containing my project.
 	
 	\chapter{Prototyping}
 		\section{Signalling}
 			\subsection{1st Iteration - Spring Boot}
 				\subsubsection*{Spring WebSockets Over STOMP}
-					The first prototype of the signalling server for Transfer4me was implemented using spring boot. This is a part of the Spring application framework emphasising convention-over-configuration, making it faster and easier to produce a working prototype. To support the WebSocket protocol, Spring uses the "STOMP" sub-protocol to model the message sent between server and client, STOMP is very similar to HTTP in how it models the message but is sent over TCP once the socket is established. Using the STOMP JavaScript client, an application can subscribe to several destinations and listen for events (by asynchronous callbacks) or publish events using a send method that takes a string identifying the event (which in this case is "signal") and another string representing the message. The architecture that was created on top of this protocols used rooms that were created when a user uploads a file designated via a URL which downloaders and streamers then subscribe to when they load the page.
+				The first prototype of the signalling server for Transfer4me was implemented using spring boot. This is a part of the Spring application framework emphasising convention-over-configuration, making it faster and easier to produce a working prototype. To support the WebSocket protocol, Spring uses the "STOMP" sub-protocol to model the message sent between server and client, STOMP is very similar to HTTP in how it models the message but is sent over TCP once the socket is established. Using the STOMP JavaScript client, an application can subscribe to several destinations and listen for events (by asynchronous callbacks) or publish events using a send method that takes a string identifying the event (which in this case is "signal") and another string representing the message. The architecture that was created on top of this protocols used rooms that were created when a user uploads a file designated via a URL which the recipients then subscribe to when they load the page.
 
-					To create the room that the users reside in, the client that uploads the file fires a request to the server using an endpoint independent of WebSockets. When the server
-					receives this request, it generates a Room object and a random unique integer that serves as its identifier. This room is then added to a list of rooms and the Id is returned to the client in the response. The client then uses this id to subscribe to the room over WebSockets. When this connection is established, the server creates a user object and adds it to the correct room. This ID is then appended to the base URL of the page for the uploader to share. Once a downloader loads this url, they are redirected to a page representing the room and upon clicking either the download or stream button, the client will attempt to establish a WebSocket connection using the room id taken from the url.
-				
-					\begin{figure}[H]
-						\caption{Spring signalling establishment sequence}
-						\centering
-						\includegraphics[scale=0.5]{spring-signalling-establishment-sequence.png}
-					\end{figure}
+				To create the room that the users reside in, the client that uploads the file fires a request to the server using an endpoint independent of WebSockets. When the server receives this request, it generates a Room object and a random unique integer that serves as its identifier. This room is then added to a list of rooms and the Id is returned to the client in the response. The uploader then uses this id to subscribe to the room over WebSockets. When this connection is established, the server creates a user object and adds it to the correct room. This ID is then appended to the base URL of the page for the uploader to share. The recipient then loads the URL but only joins the room at the point at which it is necessary (when the recipient either chooses the download or stream button), This is a tactic called "Lazy initialization" and by using it, the server only has to cope with the load from the sockets that actually need to be connected as opposed to users that may be idly sitting on the page.
+							
 				\subsubsection*{Problems}
-					The main problem I found with the Spring implementation was in its limited functionality. It was extremely hard to implement sending messages to individual specific sockets which limited how multiple peer connections could communicate within the same room as they would all be receiving every signal being exchanged. This could be avoided by making each client application only use the messages that were destined for it by appending an identifier to each message but that would not stop the clients from receiving the messages, only how they used them. As a result, this is not a viable solution as it leaves the application open to man in the middle attacks as a user could easily modify the client-side application to log all of the messages that it received which is a major issue in this case where the the majority of the messages sent will be WebRTC metadata containing information such as your IP address.
+				The main problem I found with the Spring implementation was in its limited functionality. It was extremely hard to implement sending messages to individual specific sockets which limited how multiple peer connections could communicate within the same room as they would all be receiving every signal being exchanged. This could be avoided by making each client application only use the messages that were destined for it by appending an identifier to each message but that would not stop the clients from receiving the messages, only how they used them. As a result, this is not a viable solution as it leaves the application open to man in the middle attacks as a user could easily modify the client-side application to log all of the messages that it received which is a major issue in this case where the the majority of the messages sent will be WebRTC meta data containing information such as your IP address.
+				
 			\subsection{2nd Iteration - Node JS}
-				\subsubsection*{Socket.io}
-					
-				\subsubsection*{Dynamic Room Generation}
-				\subsubsection*{Authentication}
-		\section{WebRTC}
-			\subsubsection{One-to-One peer connection}
-			\subsubsection{Using DataChannel to transfer files}
-			\subsubsection{Streaming media via peer connection}
-			\subsubsection{One-to-Many peer connections}
-			\subsubsection{Using GetStats library to measure performance}
-		\section{Interface}
-			\subsubsection{Experimenting with frameworks}
-		\section{Limitations \& Improvements}
-			\subsubsection{Many-to-Many peer connections}
-			\subsubsection{Video Streaming}
-			\subsubsection{Authentication Encryption}
-			\subsubsection{Signalling server performance}
-		\section{Resources used}
+				\subsubsection*{Socket.IO}
+				To solve the problems found with the Spring implementation, the server was refactored using Node.js as a replacement. This is a server-side environment that uses modules written in JavaScript to produce web applications. In my case, choosing this environment gives me the benefit of developing the full stack in one language, making the process a lot easier. Node.js maintains support for WebSockets through the Socket.IO library which offers extended functionality over the Spring counterpart. Socket.IO models communication using the concepts of "rooms" and "namespaces" where a namespace is represented by the endpoint a socket connects to and rooms are channels within this that users can be a part of, allowing for communications to be separated. By default, every socket that connects to a namespace has it's own room which means Socket.IO can broadcast events to specific user's rooms solving the security issues that I was unable to with the spring implementation. As a result of this, the architecture of the server was slightly changed to reflect this new functionality as there was no longer a need to have an object to specifically represent a user. 
+				
+				\begin{figure}[H]
+					\caption{Signalling establishment sequence}
+					\centering
+					\includegraphics[scale=0.5]{signalling-establishment-sequence.png}
+				\end{figure}
+				
+				\subsubsection*{API}
+				At this point, the API was extended order to support the changes in the client side web application's interface. Another endpoint was added to retrieve the file type of the file uploaded as the application would let you select the stream option for any file (including files such as a text document) which would evidentially cause it to break. By adding this endpoint, it meant that the client-side application could find out the file type and only present you with the corresponding options for this file type. It was also extended to provide basic authentication by modifying the current new room endpoint to generate a password if specified and adding a new endpoint to validate the password. As these endpoints were added, I realised that they were becoming inconsistent and should be structured with more consistency. As a result, they were re-factored using a RESTful approach. REST (Representational State Transfer)is an architectural style specifying that an endpoint into a system (such as a URI) should be built around resources with methods for retrieving and manipulating this resource. In the real world, these methods generally translate into HTTP verbs such as GET and POST. For example to add a room, a POST request is sent to the URI "/room" with the body data containing the options and to retrieve a room, a GET request is sent to "/room/{roomId}". These guidelines allow for an easily maintainable API as well as providing the client web application with a predictable and consistent group of URIs to code against. As a RESTful API is modelled in terms of resources, it does not hold the state of a client's journey throughout the web application and thus, this is left up to the client consuming the resource which in this case is a JavaScript application. By doing so, it means the server is under less load and is in a better state to be scaled.
+				
+				\subsubsection{JSON}
+				Both the socket implementation and the API transfer data in a format known as JSON (or JavaScript Object Notation) in order to remain consistent throughout the application. This was chosen as the data transfer language because JavaScript has native functions for parsing to and from JSON as opposed to other common alternatives such as XML, I also found that JSON is a lot easier to read as a human than XML and the benefits of XML such as custom schema support was not deemed necessary.
+		
+		\section{Peer to Peer Communication}
+			\subsection{One-to-one peer connection}
+			As a starting point, I worked on using WebRTC to establish a simple peer connection between two clients. This process is done through negotiation using offers and answers representing what each client wants from the other client and what the client is willing to offer such as media streams and constraints on these. These parameters are modelled using a protocol called "Session Description Protocol" or "SDP" and is generated by WebRTC. In a traditional WebRTC architecture, the peer that sends the offer tends to have something to offer (such as a stream). The architecture for transfer4me is slightly different in this sense as the offer is sent from the recipient even though the uploader is the client with something to offer. This arises from how transfer4me uses WebRTC as a means to transfer files as opposed to its conventional purpose of establishing real-time communications. Due to this, the negotiation process is closer to reflecting the "request-response" pattern used in HTTP transactions more than it does an "offer-answer" model. This architecture also improves performance as the uploader does not have to send and maintain offers to every recipient that joins the room which would put them under a significant amount of unnecessary load especially if the recipient never downloads or streams the file. Instead, the offer is "lazily initialized" by the recipient in the sense it is only created and sent at the point it is needed which in this case is when the recipient either downloads or streams the file, this way the uploader only deals with the recipients as and when they need the file. 
+			
+			Once the offer SDP is created, it is stored as the local description and sent to the uploader via the signalling channel. The uploader receives this, sets it as the remote description and creates an answer SDP which is again set as their local description and sent back to the recipient via the signalling channel. Both these SDPs contain "ICE candidates" which detail potential IP addresses that can potentially be used to establish a connection. However, how WebRTC handles the the retrieval of these ICE candidates depends on the browser. Chrome supports a concept called "trickle ICE" where ICE candidates can be sent on-the-fly as they are received regardless of whether the sdp has been sent or not whereas Firefox is limited as it does not support this and all candidates have to be sent with the sdp. 
+			
+						
+			\begin{figure}[H]
+				\caption{Peer Connection Establishment Sequence in Chrome}
+				\centering
+				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-chrome.png}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\caption{Peer Connection Establishment Sequence in Firefox}
+				\centering
+				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-firefox.png}
+			\end{figure}
+			
+			\subsection{Using RTCDataChannel to transfer files}
+			In order to download a file, the recipient creates a new DataChannel using the RTCPeerConnection API which is added to the offer to be sent to the uploader. Once the connection is established, the uploader waits for the addition and establishment of this RTCDataChannel via an asynchronous event listener. After this, how the file is sent depends on the browser. In Firefox, once the DataChannel is established, a callback is fired which sends the file through. On the recipient-side, an event listener waits for messages to be sent through the DataChannel, once the file is sent through, it is caught by the listener and is downloaded.	However, Chrome has a limit on the size of the messages that can be sent through RTCDataChannel which means the file has to be chunked, slicing a file down into several smaller parts. Although this takes longer, it does have advantages such as allowing a file download to be resumed from a specific point if an error occur. At this point in the development process, I decided to specifically aim towards Firefox as the browser to code towards due to the size limit in Chrome. 
+			
+			\begin{figure}[H]
+				\caption{File sending sequence in Chrome}
+				\centering
+				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-chrome.png}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\caption{File sending sequence in Firefox}
+				\centering
+				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-firefox.png}
+			\end{figure}	
+			
+			Once this file has been received, it is then saved to disk by reading the file in as a data URI and then appending an element to the html with this URL as the reference. A mouse event is then used to simulate the click of this element which triggers the file to download. 
+			
+			\subsection{Streaming media via peer connection}
+				\subsubsection{Audio}
+				In order to stream Audio via WebRTC, a media stream is added to the peer connection by the uploader once the offer has been received from the file recipient. Once the answer sdp containing the media parameters for this stream has been sent back and the peer connection is established, an event listener on the recipient application listens for the event signalling the addition of this stream and uses the HTML5 Audio API to create a new audio tag which is appended to the html. The source attribute of this tag is set to the incoming stream and the audio player is set to play automatically. It is important to note that the stream actually starts to play when it is created by the uploader as it is a "live stream" and if there is any latency issues between the two clients, the recipient may only hear part of the incoming stream.
+
+				\subsubsection{Video}
+				I originally planned on also adding video streaming to the application. However, when I looked into this, the part of the MediaStream processing API drafted by W3C that would capture video as a stream has yet to be implemented by any browsers. Similar to how audio is captured, The captureStreamUntilEnded() function would return a MediaStream containing both the audio and video tracks of a file which could then be passed to the peer connection and played by a HTML5 video element on the recipient's application.
+			
+			\subsection{One-to-many peer connections}
+			Switching to the Node.js implementation of the server allowed me to implement one-to-many peer connections with ease. To do this, the uploader instantiates new peer connections and adds them to an array which are then used to communicate with the recipients which hold one peer connection. Each message sent via the signalling server contains the socketID of the user it is from and the user it is destined towards, which is then extracted by the server and used to send messages to only them, this way no socket information can be exposed to anyone except for the user it belongs to. 
+			
+			One of the big disadvantages of this is the potential amount of load on the uploader as they now have to maintain and search through an array of peer connections and as this gets larger, the larger the load. To manage this, the recipient sends a message to the uploader signifying to close the connection and remove it from the array as soon as the recipient has downloaded the file. In the future, I also hope to add this functionality for when a MediaStream ends but currently the MediaStream API in Firefox has no way of establishing when a stream has finished. The better way of achieving this would be through using a many-to-many network of peer connections and setting a limit to the amount of peers that can be downloading or streaming from an uploader so that when they reach this limit, the load is offloaded to another node that has already downloaded the file. When the whole pools of uploaders becomes saturated with peers, the rest of the peers are added to a FIFO queue and wait for a peer with the file to become free.
+			
+			\subsection{GetStats Library}
+			
+		\section{Application}
+			\subsection{Separation of Concerns}
+			As JavaScript can easily become messy, I separated each layer of JavaScript into individual modules by their responsibilities. These layers consisted of the presentation code that had the responsibility of listening to and manipulating the document object model, the peer-to-peer network code that worked with WebRTC to established the peer connections and the signalling code that established the socket connection. By separating these layers into their own modules, the application was left with a relatively simple architecture which can be easily extended and maintained without causing side-effects in other unrelated modules.
+			
+			\begin{figure}[H]
+				\caption{Module Architecture}
+				\centering
+				\includegraphics[scale=0.5]{file-architecture.png}
+			\end{figure}
+			
+			
+			\subsection{User Interface}
+				\subsubsection{Experimenting with JavaScript Frameworks}
+				\subsubsection{Application States}
 	\chapter{Outcomes}
 		\section{Data}
 		\section{Discussion}
-			\subsection{Comparison to other services}
-			
+	\chapter{Review \& Reflection}		
+		\section{Other Limitations \& Improvements}
+			\subsection{Testing}
+			\subsection{Authentication Encryption}
+			\subsection{Cross-platform Compatibility}
+			\subsection{HATEOAS}
+		\section{Methodology}
+			\subsection{Kanban}
+		\section{Technologies}
+			\subsection{JavaScript build tools}
+			\subsection{Development Environments}
+			\subsection{Git}
+			\subsection{Amazon Web Instances}
+
+					
 	\begin{thebibliography}{20}
 		\bibitem{Unstructured P2P Diagram}
 		An Unstructured Peer-To-Peer Overlay Network. Available: http://www.hindawi.com/journals/jcnc/2012/485875/fig1/. Last Accessed 6 Nov. 2015.

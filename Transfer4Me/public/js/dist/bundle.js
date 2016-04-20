@@ -21282,7 +21282,6 @@ module.exports = function () {
                             connection.peerConnection.setRemoteDescription(
                                 new RTCSessionDescription(signal.sdp),
                                 function () {
-                                    console.log(p2p);
                                     answerOffer(connection);
                                 },
                                 app.logErrorToConsole
@@ -21293,7 +21292,6 @@ module.exports = function () {
                             connection.peerConnection.setRemoteDescription(
                                 new RTCSessionDescription(signal.sdp),
                                 function () {
-                                    console.log(p2p);
                                     answerOffer(connection);
                                 },
                                 app.logErrorToConsole
@@ -21310,9 +21308,7 @@ module.exports = function () {
                 if (signal.sdp) {
                     p2p.connection.peerConnection.setRemoteDescription(
                         new RTCSessionDescription(signal.sdp),
-                        function () {
-                            console.log(p2p);
-                        },
+                        function () {},
                         app.logErrorToConsole
                     );
                 } else if (signal.candidate) {
@@ -21388,10 +21384,13 @@ module.exports = function () {
     }
 
     function prepareForMediaStream() {
-        p2p.connection.peerConnection.onaddstream = function (event) {
+        var connection = p2p.connection.peerConnection;
+        connection.onaddstream = function (event) {
             console.log("STREAM RECEIVED");
+            connection.getStats(connection, function(results) {
+                console.log(results);
+            }, null);
             var audioPlayer = $("audio");
-            var stream = event.stream;
             audioPlayer.attr("src", window.URL.createObjectURL(event.stream));
             audioPlayer.trigger("play");
         }

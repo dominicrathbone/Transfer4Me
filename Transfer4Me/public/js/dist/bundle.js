@@ -21411,7 +21411,7 @@ module.exports = function () {
                     reader.readAsDataURL(data);
                     reader.onload = function (event) {
                         $('progress').val(40);
-                        var fileDataURL = event.target.result; // it is Data URL...can be saved to disk
+                        var fileDataURL = event.target.result;
                         saveToDisk(fileDataURL, p2p.fileName);
                     };
                 }
@@ -21420,21 +21420,6 @@ module.exports = function () {
     }
 
     function saveToDisk(fileUrl, fileName) {
-        //var hyperlink = $('<a target="_blank"/>')
-        //hyperlink.attr("href", fileUrl);
-        //hyperlink.attr("download", fileName || fileUrl);
-        //
-        //$('body').append(hyperlink);
-        //hyperlink.click(function() {
-        //    hyperlink.remove();
-        //});
-        //hyperlink.trigger(jQuery.Event("click"));
-        //
-        //
-        //if (!navigator.mozGetUserMedia) { // if it is NOT Firefox
-        //    window.URL.revokeObjectURL(hyperlink.href);
-        //}
-        //
         var hyperlink = document.createElement('a');
         hyperlink.href = fileUrl;
         hyperlink.download = fileName || fileUrl;

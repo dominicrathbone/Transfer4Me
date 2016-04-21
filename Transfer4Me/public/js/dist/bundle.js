@@ -21078,7 +21078,7 @@ module.exports = yeast;
 },{}],62:[function(require,module,exports){
 (function (global){
 //@sourceURL=app.js
-global.$ = global.jQuery = require('jquery');
+global.$ = require('jquery');
 var Dropzone = require('dropzone');
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
@@ -21087,16 +21087,26 @@ var content = $("#content");
 function User(userId, userType) {
     this.userId = userId;
     this.userType = userType;
+    if(navigator.webkitGetUserMedia) {
+        this.isChrome = true;
+    } else if(navigator.mozGetUserMedia) {
+        this.isFirefox = true;
+    }
 }
 
 $(document).ready(function () {
-    var roomId = checkPathForRoomID();
+    var roomId = extractRoomIdFromPath();
     if (roomId == null) {
         setFileUploadState();
     } else {
         setJoinRoomState(roomId);
     }
 });
+
+$(window).on("beforeunload",function() {
+    p2pChannel.endSession();
+    window.history.go(-1);
+})
 
 function setFileUploadState() {
     var passwordFileInput = $("<div id='passwordInput' class='centered row'>" +
@@ -21179,7 +21189,7 @@ function setStreamingState() {
     $('#audioPlayer').removeClass('hidden');
 }
 
-function checkPathForRoomID() {
+function extractRoomIdFromPath() {
     var roomId = window.location.pathname.split("/")[2];
     if (roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
         return roomId;
@@ -21208,14 +21218,16 @@ module.exports = function () {
     };
     this.user;
     this.connection;
+    this.sessionStarted = false;
     this.incomingConnections = [];
     this.signallingChannel = new signaller();
     this.roomId = null;
     this.fileName = null;
-    var dataChannel;
+    this.chunkedFile = [];
     var p2p = this;
 
     this.startSession = function (roomId, passworded, user, file, callback) {
+        p2p.sessionStarted = true;
         var password;
         if (roomId == null) {
             var result = p2p.signallingChannel.addRoom(passworded);
@@ -21235,6 +21247,21 @@ module.exports = function () {
             }
         });
     };
+
+    this.endSession = function() {
+        if(p2p.sessionStarted) {
+            if (p2p.user.userType !== p2p.UserType.UPLOADER) {
+                p2p.signallingChannel.send("signal", JSON.stringify({
+                    'user': p2p.user,
+                    'toUser': p2p.connection.toUser,
+                    "message": "CLOSE_CONNECTION"
+                }));
+                p2p.signallingChannel.disconnect();
+            } else {
+                p2p.signallingChannel.disconnect();
+            }
+        }
+    }
 
     function onSignallerConnect(roomId, user, file) {
         p2p.user = user;
@@ -21324,6 +21351,7 @@ module.exports = function () {
     function sendOffer() {
         p2p.connection.peerConnection.createOffer(function (description) {
             p2p.connection.peerConnection.setLocalDescription(description, function () {
+                p2p.connection.peerConnection.localDescription.sdp = transformOutgoingSdp(p2p.connection.peerConnection.localDescription.sdp);
                 p2p.signallingChannel.send('signal', JSON.stringify({
                     'user': p2p.user,
                     'toUser': p2p.connection.toUser,
@@ -21338,6 +21366,9 @@ module.exports = function () {
         if (connection.peerConnection.remoteDescription.type == 'offer') {
             connection.peerConnection.createAnswer(function (description) {
                 connection.peerConnection.setLocalDescription(description, function () {
+                    if(connection.toUser.isChrome) {
+                        connection.peerConnection.localDescription.sdp = transformOutgoingSdp(connection.peerConnection.localDescription.sdp);
+                    }
                     p2p.signallingChannel.send('signal', JSON.stringify({
                         'user': p2p.user,
                         'toUser': connection.toUser,
@@ -21371,11 +21402,19 @@ module.exports = function () {
 
     function sendFileOnDataChannel(connection, file, callback) {
         connection.peerConnection.ondatachannel = function (event) {
-            dataChannel = event.channel;
+            var dataChannel = event.channel;
             dataChannel.onopen = function () {
                 console.log("SENDING FILE");
-                dataChannel.send(file.name);
-                dataChannel.send(file);
+                dataChannel.send(JSON.stringify({"fileName":file.name}));
+                if(connection.toUser.isChrome || p2p.user.isChrome) {
+                    var reader = new window.FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(event) {
+                        sendFileInChunks(event, null, dataChannel);
+                    }
+                } else if(connection.toUser.isFirefox && p2p.user.isFirefox) {
+                    dataChannel.send(file);
+                }
             }
         };
         if(callback !== null) {
@@ -21395,18 +21434,24 @@ module.exports = function () {
             audioPlayer.trigger("play");
         }
     }
-
+    var progressCounter = 0;
     function prepareForDownload(roomId) {
-        dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
+        var dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
         dataChannel.onopen = function () {
-            console.log("DATA CHANNEL OPEN");
             dataChannel.onmessage = function (event) {
                 var data = event.data;
                 if (typeof data === 'string' || data instanceof String) {
-                    p2p.fileName = data;
+                    var dataObject = JSON.parse(event.data);
+                    if(dataObject.fileName) {
+                        p2p.fileName = dataObject.fileName;
+                    } else if(dataObject.chunk) {
+                        if(progressCounter < 60){
+                            $('progress').val(progressCounter++);
+                        }
+                        appendChunkToFile(dataObject);
+                    }
                 } else {
                     $('progress').val(20);
-                    console.log("FILE RECEIVED");
                     var reader = new window.FileReader();
                     reader.readAsDataURL(data);
                     reader.onload = function (event) {
@@ -21439,8 +21484,7 @@ module.exports = function () {
         $('progress').val(80);
         hyperlink.dispatchEvent(mouseEvent);
 
-        // if you're writing cross-browser function:
-        if(!navigator.mozGetUserMedia) { // i.e. if it is NOT Firefox
+        if(!navigator.mozGetUserMedia) {
             window.URL.revokeObjectURL(hyperlink.href);
         }
     }
@@ -21464,62 +21508,53 @@ module.exports = function () {
             }
         }
     }
+
+    //Code for Chrome implementation.
+    function transformOutgoingSdp(sdp) {
+        var splitted = sdp.split("b=AS:30");
+        var newSDP = splitted[0] + "b=AS:1638400" + splitted[1];
+        return newSDP;
+    }
+
+    function sendFileInChunks(event, text, dataChannel) {
+        var data = {};
+        var chunkLength = 15000;
+        if ((event)) {
+            setTimeout(null, 10000);
+            text = event.target.result;
+        }
+        if (text.length > chunkLength) {
+            data.chunk = text.slice(0, chunkLength);
+        } else {
+            data.chunk = text;
+            data.last = true;
+        }
+
+        dataChannel.send(JSON.stringify(data));
+        console.log("CHUNK SENT");
+
+        var remainingDataURL = text.slice(data.chunk.length);
+
+        if (remainingDataURL.length) {
+            setTimeout(function () {
+                sendFileInChunks(null, remainingDataURL, dataChannel);
+            }, 1000);
+        }
+    }
+
+    function appendChunkToFile(data) {
+        console.log("CHUNK RECEIVED");
+        p2p.chunkedFile.push(data.chunk);
+        if (data.last) {
+            $('progress').val(60);
+            saveToDisk(p2p.chunkedFile.join(''), p2p.fileName);
+        }
+    }
 }
 
-//Code for Chrome implementation.
-//function transformOutgoingSdp(sdp) {
-//    console.log(sdp);
-//    var splitted = sdp.split("b=AS:30");
-//    console.log(splitted[0]);
-//    console.log(splitted[1]);
-//    var newSDP = splitted[0] + "b=AS:1638400" + splitted[1];
-//    return newSDP;
-//}
-//
-//function sendFileInChunks(event, text) {
-//    var data = {};
-//    var chunkLength = 1638400;
-//    if ((event)) {
-//        setTimeout(null, 10000);
-//        text = event.target.result;
-//    }
-//    if (text.length > chunkLength) {
-//        data.message = text.slice(0, chunkLength);
-//    } else {
-//        data.message = text;
-//        data.last = true;
-//    }
-//
-//    p2p.dataChannel.send(JSON.stringify(data));
-//
-//    var remainingDataURL = text.slice(data.message.length);
-//
-//    if ((remainingDataURL.length)) {
-//        setTimeout(function () {
-//            sendFileInChunks(null, remainingDataURL);
-//        }, 1000);
-//    }
-//}
-//
-//function storeFile(data) {
-//    console.log(data);
-//    p2p.transferedFile.push(data.message);
-//    if (data.last) {
-//        saveToDisk(p2p.transferedFile.join(''), data.fileName);
-//    }
-//}
-//
-//function transferFile(file) {
-//    if (window.File && window.FileReader && window.FileList && window.Blob) {
-//        if (file === undefined || file === null) {
-//            app.logErrorToConsole("file is undefined or null");
-//        } else {
-//            p2p.dataChannel.send(file);
-//        }
-//    } else {
-//        app.logErrorToConsole("HTML5 File API is not supported in this browser");
-//    }
-//}
+
+
+
 
 
 
@@ -21552,7 +21587,7 @@ module.exports = function () {
         var result = null;
         var url ="/room";
         if(passworded) {
-            url = url.concat("?passworded=true")
+            url = url.concat("?passworded=true");
         }
         $.ajax({
             url: url,

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  20 APR 2016 14:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  21 APR 2016 20:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -707,107 +707,136 @@ e-firefox.png used on input line 295.
 (pdftex.def)             Requested size: 441.64893pt x 376.90721pt.
 
 [20] [21]
-<resources/images/file-architecture.png, id=101, 585.68813pt x 252.19218pt>
+<resources/images/One-to-many.png, id=101, 304.13625pt x 243.91125pt>
+File: resources/images/One-to-many.png Graphic file (type png)
+
+<use resources/images/One-to-many.png>
+Package pdftex.def Info: resources/images/One-to-many.png used on input line 31
+3.
+(pdftex.def)             Requested size: 152.06775pt x 121.95532pt.
+
+<resources/images/many-to-many.png, id=102, 514.92375pt x 294.09875pt>
+File: resources/images/many-to-many.png Graphic file (type png)
+
+<use resources/images/many-to-many.png>
+Package pdftex.def Info: resources/images/many-to-many.png used on input line 3
+21.
+(pdftex.def)             Requested size: 257.46124pt x 147.04901pt.
+ [22 <./resources/images/One-to-many.png>] <resources/images/file-architecture.
+png, id=107, 585.68813pt x 252.19218pt>
 File: resources/images/file-architecture.png Graphic file (type png)
 
 <use resources/images/file-architecture.png>
 Package pdftex.def Info: resources/images/file-architecture.png used on input l
-ine 321.
+ine 335.
 (pdftex.def)             Requested size: 292.84334pt x 126.09578pt.
- [22 <./resources/images/file-architecture.png>]
+ [23 <./resources/images/many-to-many.png> <./resources/images/file-architectur
+e.png>]
+<resources/images/colours.png, id=112, 2529.45pt x 2104.86375pt>
+File: resources/images/colours.png Graphic file (type png)
+
+<use resources/images/colours.png>
+Package pdftex.def Info: resources/images/colours.png used on input line 349.
+(pdftex.def)             Requested size: 505.88104pt x 420.9653pt.
+
+Overfull \hbox (36.12602pt too wide) in paragraph at lines 349--350
+ [][] 
+ []
+
+[24 <./resources/images/colours.png>]
 Chapter 6.
-[23
+[25
 
 ]
 Chapter 7.
-[24
+[26
 
 ]
-Overfull \hbox (71.66275pt too wide) in paragraph at lines 349--350
+Overfull \hbox (71.66275pt too wide) in paragraph at lines 371--372
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
  http://www.hindawi.com/journals/jcnc/2012/485875/fig1/.
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 355--356
+Underfull \hbox (badness 3058) in paragraph at lines 377--378
 []\OT1/cmr/m/n/10 Schulzrinne, et al. (Febru-ary 2010). Se-cu-rity in P2P Re-al
 -time Com-mu-ni-ca-tions. Avail-able:
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 359--360
+Underfull \hbox (badness 1571) in paragraph at lines 381--382
 \OT1/cmr/m/n/10 Avail-able: https://www.scss.tcd.ie/publications/tech-reports/r
 eports.10/TCD-CS-2010-06.pdf. Last
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 365--366
+Underfull \hbox (badness 10000) in paragraph at lines 387--388
 \OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
 ow-government-to-ban-end-to-end-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 367--368
+Underfull \hbox (badness 10000) in paragraph at lines 389--390
 []\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
 . Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 367--368
+Underfull \hbox (badness 10000) in paragraph at lines 389--390
 \OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
 long-are-my-uploads-available-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 373--374
+Underfull \hbox (badness 10000) in paragraph at lines 395--396
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
  code. Avail-able:
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 375--376
+Underfull \hbox (badness 5637) in paragraph at lines 397--398
 []\OT1/cmr/m/n/10 Adam Bergkvist, Daniel C. Bur-nett, Cullen Jen-nings, Anant N
 arayanan (un-til Novem-
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 375--376
+Underfull \hbox (badness 4060) in paragraph at lines 397--398
 \OT1/cmr/m/n/10 ber 2012). (2011). We-bRTC 1.0: Real-time Com-mu-ni-ca-tion Be-
 tween Browsers. Avail-able:
  []
 
-[25
+[27
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 381--382
+Underfull \hbox (badness 10000) in paragraph at lines 403--404
 []\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
 ro-to-col (JSEP).
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 381--382
+Underfull \hbox (badness 10000) in paragraph at lines 403--404
 \OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
 2012Jan/att-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 387--388
+Underfull \hbox (badness 10000) in paragraph at lines 409--410
 []\OT1/cmr/m/n/10 Jesup, et al. (2015). We-bRTC Data Chan-nel Es-tab-lish-ment 
 Pro-to-col. Avail-able:
  []
 
 
-Underfull \hbox (badness 1688) in paragraph at lines 389--390
+Underfull \hbox (badness 1688) in paragraph at lines 411--412
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-de
 velopment/tdd-circle-of-life.png. Last
  []
 
-[26] (./FinalReport.aux) ) 
+[28] (./FinalReport.aux) ) 
 Here is how much of TeX's memory you used:
- 13816 strings out of 493054
- 271241 string characters out of 6138326
+ 13831 strings out of 493054
+ 271712 string characters out of 6138326
  328404 words of memory out of 5000000
- 17063 multiletter control sequences out of 15000+600000
+ 17075 multiletter control sequences out of 15000+600000
  9443 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,13n,68p,1892b,1518s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -819,10 +848,10 @@ c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive
 f-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmtt8.pfb>
-Output written on FinalReport.pdf (27 pages, 615218 bytes).
+Output written on FinalReport.pdf (29 pages, 1177807 bytes).
 PDF statistics:
- 145 PDF objects out of 1000 (max. 8388607)
- 89 compressed objects within 1 object stream
+ 157 PDF objects out of 1000 (max. 8388607)
+ 93 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 68 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 83 words of extra memory for PDF output out of 10000 (max. 10000000)
 

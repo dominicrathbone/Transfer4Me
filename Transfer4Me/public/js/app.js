@@ -1,5 +1,5 @@
 //@sourceURL=app.js
-global.$ = global.jQuery = require('jquery');
+global.$ = require('jquery');
 var Dropzone = require('dropzone');
 var p2p = require('./p2p.js');
 var p2pChannel = new p2p();
@@ -8,16 +8,26 @@ var content = $("#content");
 function User(userId, userType) {
     this.userId = userId;
     this.userType = userType;
+    if(navigator.webkitGetUserMedia) {
+        this.isChrome = true;
+    } else if(navigator.mozGetUserMedia) {
+        this.isFirefox = true;
+    }
 }
 
 $(document).ready(function () {
-    var roomId = checkPathForRoomID();
+    var roomId = extractRoomIdFromPath();
     if (roomId == null) {
         setFileUploadState();
     } else {
         setJoinRoomState(roomId);
     }
 });
+
+$(window).on("beforeunload",function() {
+    p2pChannel.endSession();
+    window.history.go(-1);
+})
 
 function setFileUploadState() {
     var passwordFileInput = $("<div id='passwordInput' class='centered row'>" +
@@ -100,7 +110,7 @@ function setStreamingState() {
     $('#audioPlayer').removeClass('hidden');
 }
 
-function checkPathForRoomID() {
+function extractRoomIdFromPath() {
     var roomId = window.location.pathname.split("/")[2];
     if (roomId !== null && roomId !== "" && typeof roomId !== "undefined") {
         return roomId;

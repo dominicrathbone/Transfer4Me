@@ -26,7 +26,7 @@ module.exports = function () {
         var result = null;
         var url ="/room";
         if(passworded) {
-            url = url.concat("?passworded=true")
+            url = url.concat("?passworded=true");
         }
         $.ajax({
             url: url,

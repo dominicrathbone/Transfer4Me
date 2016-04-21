@@ -82,28 +82,6 @@ app.get('/', function (req, res) {
     res.sendFile("public/index.html", {"root": __dirname});
 });
 
-app.get('/room/:room', function (req, res) {
-    var roomFound = false;
-    findRoom(req.params.room, function (room) {
-        roomFound = true;
-        if (room.password == null || room.password == req.cookies.password) {
-            res.sendFile("public/index.html", {"root": __dirname});
-        } else if (room.password !== null) {
-            res.sendFile("public/password.html", {"root": __dirname});
-        }
-    });
-
-    if (!roomFound) {
-        res.sendStatus(404);
-    }
-});
-
-app.get('/room/:room/fileType', function (req, res) {
-    findRoom(req.params.room, function (room) {
-        res.json(JSON.stringify({"fileType" : room.fileType}));
-    });
-});
-
 app.get('/room', function (req, res) {
     var roomId = uuid.v1();
     var password;
@@ -117,8 +95,33 @@ app.get('/room', function (req, res) {
     var result = new Object();
     result.roomId = roomId;
     result.password = password;
-
+    res.status(201);
     res.json(JSON.stringify(result));
+});
+
+app.get('/room/:room', function (req, res) {
+    var roomFound = false;
+    findRoom(req.params.room, function (room) {
+        roomFound = true;
+        if (room.password == null || room.password == req.cookies.password) {
+            res.sendFile("public/index.html", {"root": __dirname});
+        } else if (room.password !== null) {
+            res.sendFile("public/password.html", {"root": __dirname});
+        }
+    });
+
+    if (!roomFound) {
+        res.redirect("/");
+    }
+});
+
+app.get('/room/:room/fileType', function (req, res) {
+    findRoom(req.params.room, function (room) {
+        if(room.fileType != null) {
+            res.status(200);
+            res.json(JSON.stringify({"fileType" : room.fileType}));
+        }
+    });
 });
 
 app.post('/room/:room/password', function (req, res) {
@@ -129,6 +132,7 @@ app.post('/room/:room/password', function (req, res) {
             var result = new Object();
             result.accepted = true;
             result.roomId = room.id;
+            res.status(200);
             res.json(JSON.stringify(result));
         } else {
             res.sendStatus(401);
@@ -138,8 +142,9 @@ app.post('/room/:room/password', function (req, res) {
 
 function findRoom(roomId, foundCallback) {
     for (var i = 0; i < rooms.length; i++) {
-        if (rooms[i].id == (roomId)) {
+        if (rooms[i] !== null && rooms[i] !== undefined && rooms[i].id == roomId) {
             foundCallback(rooms[i]);
+            return;
         }
     }
 }

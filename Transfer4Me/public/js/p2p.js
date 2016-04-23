@@ -81,6 +81,7 @@ module.exports = function () {
         this.peerConnection.onicecandidate = function(event) {
             if (event.candidate) {
                 p2p.signallingChannel.send('signal', JSON.stringify({
+                    'room': p2p.roomId,
                     'user': p2p.user,
                     'toUser': connection.toUser,
                     "candidate": event.candidate
@@ -91,7 +92,6 @@ module.exports = function () {
 
     function onSignal(data) {
         var signal = JSON.parse(data);
-        console.log(signal);
         if (signal.user) {
             if (signal.user.userType == p2p.UserType.STREAMER || signal.user.userType == p2p.UserType.DOWNLOADER) {
                 var connection = getConnection(signal.user);
@@ -134,7 +134,6 @@ module.exports = function () {
                     p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
             } else if(signal.user == "SERVER") {
-                console.log(signal.users);
                 $("#users").text(signal.users + " user(s) connected to you.");
             }
         }
@@ -218,17 +217,16 @@ module.exports = function () {
         var connection = p2p.connection.peerConnection;
         connection.onaddstream = function (event) {
             console.log("STREAM RECEIVED");
-            connection.getStats(connection, function(results) {
-                console.log(results);
-            }, null);
             var audioPlayer = $("audio");
             audioPlayer.attr("src", window.URL.createObjectURL(event.stream));
             audioPlayer.trigger("play");
+            gatherStats(connection,1000);
         }
     }
+
     var progressCounter = 0;
     function prepareForDownload(roomId) {
-        var dataChannel = p2p.connection.peerConnection.createDataChannel(roomId, null);
+        var dataChannel = p2p.connection.peerConnection.createDataChannel(roomId,  {reliable:true});
         dataChannel.onopen = function () {
             dataChannel.onmessage = function (event) {
                 var data = event.data;
@@ -301,7 +299,6 @@ module.exports = function () {
         }
     }
 
-    //Code for Chrome implementation.
     function transformOutgoingSdp(sdp) {
         var splitted = sdp.split("b=AS:30");
         var newSDP = splitted[0] + "b=AS:1638400" + splitted[1];
@@ -310,7 +307,7 @@ module.exports = function () {
 
     function sendFileInChunks(event, text, dataChannel) {
         var data = {};
-        var chunkLength = 15000;
+        var chunkLength = 64000;
         if ((event)) {
             setTimeout(null, 10000);
             text = event.target.result;
@@ -323,10 +320,9 @@ module.exports = function () {
         }
 
         dataChannel.send(JSON.stringify(data));
-        console.log("CHUNK SENT");
+        console.log(data);
 
         var remainingDataURL = text.slice(data.chunk.length);
-
         if (remainingDataURL.length) {
             setTimeout(function () {
                 sendFileInChunks(null, remainingDataURL, dataChannel);
@@ -335,11 +331,25 @@ module.exports = function () {
     }
 
     function appendChunkToFile(data) {
-        console.log("CHUNK RECEIVED");
+        console.log(data);
         p2p.chunkedFile.push(data.chunk);
         if (data.last) {
             $('progress').val(60);
             saveToDisk(p2p.chunkedFile.join(''), p2p.fileName);
+        }
+    }
+
+    function gatherStats(connection,delay) {
+        if(p2p.user.isChrome) {
+            connection.getStats(connection, function(results) {
+                console.log(results);
+                p2p.signallingChannel.send("stats", JSON.stringify({
+                    roomId:p2p.roomId,
+                    user:p2p.user,
+                    toUser:connection.toUser,
+                    results: results
+                }))
+            });
         }
     }
 }

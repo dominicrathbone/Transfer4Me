@@ -235,6 +235,25 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 	To visualise this workflow, I will use the open source web application "Kanboard" which I have hosted on an Amazon Web Instances EC2 Instance. This will allow me to keep track of progress throughout the duration of the project. To manage the actual changes made to the project files, I have utilised the version control system Git with a private GitHub repository containing my project.
 	
 	\chapter{Prototyping}
+		\section{Architecture}
+			\begin{figure}[H]
+				\caption{Application Architecture}
+				\centering
+				\includegraphics[scale=0.5]{application-architecture.png}
+			\end{figure}
+			To organise the client-side application, I coded each layer of JavaScript in individual modules, separated by their responsibilities. These layers consisted of the presentation code that had the responsibility of listening to and manipulating the document object model, the peer-to-peer network code that worked with WebRTC to established the peer connections and the signalling code that established the socket connection. By separating these layers into their own modules, the application was left with a relatively simple architecture which can be easily extended and maintained without causing side-effects in other unrelated modules.
+			
+			In order to model these modules and to manage dependencies between them, a build tool called Browserify was used. Traditionally, all of the JavaScript files are added using script tags within the html document they are assocaited with. Instead, this tool allows you to add a JavaScript file as a dependency within another by using a function "require('module')" to simulate the modular structure Node.js uses. This makes it clear which dependencies each modules require. To do this, The JavaScript files are wrapped in a global function which Browserify can then export and bundle together into one larger JavaScript file using a command line interface which is then referred to in the HTML document. By doing this, the client side JavaScript can also access node modules that you may have installed within the project as well.
+			
+			The server uses the Express.js web framework for two purposes, to serve files to the browser by resolving URLs to static resources and to also provide the RESTful API which the client-side JavaScript communicates with by routing HTTP requests to functions in server.js. As the server-side functionality was minimal, there was no need for more than one JavaScript module to separate the functionality. Although in the future, if the web server functionality such as the API is expanded, it may need to be moved to it's own module. Both the server and the client also uses the Socket.io library to support bi-directional communications between server and client via the WebSocket Protocol. 
+			
+			\subsection{Application Flow}
+			\begin{figure}[H]
+				\caption{Application Flow}
+				\centering
+				\includegraphics[scale=0.6]{application-flow.png}
+			\end{figure}
+			
 		\section{Signalling}
 			\subsection{1st Iteration - Spring Boot}
 				\subsubsection*{Spring WebSockets Over STOMP}
@@ -256,7 +275,23 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 				\end{figure}
 				
 				\subsubsection*{API}
-				At this point, the API was extended order to support the changes in the client side web application's interface. Another endpoint was added to retrieve the file type of the file uploaded as the application would let you select the stream option for any file (including files such as a text document) which would evidentially cause it to break. By adding this endpoint, it meant that the client-side application could find out the file type and only present you with the corresponding options for this file type. It was also extended to provide basic authentication by modifying the current new room endpoint to generate a password if specified and adding a new endpoint to validate the password. As these endpoints were added, I realised that they were becoming inconsistent and should be structured with more consistency. As a result, they were re-factored using a RESTful approach. REST (Representational State Transfer)is an architectural style specifying that an endpoint into a system (such as a URI) should be built around resources with methods for retrieving and manipulating this resource. In the real world, these methods generally translate into HTTP verbs such as GET and POST. For example to add a room, a POST request is sent to the URI "/room" with the body data containing the options and to retrieve a room, a GET request is sent to "/room/{roomId}". These guidelines allow for an easily maintainable API as well as providing the client web application with a predictable and consistent group of URIs to code against. As a RESTful API is modelled in terms of resources, it does not hold the state of a client's journey throughout the web application and thus, this is left up to the client consuming the resource which in this case is a JavaScript application. By doing so, it means the server is under less load and is in a better state to be scaled.
+				At this point, the API was extended order to support the changes in the client side web application's interface. Another endpoint was added to retrieve the file type of the file uploaded as the application would let you select the stream option for any file (including files such as a text document) which would evidentially cause it to break. By adding this endpoint, it meant that the client-side application could find out the file type and only present you with the corresponding options for this file type. It was also extended to provide basic authentication by modifying the current new room endpoint to generate a password if specified and adding a new endpoint to validate the password. 
+				
+				As these endpoints were added, I realised that the API was becoming inconsistent and should be restructured for clarity. As a result, they were re-factored using a RESTful approach. REST (Representational State Transfer) is an architectural style specifying that an endpoint into a system (such as a URI) should be built around resources with methods for retrieving and manipulating this resource. In the real world, these methods generally translate into HTTP verbs such as GET and POST. For example to add a room, a POST request is sent to the URI "/room" and to retrieve a room, a GET request is sent to "/room/{roomId}". These guidelines allow for an easily maintainable API as well as providing the client web application with a predictable and consistent group of URIs to code against. As a RESTful API is modelled in terms of resources, it does not hold the state of a client's journey throughout the web application and thus, this is left up to the client consuming the resource which in this case is a JavaScript application. By doing so, it means the server is under less load and is in a better state to be scaled.
+				
+				\begin{description}
+					\item [API Documentation]
+				
+					\item[GET /room] 
+					Adds a unique room to the list of rooms on the server. Returns a JSON object containing a UUID for the room and, if the passworded field is present in the request body, a random string password.
+						
+					\item[GET /room/\{roomId\}/fileType] 
+					Returns the MIME type of the file associated with the room.
+					
+					\item[POST /room/\{roomId\}/password] 
+					Takes a password from the request body and compares it with the password associated with the room. If the password is correct, it will add a cookie containing the password to the response. If the password is false, it will return a 401 Unauthorized HTTP status code.
+					
+				\end{description}
 				
 				\subsubsection{JSON}
 				Both the socket implementation and the API transfer data in a format known as JSON (or JavaScript Object Notation) in order to remain consistent throughout the application. This was chosen as the data transfer language because JavaScript has native functions for parsing to and from JSON as opposed to other common alternatives such as XML, I also found that JSON is a lot easier to read as a human than XML and the benefits of XML such as custom schema support was not deemed necessary.
@@ -267,7 +302,6 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 			
 			Once the offer SDP is created, it is stored as the local description and sent to the uploader via the signalling channel. The uploader receives this, sets it as the remote description and creates an answer SDP which is again set as their local description and sent back to the recipient via the signalling channel. Both these SDPs contain "ICE candidates" which detail potential IP addresses that can potentially be used to establish a connection. However, how WebRTC handles the the retrieval of these ICE candidates depends on the browser. Chrome supports a concept called "trickle ICE" where ICE candidates can be sent on-the-fly as they are received regardless of whether the sdp has been sent or not whereas Firefox is limited as it does not support this and all candidates have to be sent with the sdp. 
 			
-						
 			\begin{figure}[H]
 				\caption{Peer Connection Establishment Sequence in Chrome}
 				\centering
@@ -281,31 +315,33 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 			\end{figure}
 			
 			\subsection{Using RTCDataChannel to transfer files}
-			In order to download a file, the recipient creates a new DataChannel using the RTCPeerConnection API which is added to the offer to be sent to the uploader. Once the connection is established, the uploader waits for the addition and establishment of this RTCDataChannel via an asynchronous event listener. After this, how the file is sent depends on the browser. In Firefox, once the DataChannel reaches it's open state, a callback is fired which sends the file through. On the recipient peer's client, an event listener waits for messages to be sent through which then catches the file and saves it to the disk. However, Chrome's implementation of RTCDataChannel has a size limit on the messages that can be sent meaning the file has to be sliced into several smaller parts which can then by reassembled by the recipient (a process called chunking). The major problem with this approach is that it significantly bottlenecks how fast a file can be sent to the recipient in Chrome. Due to this, Firefox is the more optimised browser for downloading files via RTCDataChannel.
+			In order to download a file, the recipient creates a new DataChannel using the RTCPeerConnection API which is added to the offer to be sent to the uploader. Once the connection is established, the uploader waits for the addition and establishment of this RTCDataChannel via an asynchronous event listener. After this, how the file is sent depends on the browser. In Firefox, once the DataChannel reaches it's open state, a callback is fired which sends the file through. On the recipient peer's client, an event listener waits for messages to be sent through which then catches the file and saves it to the disk. However, Chrome's implementation of RTCDataChannel has a size limit on the messages that can be sent meaning the file has to be sliced into several smaller parts which can then by reassembled by the recipient (a process called chunking). The major problem with this approach is that it significantly bottlenecks how fast a file can be sent to the recipient in Chrome. Although this allows for cross-browser file sharing, sending files from Firefox to Firefox will always be faster for downloading files via the application. Once this file has been received, it is then saved to disk by reading the file in as a data URI and then appending an element to the html with this URL as the reference. A mouse event is then used to simulate the click of this element which triggers the file to download. 
 			
 			\begin{figure}[H]
 				\caption{File sending sequence in Chrome}
 				\centering
-				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-chrome.png}
+				\includegraphics[scale=0.5]{file-sending-sequence-chrome.png}
 			\end{figure}
 			
 			\begin{figure}[H]
 				\caption{File sending sequence in Firefox}
 				\centering
-				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-firefox.png}
+				\includegraphics[scale=0.5]{file-sending-sequence-firefox.png}
 			\end{figure}	
-			
-			Once this file has been received, it is then saved to disk by reading the file in as a data URI and then appending an element to the html with this URL as the reference. A mouse event is then used to simulate the click of this element which triggers the file to download. 
 			
 			\subsection{Streaming media via peer connection}
 				\subsubsection{Audio}
-				In order to stream Audio via WebRTC, a media stream is added to the peer connection by the uploader once the offer has been received from the file recipient. Once the answer sdp containing the media parameters for this stream has been sent back and the peer connection is established, an event listener on the recipient application listens for the event signalling the addition of this stream and uses the HTML5 Audio API to create a new audio tag which is appended to the html. The source attribute of this tag is set to the incoming stream and the audio player is set to play automatically. It is important to note that the stream actually starts to play when it is created by the uploader as it is a "live stream" and if there is any latency issues between the two clients, the recipient may only hear part of the incoming stream.
+				In order to stream Audio via WebRTC, a media stream is added to the peer connection by the uploader once the offer has been received from the file recipient. Once the answer sdp containing the media parameters for this stream has been sent back and the peer connection is established, an event listener on the recipient application listens for the event signalling the addition of this stream and uses the HTML5 Audio API to create a new audio tag which is appended to the html. The source attribute of this tag is set to the incoming stream and the audio player is set to play automatically. It is important to note that the stream actually starts to play when it is created by the uploader as it is a "live stream" and if there is any latency issues between the two clients or if the recipient decides to pause the player, the stream will carry on and they will miss parts of it.
+				
+				To avoid the problems with live streaming, the recipient could instead completely download the file from the uploader using RTCDataChannel and then play it using the HTMl5 audio element. By doing so, they would be able to pause and control it. However, the problem with this is that it puts a limit on the size of the file that can the uploader can stream to a recipient as the RTCDataChannel has a size limit on what can be sent through.
 
 				\subsubsection{Video}
 				I originally planned on also adding video streaming to the application. However, when I looked into this, the part of the MediaStream processing API drafted by W3C that would capture video as a stream has yet to be implemented by any browsers. Similar to how audio is captured, The captureStreamUntilEnded() function would return a MediaStream containing both the audio and video tracks of a file which could then be passed to the peer connection and played by a HTML5 video element on the recipient's application.
+				
+				These issues could also potentially be avoided by downloading the file via RTCDataChannel before playing it with a HTML5 video element as it means the uploader would not have to convert the file to a media stream in order to transfer it to the recipient.
 			
 			\subsection{One-to-many peer connections}
-			Switching to the Node.js implementation of the server allowed me to implement one-to-many peer connections with ease. To do this, the uploader instantiates new peer connections and adds them to an array which are then used to communicate with the recipients which hold one peer connection. Each message sent via the signalling server contains the socketID of the user it is from and the user it is destined towards, which is then extracted by the server and used to send messages to only them, this way no socket information can be exposed to anyone except for the user it belongs to. One of the big disadvantages of this is the potential amount of load on the uploader as they now have to maintain and search through an array of peer connections and as this gets larger, the larger the load. To manage this, the recipient sends a message to the uploader signifying to close the connection and remove it from the array as soon as the recipient has downloaded the file. In the future, I also hope to add this functionality for when a MediaStream ends but currently the MediaStream API in Firefox has no way of establishing when a stream has finished.
+			Switching to the Node.js implementation of the server allowed me to implement one-to-many peer connections with ease. To do this, the uploader instantiates new peer connections and adds them to an array which are then used to communicate with the recipients which only has to hold one peer connection. Each message sent via the signalling server contains the socketID of the user it is from and the user it is destined towards, which is then extracted by the server and used to send messages to only them, this way no socket information can be exposed to anyone except for the user it belongs to. One of the big disadvantages of this is the potential amount of load on the uploader as they now have to maintain and search through an array of peer connections and as this gets larger, the larger the load. To manage this, the recipient sends a message to the uploader signifying to close the connection and remove it from the array as soon as the recipient has downloaded the file. In the future, I also hope to add this functionality for when a MediaStream ends but currently the MediaStream API in Firefox has no way of establishing when a stream has finished.
 			 
 			\begin{figure}[H]
 				\caption{one-to-many peer connections}
@@ -313,7 +349,7 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 				\includegraphics[scale=0.5]{One-to-many.png}
 			\end{figure}	
 						
-			The better way to avoid overloading the uploader would be through maintaining a pool of nodes that have already downloaded the file (or seeds) on the signalling server from which incoming peers can download the file from. This way, a limit can be set in order to prevent one seed from becoming burdened with too many recipients. Once each seed has reached its limit, it would alert the signalling server and other incoming peers would be redirected to download or stream from another seed. Once these incoming peers download the file, the peer connection between them and the seed is disconnected and they become seeds themself, forming a new network of peers. When every seed in the pool is saturated with a peer, the rest can then be enqueued to a FIFO queue and wait for a seed to become free. This approach would ensure that the file could propagate to new incoming peers even when the the original uploader has disconnected from the room as long as there was always one seed. One constraint with implementing this in my application is that only the downloaders could be considered valid seeds as they are sent the actual file whereas streamers would only be sent an audio stream of that file.
+			The better way to avoid overloading the uploader would be through maintaining a pool of nodes that have already downloaded the file (or seeds) on the signalling server from which incoming peers can download the file from with each of these seeds maintaining an array of peer connections. This way, a limit can be set in order to prevent one seed from becoming burdened with too many recipients. Once each seed has reached its limit, it would alert the signalling server and other incoming peers would be redirected to download or stream from another seed. Once these incoming peers download the file, the peer connection between them and the seed is disconnected and they become seeds themself, forming a new network of peers. When every seed in the pool is saturated with a peer, the rest can then be enqueued to a FIFO queue and wait for a seed to become free. This approach would ensure that the file could propagate to new incoming peers even when the the original uploader has disconnected from the room as long as there was always one seed. One constraint with implementing this in my application is that only the downloaders could be considered valid seeds as they are sent the actual file whereas streamers would only be sent an audio stream of that file.
 			
 			\begin{figure}[H]
 				\caption{many-to-many peer connections}
@@ -321,39 +357,32 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 				\includegraphics[scale=0.5]{many-to-many.png}
 			\end{figure}	
 			
-			One of the limitations of my approach in developing the application was that I geared the development towards achieving one-to-many peer connections without thinking about the long term goal of many-to-many connections making the introduction of this functionality a difficult task as it will take a significant amount of code refactoring.
+			One of the limitations of my approach in developing the application was that I geared the development towards achieving one-to-many peer connections without thinking about the long term goal of many-to-many connections, making the introduction of this functionality a difficult task as it will take a significant amount of code re-factoring.
 			
-			\subsection{GetStats Library}
+			\subsection{Data Aggregation}
+				\subsubsection{GetStats API}
+				In order to gather statistics on the the application. I used
 			
-		\section{Application}
-			\subsection{Architecture}
-			To organise the application, I coded each layer of JavaScript in individual modules, separated by their responsibilities. These layers consisted of the presentation code that had the responsibility of listening to and manipulating the document object model, the peer-to-peer network code that worked with WebRTC to established the peer connections and the signalling code that established the socket connection. By separating these layers into their own modules, the application was left with a relatively simple architecture which can be easily extended and maintained without causing side-effects in other unrelated modules.
-			
+				
+		\section{Design}			
+			\subsection{Design}
+			 I wanted to keep the design and structure of the web application simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. From figure 5.10, I went through multiple iterations to get to the final design after I finished the prototype. I settled on a design and structure that I felt highlighted the sole purpose of the site well and didn't distract from it
+	
 			\begin{figure}[H]
-				\caption{Module Architecture}
+				\caption{Iterations of Design}
 				\centering
-				\includegraphics[scale=0.5]{file-architecture.png}
+				\includegraphics[scale=0.15]{design.png}
 			\end{figure}
 			
-			In order to model these modules and to manage dependencies between them, a build tool called Browserify was used. Traditionally, all of the JavaScript files are added using script tags within the html document they are assocaited with. Instead, this tool allows you to add a JavaScript file as a dependency within another by using a function "require('module')" to simulate the modular structure Node.js uses. This makes it clear which dependencies each modules require. To do this, The JavaScript files are wrapped in a global function which Browserify can then export and bundle together into one larger JavaScript file using a command line interface which is then referred to in the HTML document. By doing this, the client side JavaScript can also access node modules that you may have installed within the project as well.
-			
-			In order to develop the model that controlled the document object model, I looked into using a JavaScript framework Backbone.js, to 
-			
-			\subsection{User Interface}
-				\subsubsection{Flow}
-				\subsubsection{Design}
-				 I wanted to keep the design and structure of the web application simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. From the below figure, the multiple colour schemes that it went to after the prototype was finished can be seen. I settled on a design that I felt did not distract from the purpose of the web application but I also felt was modern and professional enough as to not deter people. 
-							\begin{figure}[H]
-								\caption{Iterations of Colour Scheme}
-								\centering
-								\includegraphics[scale=0.2]{colours.png}
-							\end{figure}
 	\chapter{Outcomes}
 		\section{Data}
+			\subsection{Load Testing}
+				\subsubsection{Server In Isolation}
+				\subsubsection{Peer to Peer}
 		\section{Discussion}
 	\chapter{Review \& Reflection}		
 		\section{Other Limitations \& Improvements}
-			\subsection{Testing}
+			\subsection{Unit Testing}
 			\subsection{Authentication Encryption}
 			\subsection{Cross-platform Compatibility}
 			\subsection{HATEOAS}
@@ -364,6 +393,7 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 			\subsection{Development Environments}
 			\subsection{Git}
 			\subsection{Amazon Web Instances}
+		\section{Applications}
 
 					
 	\begin{thebibliography}{20}

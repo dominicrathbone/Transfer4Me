@@ -2,7 +2,7 @@ var express = require('express');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
-
+var fs = require('fs');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -24,6 +24,12 @@ function Room(id, password) {
     this.uploader = null;
     this.users = 0;
     this.fileType;
+    var date = new Date();
+    var dateString = "-" + date.getUTCDate() + "-" + date.getUTCMonth() + "-" + date.getUTCFullYear();
+    console.log(dateString);
+
+    this.logFile = fs.createWriteStream('./logs/stats/logfile' + dateString + '.json', {flags: 'a'});
+
     var room = this;
 
     this.namespace.on('connection', function (socket) {
@@ -73,6 +79,10 @@ function Room(id, password) {
             if(room.fileType == null) {
                 room.fileType = JSON.parse(fileType).fileType;
             }
+        });
+
+        socket.on('stats', function(stats) {
+            room.logFile.write(stats);
         });
 
     });
@@ -152,3 +162,5 @@ function findRoom(roomId, foundCallback) {
 http.listen(80, function () {
     console.log('listening on *:80');
 });
+
+

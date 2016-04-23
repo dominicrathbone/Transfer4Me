@@ -5,7 +5,14 @@
   "dependencies": {
     "express": "^4.10.2",
     "socket.io": "^1.4.5",
-    "just.randomstring": "latest"
+    "just.randomstring": "latest",
+    "getstats": "latest",
+    "webrtc-adapter": "latest",
+    "cookie-parser": "latest",
+    "body-parser": "latest",
+    "node-uuid": "latest",
+    "dropzone": "latest",
+    "jquery": "latest"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -15,7 +22,9 @@
     "vinyl": "^1.1.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "browserify": "latest",
+    "gulp-util": "latest"
   },
   "scripts": {
     "start": "node server.js"

@@ -4,8 +4,26 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
 var fs = require('fs');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io;
+
+var production = process.argv.indexOf("-p");
+if (production != -1) {
+    var https = require('https').createServer({
+            key: fs.readFileSync('certificate/transfer4me.key'),
+            cert: fs.readFileSync('certificate/www_transfer4_me.crt'),
+            ca: [fs.readFileSync('certificate/www_transfer4_me.ca-bundle')]}
+        , app);
+    https.listen(443, function () {
+        console.log('listening on *:443');
+    });
+    io = require('socket.io')(https);
+} else {
+    var http = require('http').Server(app);
+    http.listen(80, function () {
+        console.log('listening on *:80');
+    });
+    io = require('socket.io')(http);
+}
 
 app.use(express.static(__dirname + '/public/'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -159,8 +177,8 @@ function findRoom(roomId, foundCallback) {
     }
 }
 
-http.listen(80, function () {
-    console.log('listening on *:80');
-});
+
+
+
 
 

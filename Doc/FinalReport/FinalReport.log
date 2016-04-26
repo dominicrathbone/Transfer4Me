@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  23 APR 2016 15:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  23 APR 2016 18:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -749,7 +749,7 @@ Package pdftex.def Info: resources/images/many-to-many.png used on input line 3
 File: resources/images/design.png Graphic file (type png)
 
 <use resources/images/design.png>
-Package pdftex.def Info: resources/images/design.png used on input line 374.
+Package pdftex.def Info: resources/images/design.png used on input line 373.
 (pdftex.def)             Requested size: 379.40114pt x 420.95459pt.
  [25 <./resources/images/design.png>]
 Chapter 6.
@@ -760,55 +760,55 @@ Chapter 7.
 [27
 
 ]
-Overfull \hbox (71.66275pt too wide) in paragraph at lines 401--402
+Overfull \hbox (71.66275pt too wide) in paragraph at lines 403--404
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
  http://www.hindawi.com/journals/jcnc/2012/485875/fig1/.
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 407--408
+Underfull \hbox (badness 3058) in paragraph at lines 409--410
 []\OT1/cmr/m/n/10 Schulzrinne, et al. (Febru-ary 2010). Se-cu-rity in P2P Re-al
 -time Com-mu-ni-ca-tions. Avail-able:
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 411--412
+Underfull \hbox (badness 1571) in paragraph at lines 413--414
 \OT1/cmr/m/n/10 Avail-able: https://www.scss.tcd.ie/publications/tech-reports/r
 eports.10/TCD-CS-2010-06.pdf. Last
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 417--418
+Underfull \hbox (badness 10000) in paragraph at lines 419--420
 \OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
 ow-government-to-ban-end-to-end-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 419--420
+Underfull \hbox (badness 10000) in paragraph at lines 421--422
 []\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
 . Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 419--420
+Underfull \hbox (badness 10000) in paragraph at lines 421--422
 \OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
 long-are-my-uploads-available-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 425--426
+Underfull \hbox (badness 10000) in paragraph at lines 427--428
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
  code. Avail-able:
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 427--428
+Underfull \hbox (badness 5637) in paragraph at lines 429--430
 []\OT1/cmr/m/n/10 Adam Bergkvist, Daniel C. Bur-nett, Cullen Jen-nings, Anant N
 arayanan (un-til Novem-
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 427--428
+Underfull \hbox (badness 4060) in paragraph at lines 429--430
 \OT1/cmr/m/n/10 ber 2012). (2011). We-bRTC 1.0: Real-time Com-mu-ni-ca-tion Be-
 tween Browsers. Avail-able:
  []
@@ -816,25 +816,25 @@ tween Browsers. Avail-able:
 [28
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 433--434
+Underfull \hbox (badness 10000) in paragraph at lines 435--436
 []\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
 ro-to-col (JSEP).
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 433--434
+Underfull \hbox (badness 10000) in paragraph at lines 435--436
 \OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
 2012Jan/att-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 439--440
+Underfull \hbox (badness 10000) in paragraph at lines 441--442
 []\OT1/cmr/m/n/10 Jesup, et al. (2015). We-bRTC Data Chan-nel Es-tab-lish-ment 
 Pro-to-col. Avail-able:
  []
 
 
-Underfull \hbox (badness 1688) in paragraph at lines 441--442
+Underfull \hbox (badness 1688) in paragraph at lines 443--444
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-de
 velopment/tdd-circle-of-life.png. Last
  []
@@ -843,7 +843,7 @@ velopment/tdd-circle-of-life.png. Last
 Here is how much of TeX's memory you used:
  13851 strings out of 493054
  272500 string characters out of 6138326
- 328404 words of memory out of 5000000
+ 328454 words of memory out of 5000000
  17091 multiletter control sequences out of 15000+600000
  9698 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -857,7 +857,7 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt8.pfb>
-Output written on FinalReport.pdf (30 pages, 1299668 bytes).
+Output written on FinalReport.pdf (30 pages, 1301769 bytes).
 PDF statistics:
  171 PDF objects out of 1000 (max. 8388607)
  98 compressed objects within 1 object stream

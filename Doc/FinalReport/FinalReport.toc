@@ -26,26 +26,24 @@
 \contentsline {subsubsection}{\numberline {5.3.3.2}Video}{23}
 \contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{23}
 \contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{24}
-\contentsline {subsubsection}{\numberline {5.3.5.1}GetStats API}{24}
 \contentsline {section}{\numberline {5.4}Design}{25}
 \contentsline {subsection}{\numberline {5.4.1}Design}{25}
 \contentsline {chapter}{\numberline {6}Outcomes}{26}
 \contentsline {section}{\numberline {6.1}Data}{26}
 \contentsline {subsection}{\numberline {6.1.1}Load Testing}{26}
 \contentsline {subsubsection}{\numberline {6.1.1.1}Server In Isolation}{26}
-\contentsline {subsubsection}{\numberline {6.1.1.2}Peer to Peer}{26}
 \contentsline {section}{\numberline {6.2}Discussion}{26}
 \contentsline {chapter}{\numberline {7}Review \& Reflection}{27}
-\contentsline {section}{\numberline {7.1}Other Limitations \& Improvements}{27}
-\contentsline {subsection}{\numberline {7.1.1}Unit Testing}{27}
-\contentsline {subsection}{\numberline {7.1.2}Authentication Encryption}{27}
-\contentsline {subsection}{\numberline {7.1.3}Cross-platform Compatibility}{27}
-\contentsline {subsection}{\numberline {7.1.4}HATEOAS}{27}
+\contentsline {section}{\numberline {7.1}Background Research}{27}
 \contentsline {section}{\numberline {7.2}Methodology}{27}
 \contentsline {subsection}{\numberline {7.2.1}Kanban}{27}
 \contentsline {section}{\numberline {7.3}Technologies}{27}
-\contentsline {subsection}{\numberline {7.3.1}JavaScript build tools}{27}
+\contentsline {subsection}{\numberline {7.3.1}JavaScript Build Tools}{27}
 \contentsline {subsection}{\numberline {7.3.2}Development Environments}{27}
 \contentsline {subsection}{\numberline {7.3.3}Git}{27}
 \contentsline {subsection}{\numberline {7.3.4}Amazon Web Instances}{27}
-\contentsline {section}{\numberline {7.4}Applications}{27}
+\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{27}
+\contentsline {subsection}{\numberline {7.4.1}Unit Testing}{27}
+\contentsline {subsection}{\numberline {7.4.2}Authentication Encryption}{27}
+\contentsline {subsection}{\numberline {7.4.3}HATEOAS}{27}
+\contentsline {section}{\numberline {7.5}Conclusions}{27}

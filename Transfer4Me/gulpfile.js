@@ -9,7 +9,6 @@ var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
 var assign = require('lodash.assign');
 
-// add custom browserify options here
 var customOpts = {
     entries: ['./public/js/app.js'],
     debug: true
@@ -17,10 +16,8 @@ var customOpts = {
 var opts = assign({}, watchify.args, customOpts);
 var b = watchify(browserify(opts));
 
-// add transformations here
-// i.e. b.transform(coffeeify);
 
-gulp.task('js', bundle); // so you can run `gulp js` to build the file
+gulp.task('js', bundle);
 b.on('update', bundle); // on any dep update, runs the bundler
 b.on('log', gutil.log); // output build logs to terminal
 

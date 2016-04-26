@@ -42,11 +42,18 @@ function setFileUploadState() {
     dropzone.on("addedfile", function (file) {
         $('.dz-preview').remove();
         var passworded = $("#passwordCheckBox").is(':checked');
-        p2pChannel.startSession(null, passworded, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId, password) {
+        p2pChannel.startSession(null, passworded, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId, password, bytesReceivedByStreamers, bytesReceivedByDownloaders) {
             $("#app").one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
                 passwordFileInput.remove();
                 fileInput.remove();
                 setNewRoomState(roomId, password, file.name);
+                if(document.querySelector("audio").canPlayType(file.type) !== "") {
+                    bytesReceivedByStreamers.streamTo(document.getElementById("bytesReceivedByStreamers"));
+                } else {
+                    $("#bytesReceivedByStreamers").remove();
+                    $("#bytesReceivedByStreamersText").remove();
+                }
+                bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
                 $("#app").removeClass("bounceOutThenIn");
             });
             $("#app").addClass("bounceOutThenIn");
@@ -62,16 +69,28 @@ function setNewRoomState(roomId, password, fileName) {
     roomContainer.append($("<p class='bold'>You have uploaded " + fileName + "</p>"));
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
-    var shareContainer = $("<div id='share' class='share'></div>");
-    roomContainer.append($("<p>Share URL: <p class='shareUrl'> " + roomUrl + "</p></p>"));
+    roomContainer.append($("<p>Share URL:</p><p class='shareUrl'> " + roomUrl + "</p>"));
     if(password) {
         roomContainer.append($("<p>Password: <p class='shareUrl'>" + password + "</p></p>"));
     }
+    var shareContainer = $("<div id='shareContainer'></div>");
     shareContainer.append($("<a id='facebook' class='shareBtn' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='twitter' class='shareBtn' target='_blank' href='https://twitter.com/home?status=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='google' class='shareBtn' target='_blank' href='https://plus.google.com/share?url=" + encodeURIComponent(roomUrl) + "'></a>"));
     roomContainer.append(shareContainer);
+
+    var statsContainer = $("<div id='statsContainer' class='centered column'></div>");
+    roomContainer.append(statsContainer);
     content.append(roomContainer);
+
+    var canvasWidth = $("#statsContainer").width() * 0.9;
+    var canvasHeight = Math.max($("#statsContainer").height() * 0.3, 40);
+    statsContainer.append($("<p id = 'bytesReceivedByStreamersText'>Users streaming (Bytes/s)</p>"));
+    statsContainer.append('<canvas id="bytesReceivedByStreamers" width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
+
+    statsContainer.append($("<p id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
+    statsContainer.append('<canvas id="bytesReceivedByDownloaders"  width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
+
 }
 
 function setJoinRoomState(roomId) {

@@ -1,13 +1,19 @@
 var signaller = require('./signaller.js');
 var app = require('./app.js');
 require("webrtc-adapter");
+var Smoothie = require("smoothie");
+var randomColor = require("randomcolor");
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioContext = new AudioContext();
 
 module.exports = function () {
+
     this.UserType = {
         UPLOADER: 0,
         DOWNLOADER: 1,
         STREAMER: 2
     };
+
     this.user;
     this.connection;
     this.sessionStarted = false;
@@ -16,6 +22,28 @@ module.exports = function () {
     this.roomId = null;
     this.fileName = null;
     this.chunkedFile = [];
+
+    this.bytesReceivedByStreamers = new Smoothie.SmoothieChart();
+    this.bytesReceivedByDownloaders = new Smoothie.SmoothieChart();
+
+    this.stats = [];
+
+    function Stats(id) {
+        this.id = id;
+        this.color = randomColor();
+        this.streamBytesReceived = new Smoothie.TimeSeries();
+        this.downloadBytesReceived = new Smoothie.TimeSeries();
+
+        p2p.bytesReceivedByStreamers.addTimeSeries(this.streamBytesReceived, {
+            strokeStyle: this.color,
+            lineWidth: 3
+        });
+        p2p.bytesReceivedByDownloaders.addTimeSeries(this.downloadBytesReceived, {
+            strokeStyle: this.color,
+            lineWidth: 3
+        });
+    }
+
     var p2p = this;
 
     this.startSession = function (roomId, passworded, user, file, callback) {
@@ -35,7 +63,7 @@ module.exports = function () {
             onSignallerConnect(roomId, user, file);
 
             if (callback != null) {
-                callback(roomId, password);
+                callback(roomId, password,  p2p.bytesReceivedByStreamers, p2p.bytesReceivedByDownloaders);
             }
         });
     };
@@ -48,6 +76,7 @@ module.exports = function () {
                     'toUser': p2p.connection.toUser,
                     "message": "CLOSE_CONNECTION"
                 }));
+                stopGatheringStats = true;
                 p2p.signallingChannel.disconnect();
             } else {
                 p2p.signallingChannel.disconnect();
@@ -67,7 +96,10 @@ module.exports = function () {
             sendOffer();
         } else if (user.userType == p2p.UserType.UPLOADER) {
             p2p.file = file;
-            p2p.signallingChannel.send('fileType', JSON.stringify({"fileType" : file.type}));
+            p2p.signallingChannel.send('metadata', JSON.stringify({
+                "fileType" : file.type,
+                "fileSize" : file.size
+            }));
         }
     }
 
@@ -136,6 +168,19 @@ module.exports = function () {
             } else if(signal.user == "SERVER") {
                 $("#users").text(signal.users + " user(s) connected to you.");
             }
+        } else if(signal.stats) {
+            var stats = findStatsObject(signal.userId);
+            if (stats == null) {
+                stats = new Stats(signal.userId);
+                p2p.stats.push(stats);
+            }
+            if (signal.stats.streamBytesReceived) {
+                stats.streamBytesReceived.append(new Date().getTime(), signal.stats.streamBytesReceived);
+            }
+            if (signal.stats.downloadBytesReceived) {
+                stats.downloadBytesReceived.append(new Date().getTime(), signal.stats.downloadBytesReceived);
+                console.log(stats.downloadBytesReceived);
+            }
         }
     }
 
@@ -174,8 +219,6 @@ module.exports = function () {
     function prepareFileStream(connection, file, callback) {
         var reader = new FileReader();
         reader.onloadend = (function (event) {
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            var audioContext = new AudioContext();
             audioContext.decodeAudioData(event.target.result, function (buffer) {
                 var source = audioContext.createBufferSource();
                 var destination = audioContext.createMediaStreamDestination();
@@ -214,13 +257,12 @@ module.exports = function () {
     }
 
     function prepareForMediaStream() {
-        var connection = p2p.connection.peerConnection;
-        connection.onaddstream = function (event) {
+        p2p.connection.peerConnection.onaddstream = function (event) {
             console.log("STREAM RECEIVED");
+            gatherStreamingStats(p2p.connection,1000);
             var audioPlayer = $("audio");
             audioPlayer.attr("src", window.URL.createObjectURL(event.stream));
             audioPlayer.trigger("play");
-            gatherStats(connection,1000);
         }
     }
 
@@ -264,6 +306,7 @@ module.exports = function () {
             $('#progress-text').text("File has been downloaded!")
             $('progress').val(100);
             (document.body || document.documentElement).removeChild(hyperlink);
+            p2p.endSession();
         };
 
         var mouseEvent = new MouseEvent('click', {
@@ -309,7 +352,6 @@ module.exports = function () {
         var data = {};
         var chunkLength = 64000;
         if ((event)) {
-            setTimeout(null, 10000);
             text = event.target.result;
         }
         if (text.length > chunkLength) {
@@ -333,23 +375,70 @@ module.exports = function () {
     function appendChunkToFile(data) {
         console.log(data);
         p2p.chunkedFile.push(data.chunk);
+        gatherDownloadStats(data.chunk.length);
         if (data.last) {
             $('progress').val(60);
             saveToDisk(p2p.chunkedFile.join(''), p2p.fileName);
+            gatherDownloadStats(0);
         }
     }
 
-    function gatherStats(connection,delay) {
-        if(p2p.user.isChrome) {
-            connection.getStats(connection, function(results) {
-                console.log(results);
+    function findStatsObject(id) {
+        for(var i = 0 ; i < p2p.stats.length; i++) {
+            if(p2p.stats[i].id == id) {
+                return p2p.stats[i];
+            }
+        }
+        return null;
+    }
+
+    var stopGatheringStats = false;
+    var statGatheringStartTime = null;
+    function gatherStreamingStats(connection, delay) {
+        if(!statGatheringStartTime) {
+            statGatheringStartTime = Date.now();
+        }
+        if (p2p.user.isChrome) {
+            connection.peerConnection.getStats(connection, function (results) {
+                var stats = {};
+                Object.keys(results).forEach(function (key) {
+                    if (key.indexOf("ssrc_") !== -1) {
+                        stats.audioChannel = results[key];
+                        stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - statGatheringStartTime) / 1000)
+                        console.log(stats.audioChannel.bytesReceivedPerSecond);
+                    } else if (key.indexOf("Conn-audio-1-0") !== -1) {
+                        stats.audioConnection = results[key];
+                    }
+                });
+                console.log(stats);
                 p2p.signallingChannel.send("stats", JSON.stringify({
-                    roomId:p2p.roomId,
-                    user:p2p.user,
-                    toUser:connection.toUser,
-                    results: results
-                }))
+                    "userId": p2p.user.userId,
+                    "toUserId": connection.toUser.userId,
+                    "stats": stats
+                }));
             });
+            if (stopGatheringStats == false) {
+                setTimeout(function () {
+                    gatherStreamingStats(connection, delay);
+                }, delay);
+            }
+
+        }
+    }
+
+    function gatherDownloadStats(chunkLength) {
+        if (p2p.user.isChrome) {
+            var stats = {};
+            stats.dataChannel = {};
+            stats.dataChannel.bytesReceived = p2p.chunkedFile.join('').length;
+            stats.dataChannel.bytesReceivedPerSecond = chunkLength;
+            console.log(stats);
+            p2p.signallingChannel.send("stats", JSON.stringify({
+                "userId": p2p.user.userId,
+                "toUserId": p2p.connection.toUser.userId,
+                "stats": stats
+            }));
+
         }
     }
 }

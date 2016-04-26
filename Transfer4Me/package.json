@@ -3,16 +3,19 @@
   "version": "0.0.1",
   "description": "WebRTC Signalling Server using socket.io",
   "dependencies": {
-    "express": "^4.10.2",
-    "socket.io": "^1.4.5",
-    "just.randomstring": "latest",
-    "getstats": "latest",
-    "webrtc-adapter": "latest",
-    "cookie-parser": "latest",
     "body-parser": "latest",
-    "node-uuid": "latest",
+    "cookie-parser": "latest",
     "dropzone": "latest",
-    "jquery": "latest"
+    "express": "^4.10.2",
+    "getstats": "latest",
+    "jquery": "latest",
+    "just.randomstring": "latest",
+    "node-uuid": "latest",
+    "smoothie": "^1.27.0",
+    "socket.io": "^1.4.5",
+    "webrtc-adapter": "latest",
+    "winston": "^2.2.0",
+    "randomcolor": "latest"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

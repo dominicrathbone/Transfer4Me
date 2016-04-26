@@ -1,7 +1,7 @@
 body {
     background-color: #A3D3D8 !important;
-    margin:0px;
-    padding:0px;
+    padding:0;
+    margin: 0;
     overflow-x:hidden;
 }
 
@@ -15,6 +15,7 @@ a {
 }
 
 p {
+    margin: 0.5em 0;
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
     color: rgba(51, 59, 60, 1);
@@ -39,37 +40,34 @@ progress::-moz-progress-bar,progress::-webkit-progress-bar {
 
 #app {
     width:50vw;
-    height: 50vh;
-    max-height:750px;
 }
 
 #information {
-    margin-top:2em;
     width:75vw;
     text-align: center;
+    margin-bottom: 1em;
 }
 
 #information #title {
     word-wrap:break-word;
     font-weight: 900;
     font-family: 'BebasKai';
-    font-size:4em;
+    font-size:3.5em;
     margin:0;
     padding-bottom: 0.1em;
 }
 
 #information #subtitle {
     font-family: 'BebasKai';
-    font-size:1.5em;
+    font-size:1.25em;
     margin:0;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.3em;
 }
 
 #information #info {
     text-align: center;
     line-height: 1.5em;
     color: #002F2F;
-    padding-bottom: 2em;
 }
 
 #upload-text {
@@ -149,9 +147,8 @@ progress::-moz-progress-bar,progress::-webkit-progress-bar {
 }
 
 .content {
-    width: 100%;
-    height: 100%;
     background: #E5D0A0;
+    min-height:50vh;
     -webkit-box-shadow: 0px 11px 0px -7px rgba(0, 0, 0, 0.15);
     -moz-box-shadow: 0px 11px 0px -7px rgba(0, 0, 0, 0.15);
     box-shadow: 0px 11px 0px -7px rgba(0, 0, 0, 0.15);
@@ -160,7 +157,7 @@ progress::-moz-progress-bar,progress::-webkit-progress-bar {
 .fileInput {
     border: 2px dashed rgba(51, 59, 60, 0.1);
     width: 97.5%;
-    height: 89.25%;
+    height: 42.5vh;
 }
 
 .room {
@@ -184,13 +181,15 @@ progress::-moz-progress-bar,progress::-webkit-progress-bar {
     opacity: 0.2;
 }
 
-.share {
+#shareContainer {
     display: flex;
     -webkit-flex-direction: row;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width:100%;
+    margin: 2.5% 0;
+    height:32px;
 }
 
 .shareUrl {
@@ -209,6 +208,15 @@ progress::-moz-progress-bar,progress::-webkit-progress-bar {
 .shareBtn:hover {
     transition:1s;
     box-shadow: none;
+}
+
+#statsContainer {
+    width:90%;
+    height:40%;
+}
+
+.statistic {
+    margin-bottom:2.5%;
 }
 
 .icon:hover {

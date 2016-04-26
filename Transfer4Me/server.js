@@ -1,8 +1,10 @@
 var express = require('express');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
+var winston = require('winston');
 var fs = require('fs');
+
 var app = express();
 var io;
 
@@ -30,8 +32,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-var baseUrl = "/room/"
+var baseUrl = "/room/";
 var rooms = [];
+
+var date = new Date();
+var dateString = "-" + date.getUTCDate() + "-" + date.getUTCMonth() + "-" + date.getUTCFullYear();
+var logger = new (winston.Logger)({
+    transports: [
+        new (winston.transports.File)({ filename: './logs/stats/p2p_data' + dateString + ".log" })
+    ]
+});
 
 function Room(id, password) {
     this.namespace = io.of(baseUrl.concat(id));
@@ -39,14 +49,12 @@ function Room(id, password) {
     if (password) {
         this.password = password;
     }
+
     this.uploader = null;
     this.users = 0;
-    this.fileType;
-    var date = new Date();
-    var dateString = "-" + date.getUTCDate() + "-" + date.getUTCMonth() + "-" + date.getUTCFullYear();
-    console.log(dateString);
 
-    this.logFile = fs.createWriteStream('./logs/stats/logfile' + dateString + '.json', {flags: 'a'});
+    this.fileType;
+    this.fileSize;
 
     var room = this;
 
@@ -93,14 +101,36 @@ function Room(id, password) {
             }
         });
 
-        socket.on('fileType', function (fileType) {
-            if(room.fileType == null) {
-                room.fileType = JSON.parse(fileType).fileType;
+        socket.on('metadata', function (result) {
+            if (room.fileType == null) {
+                room.fileType = JSON.parse(result).fileType;
+            }
+            if (room.fileSize == null) {
+                room.fileSize = JSON.parse(result).fileSize;
             }
         });
 
-        socket.on('stats', function(stats) {
-            room.logFile.write(stats);
+        socket.on('stats', function (stats) {
+            stats = JSON.parse(stats);
+            stats.roomId = room.id;
+            stats.fileType = room.fileType;
+            stats.fileSize = room.fileSize;
+            logger.info(stats);
+            if (stats.stats.audioChannel && stats.toUserId) {
+                room.namespace.to(room.namespace.name.concat("#",stats.toUserId)).emit('signal', JSON.stringify({
+                    userId: stats.userId,
+                    stats: {
+                        streamBytesReceived: stats.stats.audioChannel.bytesReceivedPerSecond,
+                    }
+                }));
+            } else if (stats.stats.dataChannel && stats.toUserId) {
+                room.namespace.to(room.namespace.name.concat("#", stats.toUserId)).emit('signal', JSON.stringify({
+                    userId: stats.userId,
+                    stats: {
+                        downloadBytesReceived: stats.stats.dataChannel.bytesReceivedPerSecond
+                    }
+                }));
+            }
         });
 
     });
@@ -137,7 +167,6 @@ app.get('/room/:room', function (req, res) {
             res.sendFile("public/password.html", {"root": __dirname});
         }
     });
-
     if (!roomFound) {
         res.redirect("/");
     }

@@ -4151,7 +4151,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":14,"component-inherit":9,"debug":21,"engine.io-parser":24,"parseqs":33,"xmlhttprequest-ssl":20,"yeast":62}],19:[function(require,module,exports){
+},{"../transport":14,"component-inherit":9,"debug":21,"engine.io-parser":24,"parseqs":33,"xmlhttprequest-ssl":20,"yeast":64}],19:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -4444,7 +4444,7 @@ WS.prototype.check = function(){
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../transport":14,"component-inherit":9,"debug":21,"engine.io-parser":24,"parseqs":33,"ws":6,"yeast":62}],20:[function(require,module,exports){
+},{"../transport":14,"component-inherit":9,"debug":21,"engine.io-parser":24,"parseqs":33,"ws":6,"yeast":64}],20:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -5577,7 +5577,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./keys":25,"after":1,"arraybuffer.slice":2,"base64-arraybuffer":4,"blob":5,"has-binary":26,"utf8":52}],25:[function(require,module,exports){
+},{"./keys":25,"after":1,"arraybuffer.slice":2,"base64-arraybuffer":4,"blob":5,"has-binary":26,"utf8":54}],25:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -15721,6 +15721,1222 @@ module.exports = function parseuri(str) {
 };
 
 },{}],35:[function(require,module,exports){
+// randomColor by David Merfield under the CC0 license
+// https://github.com/davidmerfield/randomColor/
+
+;(function(root, factory) {
+
+  // Support AMD
+  if (typeof define === 'function' && define.amd) {
+    define([], factory);
+
+  // Support CommonJS
+  } else if (typeof exports === 'object') {
+    var randomColor = factory();
+
+    // Support NodeJS & Component, which allow module.exports to be a function
+    if (typeof module === 'object' && module && module.exports) {
+      exports = module.exports = randomColor;
+    }
+
+    // Support CommonJS 1.1.1 spec
+    exports.randomColor = randomColor;
+
+  // Support vanilla script loading
+  } else {
+    root.randomColor = factory();
+  }
+
+}(this, function() {
+
+  // Seed to get repeatable colors
+  var seed = null;
+
+  // Shared color dictionary
+  var colorDictionary = {};
+
+  // Populate the color dictionary
+  loadColorBounds();
+
+  var randomColor = function (options) {
+
+    options = options || {};
+
+    // Check if there is a seed and ensure it's an
+    // integer. Otherwise, reset the seed value.
+    if (options.seed && options.seed === parseInt(options.seed, 10)) {
+      seed = options.seed;
+
+    // A string was passed as a seed
+    } else if (typeof options.seed === 'string') {
+      seed = stringToInteger(options.seed);
+
+    // Something was passed as a seed but it wasn't an integer or string
+    } else if (options.seed !== undefined && options.seed !== null) {
+      throw new TypeError('The seed value must be an integer or string');
+
+    // No seed, reset the value outside.
+    } else {
+      seed = null;
+    }
+
+    var H,S,B;
+
+    // Check if we need to generate multiple colors
+    if (options.count !== null && options.count !== undefined) {
+
+      var totalColors = options.count,
+          colors = [];
+
+      options.count = null;
+
+      while (totalColors > colors.length) {
+
+        // Since we're generating multiple colors,
+        // incremement the seed. Otherwise we'd just
+        // generate the same color each time...
+        if (seed && options.seed) options.seed += 1;
+
+        colors.push(randomColor(options));
+      }
+
+      options.count = totalColors;
+
+      return colors;
+    }
+
+    // First we pick a hue (H)
+    H = pickHue(options);
+
+    // Then use H to determine saturation (S)
+    S = pickSaturation(H, options);
+
+    // Then use S and H to determine brightness (B).
+    B = pickBrightness(H, S, options);
+
+    // Then we return the HSB color in the desired format
+    return setFormat([H,S,B], options);
+  };
+
+  function pickHue (options) {
+
+    var hueRange = getHueRange(options.hue),
+        hue = randomWithin(hueRange);
+
+    // Instead of storing red as two seperate ranges,
+    // we group them, using negative numbers
+    if (hue < 0) {hue = 360 + hue;}
+
+    return hue;
+
+  }
+
+  function pickSaturation (hue, options) {
+
+    if (options.luminosity === 'random') {
+      return randomWithin([0,100]);
+    }
+
+    if (options.hue === 'monochrome') {
+      return 0;
+    }
+
+    var saturationRange = getSaturationRange(hue);
+
+    var sMin = saturationRange[0],
+        sMax = saturationRange[1];
+
+    switch (options.luminosity) {
+
+      case 'bright':
+        sMin = 55;
+        break;
+
+      case 'dark':
+        sMin = sMax - 10;
+        break;
+
+      case 'light':
+        sMax = 55;
+        break;
+   }
+
+    return randomWithin([sMin, sMax]);
+
+  }
+
+  function pickBrightness (H, S, options) {
+
+    var bMin = getMinimumBrightness(H, S),
+        bMax = 100;
+
+    switch (options.luminosity) {
+
+      case 'dark':
+        bMax = bMin + 20;
+        break;
+
+      case 'light':
+        bMin = (bMax + bMin)/2;
+        break;
+
+      case 'random':
+        bMin = 0;
+        bMax = 100;
+        break;
+    }
+
+    return randomWithin([bMin, bMax]);
+  }
+
+  function setFormat (hsv, options) {
+
+    switch (options.format) {
+
+      case 'hsvArray':
+        return hsv;
+
+      case 'hslArray':
+        return HSVtoHSL(hsv);
+
+      case 'hsl':
+        var hsl = HSVtoHSL(hsv);
+        return 'hsl('+hsl[0]+', '+hsl[1]+'%, '+hsl[2]+'%)';
+
+      case 'hsla':
+        var hslColor = HSVtoHSL(hsv);
+        return 'hsla('+hslColor[0]+', '+hslColor[1]+'%, '+hslColor[2]+'%, ' + Math.random() + ')';
+
+      case 'rgbArray':
+        return HSVtoRGB(hsv);
+
+      case 'rgb':
+        var rgb = HSVtoRGB(hsv);
+        return 'rgb(' + rgb.join(', ') + ')';
+
+      case 'rgba':
+        var rgbColor = HSVtoRGB(hsv);
+        return 'rgba(' + rgbColor.join(', ') + ', ' + Math.random() + ')';
+
+      default:
+        return HSVtoHex(hsv);
+    }
+
+  }
+
+  function getMinimumBrightness(H, S) {
+
+    var lowerBounds = getColorInfo(H).lowerBounds;
+
+    for (var i = 0; i < lowerBounds.length - 1; i++) {
+
+      var s1 = lowerBounds[i][0],
+          v1 = lowerBounds[i][1];
+
+      var s2 = lowerBounds[i+1][0],
+          v2 = lowerBounds[i+1][1];
+
+      if (S >= s1 && S <= s2) {
+
+         var m = (v2 - v1)/(s2 - s1),
+             b = v1 - m*s1;
+
+         return m*S + b;
+      }
+
+    }
+
+    return 0;
+  }
+
+  function getHueRange (colorInput) {
+
+    if (typeof parseInt(colorInput) === 'number') {
+
+      var number = parseInt(colorInput);
+
+      if (number < 360 && number > 0) {
+        return [number, number];
+      }
+
+    }
+
+    if (typeof colorInput === 'string') {
+
+      if (colorDictionary[colorInput]) {
+        var color = colorDictionary[colorInput];
+        if (color.hueRange) {return color.hueRange;}
+      }
+    }
+
+    return [0,360];
+
+  }
+
+  function getSaturationRange (hue) {
+    return getColorInfo(hue).saturationRange;
+  }
+
+  function getColorInfo (hue) {
+
+    // Maps red colors to make picking hue easier
+    if (hue >= 334 && hue <= 360) {
+      hue-= 360;
+    }
+
+    for (var colorName in colorDictionary) {
+       var color = colorDictionary[colorName];
+       if (color.hueRange &&
+           hue >= color.hueRange[0] &&
+           hue <= color.hueRange[1]) {
+          return colorDictionary[colorName];
+       }
+    } return 'Color not found';
+  }
+
+  function randomWithin (range) {
+    if (seed === null) {
+      return Math.floor(range[0] + Math.random()*(range[1] + 1 - range[0]));
+    } else {
+      //Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+      var max = range[1] || 1;
+      var min = range[0] || 0;
+      seed = (seed * 9301 + 49297) % 233280;
+      var rnd = seed / 233280.0;
+      return Math.floor(min + rnd * (max - min));
+    }
+  }
+
+  function HSVtoHex (hsv){
+
+    var rgb = HSVtoRGB(hsv);
+
+    function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? '0' + hex : hex;
+    }
+
+    var hex = '#' + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+
+    return hex;
+
+  }
+
+  function defineColor (name, hueRange, lowerBounds) {
+
+    var sMin = lowerBounds[0][0],
+        sMax = lowerBounds[lowerBounds.length - 1][0],
+
+        bMin = lowerBounds[lowerBounds.length - 1][1],
+        bMax = lowerBounds[0][1];
+
+    colorDictionary[name] = {
+      hueRange: hueRange,
+      lowerBounds: lowerBounds,
+      saturationRange: [sMin, sMax],
+      brightnessRange: [bMin, bMax]
+    };
+
+  }
+
+  function loadColorBounds () {
+
+    defineColor(
+      'monochrome',
+      null,
+      [[0,0],[100,0]]
+    );
+
+    defineColor(
+      'red',
+      [-26,18],
+      [[20,100],[30,92],[40,89],[50,85],[60,78],[70,70],[80,60],[90,55],[100,50]]
+    );
+
+    defineColor(
+      'orange',
+      [19,46],
+      [[20,100],[30,93],[40,88],[50,86],[60,85],[70,70],[100,70]]
+    );
+
+    defineColor(
+      'yellow',
+      [47,62],
+      [[25,100],[40,94],[50,89],[60,86],[70,84],[80,82],[90,80],[100,75]]
+    );
+
+    defineColor(
+      'green',
+      [63,178],
+      [[30,100],[40,90],[50,85],[60,81],[70,74],[80,64],[90,50],[100,40]]
+    );
+
+    defineColor(
+      'blue',
+      [179, 257],
+      [[20,100],[30,86],[40,80],[50,74],[60,60],[70,52],[80,44],[90,39],[100,35]]
+    );
+
+    defineColor(
+      'purple',
+      [258, 282],
+      [[20,100],[30,87],[40,79],[50,70],[60,65],[70,59],[80,52],[90,45],[100,42]]
+    );
+
+    defineColor(
+      'pink',
+      [283, 334],
+      [[20,100],[30,90],[40,86],[60,84],[80,80],[90,75],[100,73]]
+    );
+
+  }
+
+  function HSVtoRGB (hsv) {
+
+    // this doesn't work for the values of 0 and 360
+    // here's the hacky fix
+    var h = hsv[0];
+    if (h === 0) {h = 1;}
+    if (h === 360) {h = 359;}
+
+    // Rebase the h,s,v values
+    h = h/360;
+    var s = hsv[1]/100,
+        v = hsv[2]/100;
+
+    var h_i = Math.floor(h*6),
+      f = h * 6 - h_i,
+      p = v * (1 - s),
+      q = v * (1 - f*s),
+      t = v * (1 - (1 - f)*s),
+      r = 256,
+      g = 256,
+      b = 256;
+
+    switch(h_i) {
+      case 0: r = v; g = t; b = p;  break;
+      case 1: r = q; g = v; b = p;  break;
+      case 2: r = p; g = v; b = t;  break;
+      case 3: r = p; g = q; b = v;  break;
+      case 4: r = t; g = p; b = v;  break;
+      case 5: r = v; g = p; b = q;  break;
+    }
+
+    var result = [Math.floor(r*255), Math.floor(g*255), Math.floor(b*255)];
+    return result;
+  }
+
+  function HSVtoHSL (hsv) {
+    var h = hsv[0],
+      s = hsv[1]/100,
+      v = hsv[2]/100,
+      k = (2-s)*v;
+
+    return [
+      h,
+      Math.round(s*v / (k<1 ? k : 2-k) * 10000) / 100,
+      k/2 * 100
+    ];
+  }
+
+  function stringToInteger (string) {
+    var total = 0
+    for (var i = 0; i !== string.length; i++) {
+      if (total >= Number.MAX_SAFE_INTEGER) break;
+      total += string.charCodeAt(i)
+    }
+    return total
+  }
+
+  return randomColor;
+}));
+
+},{}],36:[function(require,module,exports){
+// MIT License:
+//
+// Copyright (c) 2010-2013, Joe Walnes
+//               2013-2014, Drew Noakes
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+/**
+ * Smoothie Charts - http://smoothiecharts.org/
+ * (c) 2010-2013, Joe Walnes
+ *     2013-2014, Drew Noakes
+ *
+ * v1.0: Main charting library, by Joe Walnes
+ * v1.1: Auto scaling of axis, by Neil Dunn
+ * v1.2: fps (frames per second) option, by Mathias Petterson
+ * v1.3: Fix for divide by zero, by Paul Nikitochkin
+ * v1.4: Set minimum, top-scale padding, remove timeseries, add optional timer to reset bounds, by Kelley Reynolds
+ * v1.5: Set default frames per second to 50... smoother.
+ *       .start(), .stop() methods for conserving CPU, by Dmitry Vyal
+ *       options.interpolation = 'bezier' or 'line', by Dmitry Vyal
+ *       options.maxValue to fix scale, by Dmitry Vyal
+ * v1.6: minValue/maxValue will always get converted to floats, by Przemek Matylla
+ * v1.7: options.grid.fillStyle may be a transparent color, by Dmitry A. Shashkin
+ *       Smooth rescaling, by Kostas Michalopoulos
+ * v1.8: Set max length to customize number of live points in the dataset with options.maxDataSetLength, by Krishna Narni
+ * v1.9: Display timestamps along the bottom, by Nick and Stev-io
+ *       (https://groups.google.com/forum/?fromgroups#!topic/smoothie-charts/-Ywse8FCpKI%5B1-25%5D)
+ *       Refactored by Krishna Narni, to support timestamp formatting function
+ * v1.10: Switch to requestAnimationFrame, removed the now obsoleted options.fps, by Gergely Imreh
+ * v1.11: options.grid.sharpLines option added, by @drewnoakes
+ *        Addressed warning seen in Firefox when seriesOption.fillStyle undefined, by @drewnoakes
+ * v1.12: Support for horizontalLines added, by @drewnoakes
+ *        Support for yRangeFunction callback added, by @drewnoakes
+ * v1.13: Fixed typo (#32), by @alnikitich
+ * v1.14: Timer cleared when last TimeSeries removed (#23), by @davidgaleano
+ *        Fixed diagonal line on chart at start/end of data stream, by @drewnoakes
+ * v1.15: Support for npm package (#18), by @dominictarr
+ *        Fixed broken removeTimeSeries function (#24) by @davidgaleano
+ *        Minor performance and tidying, by @drewnoakes
+ * v1.16: Bug fix introduced in v1.14 relating to timer creation/clearance (#23), by @drewnoakes
+ *        TimeSeries.append now deals with out-of-order timestamps, and can merge duplicates, by @zacwitte (#12)
+ *        Documentation and some local variable renaming for clarity, by @drewnoakes
+ * v1.17: Allow control over font size (#10), by @drewnoakes
+ *        Timestamp text won't overlap, by @drewnoakes
+ * v1.18: Allow control of max/min label precision, by @drewnoakes
+ *        Added 'borderVisible' chart option, by @drewnoakes
+ *        Allow drawing series with fill but no stroke (line), by @drewnoakes
+ * v1.19: Avoid unnecessary repaints, and fixed flicker in old browsers having multiple charts in document (#40), by @asbai
+ * v1.20: Add SmoothieChart.getTimeSeriesOptions and SmoothieChart.bringToFront functions, by @drewnoakes
+ * v1.21: Add 'step' interpolation mode, by @drewnoakes
+ * v1.22: Add support for different pixel ratios. Also add optional y limit formatters, by @copacetic
+ * v1.23: Fix bug introduced in v1.22 (#44), by @drewnoakes
+ * v1.24: Fix bug introduced in v1.23, re-adding parseFloat to y-axis formatter defaults, by @siggy_sf
+ * v1.25: Fix bug seen when adding a data point to TimeSeries which is older than the current data, by @Nking92
+ *        Draw time labels on top of series, by @comolosabia
+ *        Add TimeSeries.clear function, by @drewnoakes
+ * v1.26: Add support for resizing on high device pixel ratio screens, by @copacetic
+ * v1.27: Fix bug introduced in v1.26 for non whole number devicePixelRatio values, by @zmbush
+ */
+
+;(function(exports) {
+
+  var Util = {
+    extend: function() {
+      arguments[0] = arguments[0] || {};
+      for (var i = 1; i < arguments.length; i++)
+      {
+        for (var key in arguments[i])
+        {
+          if (arguments[i].hasOwnProperty(key))
+          {
+            if (typeof(arguments[i][key]) === 'object') {
+              if (arguments[i][key] instanceof Array) {
+                arguments[0][key] = arguments[i][key];
+              } else {
+                arguments[0][key] = Util.extend(arguments[0][key], arguments[i][key]);
+              }
+            } else {
+              arguments[0][key] = arguments[i][key];
+            }
+          }
+        }
+      }
+      return arguments[0];
+    }
+  };
+
+  /**
+   * Initialises a new <code>TimeSeries</code> with optional data options.
+   *
+   * Options are of the form (defaults shown):
+   *
+   * <pre>
+   * {
+   *   resetBounds: true,        // enables/disables automatic scaling of the y-axis
+   *   resetBoundsInterval: 3000 // the period between scaling calculations, in millis
+   * }
+   * </pre>
+   *
+   * Presentation options for TimeSeries are specified as an argument to <code>SmoothieChart.addTimeSeries</code>.
+   *
+   * @constructor
+   */
+  function TimeSeries(options) {
+    this.options = Util.extend({}, TimeSeries.defaultOptions, options);
+    this.clear();
+  }
+
+  TimeSeries.defaultOptions = {
+    resetBoundsInterval: 3000,
+    resetBounds: true
+  };
+
+  /**
+   * Clears all data and state from this TimeSeries object.
+   */
+  TimeSeries.prototype.clear = function() {
+    this.data = [];
+    this.maxValue = Number.NaN; // The maximum value ever seen in this TimeSeries.
+    this.minValue = Number.NaN; // The minimum value ever seen in this TimeSeries.
+  };
+
+  /**
+   * Recalculate the min/max values for this <code>TimeSeries</code> object.
+   *
+   * This causes the graph to scale itself in the y-axis.
+   */
+  TimeSeries.prototype.resetBounds = function() {
+    if (this.data.length) {
+      // Walk through all data points, finding the min/max value
+      this.maxValue = this.data[0][1];
+      this.minValue = this.data[0][1];
+      for (var i = 1; i < this.data.length; i++) {
+        var value = this.data[i][1];
+        if (value > this.maxValue) {
+          this.maxValue = value;
+        }
+        if (value < this.minValue) {
+          this.minValue = value;
+        }
+      }
+    } else {
+      // No data exists, so set min/max to NaN
+      this.maxValue = Number.NaN;
+      this.minValue = Number.NaN;
+    }
+  };
+
+  /**
+   * Adds a new data point to the <code>TimeSeries</code>, preserving chronological order.
+   *
+   * @param timestamp the position, in time, of this data point
+   * @param value the value of this data point
+   * @param sumRepeatedTimeStampValues if <code>timestamp</code> has an exact match in the series, this flag controls
+   * whether it is replaced, or the values summed (defaults to false.)
+   */
+  TimeSeries.prototype.append = function(timestamp, value, sumRepeatedTimeStampValues) {
+    // Rewind until we hit an older timestamp
+    var i = this.data.length - 1;
+    while (i >= 0 && this.data[i][0] > timestamp) {
+      i--;
+    }
+
+    if (i === -1) {
+      // This new item is the oldest data
+      this.data.splice(0, 0, [timestamp, value]);
+    } else if (this.data.length > 0 && this.data[i][0] === timestamp) {
+      // Update existing values in the array
+      if (sumRepeatedTimeStampValues) {
+        // Sum this value into the existing 'bucket'
+        this.data[i][1] += value;
+        value = this.data[i][1];
+      } else {
+        // Replace the previous value
+        this.data[i][1] = value;
+      }
+    } else if (i < this.data.length - 1) {
+      // Splice into the correct position to keep timestamps in order
+      this.data.splice(i + 1, 0, [timestamp, value]);
+    } else {
+      // Add to the end of the array
+      this.data.push([timestamp, value]);
+    }
+
+    this.maxValue = isNaN(this.maxValue) ? value : Math.max(this.maxValue, value);
+    this.minValue = isNaN(this.minValue) ? value : Math.min(this.minValue, value);
+  };
+
+  TimeSeries.prototype.dropOldData = function(oldestValidTime, maxDataSetLength) {
+    // We must always keep one expired data point as we need this to draw the
+    // line that comes into the chart from the left, but any points prior to that can be removed.
+    var removeCount = 0;
+    while (this.data.length - removeCount >= maxDataSetLength && this.data[removeCount + 1][0] < oldestValidTime) {
+      removeCount++;
+    }
+    if (removeCount !== 0) {
+      this.data.splice(0, removeCount);
+    }
+  };
+
+  /**
+   * Initialises a new <code>SmoothieChart</code>.
+   *
+   * Options are optional, and should be of the form below. Just specify the values you
+   * need and the rest will be given sensible defaults as shown:
+   *
+   * <pre>
+   * {
+   *   minValue: undefined,                      // specify to clamp the lower y-axis to a given value
+   *   maxValue: undefined,                      // specify to clamp the upper y-axis to a given value
+   *   maxValueScale: 1,                         // allows proportional padding to be added above the chart. for 10% padding, specify 1.1.
+   *   yRangeFunction: undefined,                // function({min: , max: }) { return {min: , max: }; }
+   *   scaleSmoothing: 0.125,                    // controls the rate at which y-value zoom animation occurs
+   *   millisPerPixel: 20,                       // sets the speed at which the chart pans by
+   *   enableDpiScaling: true,                   // support rendering at different DPI depending on the device
+   *   yMinFormatter: function(min, precision) { // callback function that formats the min y value label
+   *     return parseFloat(min).toFixed(precision);
+   *   },
+   *   yMaxFormatter: function(max, precision) { // callback function that formats the max y value label
+   *     return parseFloat(max).toFixed(precision);
+   *   },
+   *   maxDataSetLength: 2,
+   *   interpolation: 'bezier'                   // one of 'bezier', 'linear', or 'step'
+   *   timestampFormatter: null,                 // optional function to format time stamps for bottom of chart
+   *                                             // you may use SmoothieChart.timeFormatter, or your own: function(date) { return ''; }
+   *   horizontalLines: [],                      // [ { value: 0, color: '#ffffff', lineWidth: 1 } ]
+   *   grid:
+   *   {
+   *     fillStyle: '#000000',                   // the background colour of the chart
+   *     lineWidth: 1,                           // the pixel width of grid lines
+   *     strokeStyle: '#777777',                 // colour of grid lines
+   *     millisPerLine: 1000,                    // distance between vertical grid lines
+   *     sharpLines: false,                      // controls whether grid lines are 1px sharp, or softened
+   *     verticalSections: 2,                    // number of vertical sections marked out by horizontal grid lines
+   *     borderVisible: true                     // whether the grid lines trace the border of the chart or not
+   *   },
+   *   labels
+   *   {
+   *     disabled: false,                        // enables/disables labels showing the min/max values
+   *     fillStyle: '#ffffff',                   // colour for text of labels,
+   *     fontSize: 15,
+   *     fontFamily: 'sans-serif',
+   *     precision: 2
+   *   }
+   * }
+   * </pre>
+   *
+   * @constructor
+   */
+  function SmoothieChart(options) {
+    this.options = Util.extend({}, SmoothieChart.defaultChartOptions, options);
+    this.seriesSet = [];
+    this.currentValueRange = 1;
+    this.currentVisMinValue = 0;
+    this.lastRenderTimeMillis = 0;
+  }
+
+  SmoothieChart.defaultChartOptions = {
+    millisPerPixel: 20,
+    enableDpiScaling: true,
+    yMinFormatter: function(min, precision) {
+      return parseFloat(min).toFixed(precision);
+    },
+    yMaxFormatter: function(max, precision) {
+      return parseFloat(max).toFixed(precision);
+    },
+    maxValueScale: 1,
+    interpolation: 'bezier',
+    scaleSmoothing: 0.125,
+    maxDataSetLength: 2,
+    grid: {
+      fillStyle: '#000000',
+      strokeStyle: '#777777',
+      lineWidth: 1,
+      sharpLines: false,
+      millisPerLine: 1000,
+      verticalSections: 2,
+      borderVisible: true
+    },
+    labels: {
+      fillStyle: '#ffffff',
+      disabled: false,
+      fontSize: 10,
+      fontFamily: 'monospace',
+      precision: 2
+    },
+    horizontalLines: []
+  };
+
+  // Based on http://inspirit.github.com/jsfeat/js/compatibility.js
+  SmoothieChart.AnimateCompatibility = (function() {
+    var requestAnimationFrame = function(callback, element) {
+          var requestAnimationFrame =
+            window.requestAnimationFrame        ||
+            window.webkitRequestAnimationFrame  ||
+            window.mozRequestAnimationFrame     ||
+            window.oRequestAnimationFrame       ||
+            window.msRequestAnimationFrame      ||
+            function(callback) {
+              return window.setTimeout(function() {
+                callback(new Date().getTime());
+              }, 16);
+            };
+          return requestAnimationFrame.call(window, callback, element);
+        },
+        cancelAnimationFrame = function(id) {
+          var cancelAnimationFrame =
+            window.cancelAnimationFrame ||
+            function(id) {
+              clearTimeout(id);
+            };
+          return cancelAnimationFrame.call(window, id);
+        };
+
+    return {
+      requestAnimationFrame: requestAnimationFrame,
+      cancelAnimationFrame: cancelAnimationFrame
+    };
+  })();
+
+  SmoothieChart.defaultSeriesPresentationOptions = {
+    lineWidth: 1,
+    strokeStyle: '#ffffff'
+  };
+
+  /**
+   * Adds a <code>TimeSeries</code> to this chart, with optional presentation options.
+   *
+   * Presentation options should be of the form (defaults shown):
+   *
+   * <pre>
+   * {
+   *   lineWidth: 1,
+   *   strokeStyle: '#ffffff',
+   *   fillStyle: undefined
+   * }
+   * </pre>
+   */
+  SmoothieChart.prototype.addTimeSeries = function(timeSeries, options) {
+    this.seriesSet.push({timeSeries: timeSeries, options: Util.extend({}, SmoothieChart.defaultSeriesPresentationOptions, options)});
+    if (timeSeries.options.resetBounds && timeSeries.options.resetBoundsInterval > 0) {
+      timeSeries.resetBoundsTimerId = setInterval(
+        function() {
+          timeSeries.resetBounds();
+        },
+        timeSeries.options.resetBoundsInterval
+      );
+    }
+  };
+
+  /**
+   * Removes the specified <code>TimeSeries</code> from the chart.
+   */
+  SmoothieChart.prototype.removeTimeSeries = function(timeSeries) {
+    // Find the correct timeseries to remove, and remove it
+    var numSeries = this.seriesSet.length;
+    for (var i = 0; i < numSeries; i++) {
+      if (this.seriesSet[i].timeSeries === timeSeries) {
+        this.seriesSet.splice(i, 1);
+        break;
+      }
+    }
+    // If a timer was operating for that timeseries, remove it
+    if (timeSeries.resetBoundsTimerId) {
+      // Stop resetting the bounds, if we were
+      clearInterval(timeSeries.resetBoundsTimerId);
+    }
+  };
+
+  /**
+   * Gets render options for the specified <code>TimeSeries</code>.
+   *
+   * As you may use a single <code>TimeSeries</code> in multiple charts with different formatting in each usage,
+   * these settings are stored in the chart.
+   */
+  SmoothieChart.prototype.getTimeSeriesOptions = function(timeSeries) {
+    // Find the correct timeseries to remove, and remove it
+    var numSeries = this.seriesSet.length;
+    for (var i = 0; i < numSeries; i++) {
+      if (this.seriesSet[i].timeSeries === timeSeries) {
+        return this.seriesSet[i].options;
+      }
+    }
+  };
+
+  /**
+   * Brings the specified <code>TimeSeries</code> to the top of the chart. It will be rendered last.
+   */
+  SmoothieChart.prototype.bringToFront = function(timeSeries) {
+    // Find the correct timeseries to remove, and remove it
+    var numSeries = this.seriesSet.length;
+    for (var i = 0; i < numSeries; i++) {
+      if (this.seriesSet[i].timeSeries === timeSeries) {
+        var set = this.seriesSet.splice(i, 1);
+        this.seriesSet.push(set[0]);
+        break;
+      }
+    }
+  };
+
+  /**
+   * Instructs the <code>SmoothieChart</code> to start rendering to the provided canvas, with specified delay.
+   *
+   * @param canvas the target canvas element
+   * @param delayMillis an amount of time to wait before a data point is shown. This can prevent the end of the series
+   * from appearing on screen, with new values flashing into view, at the expense of some latency.
+   */
+  SmoothieChart.prototype.streamTo = function(canvas, delayMillis) {
+    this.canvas = canvas;
+    this.delay = delayMillis;
+    this.start();
+  };
+
+  /**
+   * Make sure the canvas has the optimal resolution for the device's pixel ratio.
+   */
+  SmoothieChart.prototype.resize = function() {
+    // TODO this function doesn't handle the value of enableDpiScaling changing during execution
+    if (!this.options.enableDpiScaling || !window || window.devicePixelRatio === 1)
+      return;
+
+    var dpr = window.devicePixelRatio;
+    var width = parseInt(this.canvas.getAttribute('width'));
+    var height = parseInt(this.canvas.getAttribute('height'));
+
+    if (!this.originalWidth || (Math.floor(this.originalWidth * dpr) !== width)) {
+      this.originalWidth = width;
+      this.canvas.setAttribute('width', (Math.floor(width * dpr)).toString());
+      this.canvas.style.width = width + 'px';
+      this.canvas.getContext('2d').scale(dpr, dpr);
+    }
+
+    if (!this.originalHeight || (Math.floor(this.originalHeight * dpr) !== height)) {
+      this.originalHeight = height;
+      this.canvas.setAttribute('height', (Math.floor(height * dpr)).toString());
+      this.canvas.style.height = height + 'px';
+      this.canvas.getContext('2d').scale(dpr, dpr);
+    }
+  };
+
+  /**
+   * Starts the animation of this chart.
+   */
+  SmoothieChart.prototype.start = function() {
+    if (this.frame) {
+      // We're already running, so just return
+      return;
+    }
+
+    // Renders a frame, and queues the next frame for later rendering
+    var animate = function() {
+      this.frame = SmoothieChart.AnimateCompatibility.requestAnimationFrame(function() {
+        this.render();
+        animate();
+      }.bind(this));
+    }.bind(this);
+
+    animate();
+  };
+
+  /**
+   * Stops the animation of this chart.
+   */
+  SmoothieChart.prototype.stop = function() {
+    if (this.frame) {
+      SmoothieChart.AnimateCompatibility.cancelAnimationFrame(this.frame);
+      delete this.frame;
+    }
+  };
+
+  SmoothieChart.prototype.updateValueRange = function() {
+    // Calculate the current scale of the chart, from all time series.
+    var chartOptions = this.options,
+        chartMaxValue = Number.NaN,
+        chartMinValue = Number.NaN;
+
+    for (var d = 0; d < this.seriesSet.length; d++) {
+      // TODO(ndunn): We could calculate / track these values as they stream in.
+      var timeSeries = this.seriesSet[d].timeSeries;
+      if (!isNaN(timeSeries.maxValue)) {
+        chartMaxValue = !isNaN(chartMaxValue) ? Math.max(chartMaxValue, timeSeries.maxValue) : timeSeries.maxValue;
+      }
+
+      if (!isNaN(timeSeries.minValue)) {
+        chartMinValue = !isNaN(chartMinValue) ? Math.min(chartMinValue, timeSeries.minValue) : timeSeries.minValue;
+      }
+    }
+
+    // Scale the chartMaxValue to add padding at the top if required
+    if (chartOptions.maxValue != null) {
+      chartMaxValue = chartOptions.maxValue;
+    } else {
+      chartMaxValue *= chartOptions.maxValueScale;
+    }
+
+    // Set the minimum if we've specified one
+    if (chartOptions.minValue != null) {
+      chartMinValue = chartOptions.minValue;
+    }
+
+    // If a custom range function is set, call it
+    if (this.options.yRangeFunction) {
+      var range = this.options.yRangeFunction({min: chartMinValue, max: chartMaxValue});
+      chartMinValue = range.min;
+      chartMaxValue = range.max;
+    }
+
+    if (!isNaN(chartMaxValue) && !isNaN(chartMinValue)) {
+      var targetValueRange = chartMaxValue - chartMinValue;
+      var valueRangeDiff = (targetValueRange - this.currentValueRange);
+      var minValueDiff = (chartMinValue - this.currentVisMinValue);
+      this.isAnimatingScale = Math.abs(valueRangeDiff) > 0.1 || Math.abs(minValueDiff) > 0.1;
+      this.currentValueRange += chartOptions.scaleSmoothing * valueRangeDiff;
+      this.currentVisMinValue += chartOptions.scaleSmoothing * minValueDiff;
+    }
+
+    this.valueRange = { min: chartMinValue, max: chartMaxValue };
+  };
+
+  SmoothieChart.prototype.render = function(canvas, time) {
+    var nowMillis = new Date().getTime();
+
+    if (!this.isAnimatingScale) {
+      // We're not animating. We can use the last render time and the scroll speed to work out whether
+      // we actually need to paint anything yet. If not, we can return immediately.
+
+      // Render at least every 1/6th of a second. The canvas may be resized, which there is
+      // no reliable way to detect.
+      var maxIdleMillis = Math.min(1000/6, this.options.millisPerPixel);
+
+      if (nowMillis - this.lastRenderTimeMillis < maxIdleMillis) {
+        return;
+      }
+    }
+
+    this.resize();
+
+    this.lastRenderTimeMillis = nowMillis;
+
+    canvas = canvas || this.canvas;
+    time = time || nowMillis - (this.delay || 0);
+
+    // Round time down to pixel granularity, so motion appears smoother.
+    time -= time % this.options.millisPerPixel;
+
+    var context = canvas.getContext('2d'),
+        chartOptions = this.options,
+        dimensions = { top: 0, left: 0, width: canvas.clientWidth, height: canvas.clientHeight },
+        // Calculate the threshold time for the oldest data points.
+        oldestValidTime = time - (dimensions.width * chartOptions.millisPerPixel),
+        valueToYPixel = function(value) {
+          var offset = value - this.currentVisMinValue;
+          return this.currentValueRange === 0
+            ? dimensions.height
+            : dimensions.height - (Math.round((offset / this.currentValueRange) * dimensions.height));
+        }.bind(this),
+        timeToXPixel = function(t) {
+          return Math.round(dimensions.width - ((time - t) / chartOptions.millisPerPixel));
+        };
+
+    this.updateValueRange();
+
+    context.font = chartOptions.labels.fontSize + 'px ' + chartOptions.labels.fontFamily;
+
+    // Save the state of the canvas context, any transformations applied in this method
+    // will get removed from the stack at the end of this method when .restore() is called.
+    context.save();
+
+    // Move the origin.
+    context.translate(dimensions.left, dimensions.top);
+
+    // Create a clipped rectangle - anything we draw will be constrained to this rectangle.
+    // This prevents the occasional pixels from curves near the edges overrunning and creating
+    // screen cheese (that phrase should need no explanation).
+    context.beginPath();
+    context.rect(0, 0, dimensions.width, dimensions.height);
+    context.clip();
+
+    // Clear the working area.
+    context.save();
+    context.fillStyle = chartOptions.grid.fillStyle;
+    context.clearRect(0, 0, dimensions.width, dimensions.height);
+    context.fillRect(0, 0, dimensions.width, dimensions.height);
+    context.restore();
+
+    // Grid lines...
+    context.save();
+    context.lineWidth = chartOptions.grid.lineWidth;
+    context.strokeStyle = chartOptions.grid.strokeStyle;
+    // Vertical (time) dividers.
+    if (chartOptions.grid.millisPerLine > 0) {
+      context.beginPath();
+      for (var t = time - (time % chartOptions.grid.millisPerLine);
+           t >= oldestValidTime;
+           t -= chartOptions.grid.millisPerLine) {
+        var gx = timeToXPixel(t);
+        if (chartOptions.grid.sharpLines) {
+          gx -= 0.5;
+        }
+        context.moveTo(gx, 0);
+        context.lineTo(gx, dimensions.height);
+      }
+      context.stroke();
+      context.closePath();
+    }
+
+    // Horizontal (value) dividers.
+    for (var v = 1; v < chartOptions.grid.verticalSections; v++) {
+      var gy = Math.round(v * dimensions.height / chartOptions.grid.verticalSections);
+      if (chartOptions.grid.sharpLines) {
+        gy -= 0.5;
+      }
+      context.beginPath();
+      context.moveTo(0, gy);
+      context.lineTo(dimensions.width, gy);
+      context.stroke();
+      context.closePath();
+    }
+    // Bounding rectangle.
+    if (chartOptions.grid.borderVisible) {
+      context.beginPath();
+      context.strokeRect(0, 0, dimensions.width, dimensions.height);
+      context.closePath();
+    }
+    context.restore();
+
+    // Draw any horizontal lines...
+    if (chartOptions.horizontalLines && chartOptions.horizontalLines.length) {
+      for (var hl = 0; hl < chartOptions.horizontalLines.length; hl++) {
+        var line = chartOptions.horizontalLines[hl],
+            hly = Math.round(valueToYPixel(line.value)) - 0.5;
+        context.strokeStyle = line.color || '#ffffff';
+        context.lineWidth = line.lineWidth || 1;
+        context.beginPath();
+        context.moveTo(0, hly);
+        context.lineTo(dimensions.width, hly);
+        context.stroke();
+        context.closePath();
+      }
+    }
+
+    // For each data set...
+    for (var d = 0; d < this.seriesSet.length; d++) {
+      context.save();
+      var timeSeries = this.seriesSet[d].timeSeries,
+          dataSet = timeSeries.data,
+          seriesOptions = this.seriesSet[d].options;
+
+      // Delete old data that's moved off the left of the chart.
+      timeSeries.dropOldData(oldestValidTime, chartOptions.maxDataSetLength);
+
+      // Set style for this dataSet.
+      context.lineWidth = seriesOptions.lineWidth;
+      context.strokeStyle = seriesOptions.strokeStyle;
+      // Draw the line...
+      context.beginPath();
+      // Retain lastX, lastY for calculating the control points of bezier curves.
+      var firstX = 0, lastX = 0, lastY = 0;
+      for (var i = 0; i < dataSet.length && dataSet.length !== 1; i++) {
+        var x = timeToXPixel(dataSet[i][0]),
+            y = valueToYPixel(dataSet[i][1]);
+
+        if (i === 0) {
+          firstX = x;
+          context.moveTo(x, y);
+        } else {
+          switch (chartOptions.interpolation) {
+            case "linear":
+            case "line": {
+              context.lineTo(x,y);
+              break;
+            }
+            case "bezier":
+            default: {
+              // Great explanation of Bezier curves: http://en.wikipedia.org/wiki/Bezier_curve#Quadratic_curves
+              //
+              // Assuming A was the last point in the line plotted and B is the new point,
+              // we draw a curve with control points P and Q as below.
+              //
+              // A---P
+              //     |
+              //     |
+              //     |
+              //     Q---B
+              //
+              // Importantly, A and P are at the same y coordinate, as are B and Q. This is
+              // so adjacent curves appear to flow as one.
+              //
+              context.bezierCurveTo( // startPoint (A) is implicit from last iteration of loop
+                Math.round((lastX + x) / 2), lastY, // controlPoint1 (P)
+                Math.round((lastX + x)) / 2, y, // controlPoint2 (Q)
+                x, y); // endPoint (B)
+              break;
+            }
+            case "step": {
+              context.lineTo(x,lastY);
+              context.lineTo(x,y);
+              break;
+            }
+          }
+        }
+
+        lastX = x; lastY = y;
+      }
+
+      if (dataSet.length > 1) {
+        if (seriesOptions.fillStyle) {
+          // Close up the fill region.
+          context.lineTo(dimensions.width + seriesOptions.lineWidth + 1, lastY);
+          context.lineTo(dimensions.width + seriesOptions.lineWidth + 1, dimensions.height + seriesOptions.lineWidth + 1);
+          context.lineTo(firstX, dimensions.height + seriesOptions.lineWidth);
+          context.fillStyle = seriesOptions.fillStyle;
+          context.fill();
+        }
+
+        if (seriesOptions.strokeStyle && seriesOptions.strokeStyle !== 'none') {
+          context.stroke();
+        }
+        context.closePath();
+      }
+      context.restore();
+    }
+
+    // Draw the axis values on the chart.
+    if (!chartOptions.labels.disabled && !isNaN(this.valueRange.min) && !isNaN(this.valueRange.max)) {
+      var maxValueString = chartOptions.yMaxFormatter(this.valueRange.max, chartOptions.labels.precision),
+          minValueString = chartOptions.yMinFormatter(this.valueRange.min, chartOptions.labels.precision);
+      context.fillStyle = chartOptions.labels.fillStyle;
+      context.fillText(maxValueString, dimensions.width - context.measureText(maxValueString).width - 2, chartOptions.labels.fontSize);
+      context.fillText(minValueString, dimensions.width - context.measureText(minValueString).width - 2, dimensions.height - 2);
+    }
+
+    // Display timestamps along x-axis at the bottom of the chart.
+    if (chartOptions.timestampFormatter && chartOptions.grid.millisPerLine > 0) {
+      var textUntilX = dimensions.width - context.measureText(minValueString).width + 4;
+      for (var t = time - (time % chartOptions.grid.millisPerLine);
+           t >= oldestValidTime;
+           t -= chartOptions.grid.millisPerLine) {
+        var gx = timeToXPixel(t);
+        // Only draw the timestamp if it won't overlap with the previously drawn one.
+        if (gx < textUntilX) {
+          // Formats the timestamp based on user specified formatting function
+          // SmoothieChart.timeFormatter function above is one such formatting option
+          var tx = new Date(t),
+            ts = chartOptions.timestampFormatter(tx),
+            tsWidth = context.measureText(ts).width;
+          textUntilX = gx - tsWidth - 2;
+          context.fillStyle = chartOptions.labels.fillStyle;
+          context.fillText(ts, gx - tsWidth, dimensions.height - 2);
+        }
+      }
+    }
+
+    context.restore(); // See .save() above.
+  };
+
+  // Sample timestamp formatting function
+  SmoothieChart.timeFormatter = function(date) {
+    function pad2(number) { return (number < 10 ? '0' : '') + number }
+    return pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':' + pad2(date.getSeconds());
+  };
+
+  exports.TimeSeries = TimeSeries;
+  exports.SmoothieChart = SmoothieChart;
+
+})(typeof exports === 'undefined' ? this : exports);
+
+
+},{}],37:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -15814,7 +17030,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":36,"./socket":38,"./url":39,"debug":41,"socket.io-parser":45}],36:[function(require,module,exports){
+},{"./manager":38,"./socket":40,"./url":41,"debug":43,"socket.io-parser":47}],38:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16373,7 +17589,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":37,"./socket":38,"backo2":3,"component-bind":7,"component-emitter":40,"debug":41,"engine.io-client":11,"indexof":29,"socket.io-parser":45}],37:[function(require,module,exports){
+},{"./on":39,"./socket":40,"backo2":3,"component-bind":7,"component-emitter":42,"debug":43,"engine.io-client":11,"indexof":29,"socket.io-parser":47}],39:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -16399,7 +17615,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16813,7 +18029,7 @@ Socket.prototype.compress = function(compress){
   return this;
 };
 
-},{"./on":37,"component-bind":7,"component-emitter":40,"debug":41,"has-binary":27,"socket.io-parser":45,"to-array":51}],39:[function(require,module,exports){
+},{"./on":39,"component-bind":7,"component-emitter":42,"debug":43,"has-binary":27,"socket.io-parser":47,"to-array":53}],41:[function(require,module,exports){
 (function (global){
 
 /**
@@ -16894,7 +18110,7 @@ function url(uri, loc){
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"debug":41,"parseuri":34}],40:[function(require,module,exports){
+},{"debug":43,"parseuri":34}],42:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -17057,13 +18273,13 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"./debug":42,"dup":21}],42:[function(require,module,exports){
+},{"./debug":44,"dup":21}],44:[function(require,module,exports){
 arguments[4][22][0].apply(exports,arguments)
-},{"dup":22,"ms":43}],43:[function(require,module,exports){
+},{"dup":22,"ms":45}],45:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],44:[function(require,module,exports){
+},{"dup":23}],46:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -17209,7 +18425,7 @@ exports.removeBlobs = function(data, callback) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./is-buffer":46,"isarray":30}],45:[function(require,module,exports){
+},{"./is-buffer":48,"isarray":30}],47:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -17611,7 +18827,7 @@ function error(data){
   };
 }
 
-},{"./binary":44,"./is-buffer":46,"component-emitter":8,"debug":47,"isarray":30,"json3":49}],46:[function(require,module,exports){
+},{"./binary":46,"./is-buffer":48,"component-emitter":8,"debug":49,"isarray":30,"json3":51}],48:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -17629,11 +18845,11 @@ function isBuf(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"./debug":48,"dup":21}],48:[function(require,module,exports){
+},{"./debug":50,"dup":21}],50:[function(require,module,exports){
 arguments[4][22][0].apply(exports,arguments)
-},{"dup":22,"ms":50}],49:[function(require,module,exports){
+},{"dup":22,"ms":52}],51:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -18540,9 +19756,9 @@ arguments[4][22][0].apply(exports,arguments)
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],51:[function(require,module,exports){
+},{"dup":23}],53:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -18557,7 +19773,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],52:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -18806,7 +20022,7 @@ function toArray(list, index) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],53:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -18898,7 +20114,7 @@ function toArray(list, index) {
   }
 })();
 
-},{"./chrome/chrome_shim":54,"./edge/edge_shim":57,"./firefox/firefox_shim":58,"./safari/safari_shim":60,"./utils":61}],54:[function(require,module,exports){
+},{"./chrome/chrome_shim":56,"./edge/edge_shim":59,"./firefox/firefox_shim":60,"./safari/safari_shim":62,"./utils":63}],56:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -19143,7 +20359,7 @@ module.exports = {
   reattachMediaStream: chromeShim.reattachMediaStream
 };
 
-},{"../utils.js":61,"./getusermedia":55}],55:[function(require,module,exports){
+},{"../utils.js":63,"./getusermedia":57}],57:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -19284,7 +20500,7 @@ module.exports = function() {
   }
 };
 
-},{"../utils.js":61}],56:[function(require,module,exports){
+},{"../utils.js":63}],58:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -19782,7 +20998,7 @@ SDPUtils.getDirection = function(mediaSection, sessionpart) {
 // Expose public methods.
 module.exports = SDPUtils;
 
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -20738,7 +21954,7 @@ module.exports = {
   reattachMediaStream: edgeShim.reattachMediaStream
 };
 
-},{"../utils":61,"./edge_sdp":56}],58:[function(require,module,exports){
+},{"../utils":63,"./edge_sdp":58}],60:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -20981,7 +22197,7 @@ module.exports = {
   reattachMediaStream: firefoxShim.reattachMediaStream
 };
 
-},{"../utils":61,"./getusermedia":59}],59:[function(require,module,exports){
+},{"../utils":63,"./getusermedia":61}],61:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -21098,7 +22314,7 @@ module.exports = function() {
   }
 };
 
-},{"../utils":61}],60:[function(require,module,exports){
+},{"../utils":63}],62:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -21134,7 +22350,7 @@ module.exports = {
   // reattachMediaStream: safariShim.reattachMediaStream
 };
 
-},{}],61:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -21279,7 +22495,7 @@ module.exports = {
   extractVersion: utils.extractVersion
 };
 
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -21349,7 +22565,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],63:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 (function (global){
 //@sourceURL=app.js
 global.$ = require('jquery');
@@ -21395,11 +22611,18 @@ function setFileUploadState() {
     dropzone.on("addedfile", function (file) {
         $('.dz-preview').remove();
         var passworded = $("#passwordCheckBox").is(':checked');
-        p2pChannel.startSession(null, passworded, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId, password) {
+        p2pChannel.startSession(null, passworded, new User(null, p2pChannel.UserType.UPLOADER), file, function (roomId, password, bytesReceivedByStreamers, bytesReceivedByDownloaders) {
             $("#app").one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
                 passwordFileInput.remove();
                 fileInput.remove();
                 setNewRoomState(roomId, password, file.name);
+                if(document.querySelector("audio").canPlayType(file.type) !== "") {
+                    bytesReceivedByStreamers.streamTo(document.getElementById("bytesReceivedByStreamers"));
+                } else {
+                    $("#bytesReceivedByStreamers").remove();
+                    $("#bytesReceivedByStreamersText").remove();
+                }
+                bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
                 $("#app").removeClass("bounceOutThenIn");
             });
             $("#app").addClass("bounceOutThenIn");
@@ -21415,16 +22638,28 @@ function setNewRoomState(roomId, password, fileName) {
     roomContainer.append($("<p class='bold'>You have uploaded " + fileName + "</p>"));
     roomContainer.append($("<p id='users'>0 user(s) connected to you.</p>"));
     roomContainer.append($("<p>Remember you can only share it as long as you have this page open.</p>"));
-    var shareContainer = $("<div id='share' class='share'></div>");
-    roomContainer.append($("<p>Share URL: <p class='shareUrl'> " + roomUrl + "</p></p>"));
+    roomContainer.append($("<p>Share URL:</p><p class='shareUrl'> " + roomUrl + "</p>"));
     if(password) {
         roomContainer.append($("<p>Password: <p class='shareUrl'>" + password + "</p></p>"));
     }
+    var shareContainer = $("<div id='shareContainer'></div>");
     shareContainer.append($("<a id='facebook' class='shareBtn' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='twitter' class='shareBtn' target='_blank' href='https://twitter.com/home?status=" + encodeURIComponent(roomUrl) + "'></a>"));
     shareContainer.append($("<a id='google' class='shareBtn' target='_blank' href='https://plus.google.com/share?url=" + encodeURIComponent(roomUrl) + "'></a>"));
     roomContainer.append(shareContainer);
+
+    var statsContainer = $("<div id='statsContainer' class='centered column'></div>");
+    roomContainer.append(statsContainer);
     content.append(roomContainer);
+
+    var canvasWidth = $("#statsContainer").width() * 0.9;
+    var canvasHeight = Math.max($("#statsContainer").height() * 0.3, 40);
+    statsContainer.append($("<p id = 'bytesReceivedByStreamersText'>Users streaming (Bytes/s)</p>"));
+    statsContainer.append('<canvas id="bytesReceivedByStreamers" width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
+
+    statsContainer.append($("<p id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
+    statsContainer.append('<canvas id="bytesReceivedByDownloaders"  width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
+
 }
 
 function setJoinRoomState(roomId) {
@@ -21479,17 +22714,23 @@ module.exports.logErrorToConsole = function logErrorToConsole(error) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./p2p.js":64,"dropzone":10,"jquery":31}],64:[function(require,module,exports){
+},{"./p2p.js":66,"dropzone":10,"jquery":31}],66:[function(require,module,exports){
 var signaller = require('./signaller.js');
 var app = require('./app.js');
 require("webrtc-adapter");
+var Smoothie = require("smoothie");
+var randomColor = require("randomcolor");
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioContext = new AudioContext();
 
 module.exports = function () {
+
     this.UserType = {
         UPLOADER: 0,
         DOWNLOADER: 1,
         STREAMER: 2
     };
+
     this.user;
     this.connection;
     this.sessionStarted = false;
@@ -21498,6 +22739,28 @@ module.exports = function () {
     this.roomId = null;
     this.fileName = null;
     this.chunkedFile = [];
+
+    this.bytesReceivedByStreamers = new Smoothie.SmoothieChart();
+    this.bytesReceivedByDownloaders = new Smoothie.SmoothieChart();
+
+    this.stats = [];
+
+    function Stats(id) {
+        this.id = id;
+        this.color = randomColor();
+        this.streamBytesReceived = new Smoothie.TimeSeries();
+        this.downloadBytesReceived = new Smoothie.TimeSeries();
+
+        p2p.bytesReceivedByStreamers.addTimeSeries(this.streamBytesReceived, {
+            strokeStyle: this.color,
+            lineWidth: 3
+        });
+        p2p.bytesReceivedByDownloaders.addTimeSeries(this.downloadBytesReceived, {
+            strokeStyle: this.color,
+            lineWidth: 3
+        });
+    }
+
     var p2p = this;
 
     this.startSession = function (roomId, passworded, user, file, callback) {
@@ -21517,7 +22780,7 @@ module.exports = function () {
             onSignallerConnect(roomId, user, file);
 
             if (callback != null) {
-                callback(roomId, password);
+                callback(roomId, password,  p2p.bytesReceivedByStreamers, p2p.bytesReceivedByDownloaders);
             }
         });
     };
@@ -21530,6 +22793,7 @@ module.exports = function () {
                     'toUser': p2p.connection.toUser,
                     "message": "CLOSE_CONNECTION"
                 }));
+                stopGatheringStats = true;
                 p2p.signallingChannel.disconnect();
             } else {
                 p2p.signallingChannel.disconnect();
@@ -21549,7 +22813,10 @@ module.exports = function () {
             sendOffer();
         } else if (user.userType == p2p.UserType.UPLOADER) {
             p2p.file = file;
-            p2p.signallingChannel.send('fileType', JSON.stringify({"fileType" : file.type}));
+            p2p.signallingChannel.send('metadata', JSON.stringify({
+                "fileType" : file.type,
+                "fileSize" : file.size
+            }));
         }
     }
 
@@ -21618,6 +22885,19 @@ module.exports = function () {
             } else if(signal.user == "SERVER") {
                 $("#users").text(signal.users + " user(s) connected to you.");
             }
+        } else if(signal.stats) {
+            var stats = findStatsObject(signal.userId);
+            if (stats == null) {
+                stats = new Stats(signal.userId);
+                p2p.stats.push(stats);
+            }
+            if (signal.stats.streamBytesReceived) {
+                stats.streamBytesReceived.append(new Date().getTime(), signal.stats.streamBytesReceived);
+            }
+            if (signal.stats.downloadBytesReceived) {
+                stats.downloadBytesReceived.append(new Date().getTime(), signal.stats.downloadBytesReceived);
+                console.log(stats.downloadBytesReceived);
+            }
         }
     }
 
@@ -21656,8 +22936,6 @@ module.exports = function () {
     function prepareFileStream(connection, file, callback) {
         var reader = new FileReader();
         reader.onloadend = (function (event) {
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            var audioContext = new AudioContext();
             audioContext.decodeAudioData(event.target.result, function (buffer) {
                 var source = audioContext.createBufferSource();
                 var destination = audioContext.createMediaStreamDestination();
@@ -21696,13 +22974,12 @@ module.exports = function () {
     }
 
     function prepareForMediaStream() {
-        var connection = p2p.connection.peerConnection;
-        connection.onaddstream = function (event) {
+        p2p.connection.peerConnection.onaddstream = function (event) {
             console.log("STREAM RECEIVED");
+            gatherStreamingStats(p2p.connection,1000);
             var audioPlayer = $("audio");
             audioPlayer.attr("src", window.URL.createObjectURL(event.stream));
             audioPlayer.trigger("play");
-            gatherStats(connection,1000);
         }
     }
 
@@ -21746,6 +23023,7 @@ module.exports = function () {
             $('#progress-text').text("File has been downloaded!")
             $('progress').val(100);
             (document.body || document.documentElement).removeChild(hyperlink);
+            p2p.endSession();
         };
 
         var mouseEvent = new MouseEvent('click', {
@@ -21791,7 +23069,6 @@ module.exports = function () {
         var data = {};
         var chunkLength = 64000;
         if ((event)) {
-            setTimeout(null, 10000);
             text = event.target.result;
         }
         if (text.length > chunkLength) {
@@ -21815,23 +23092,70 @@ module.exports = function () {
     function appendChunkToFile(data) {
         console.log(data);
         p2p.chunkedFile.push(data.chunk);
+        gatherDownloadStats(data.chunk.length);
         if (data.last) {
             $('progress').val(60);
             saveToDisk(p2p.chunkedFile.join(''), p2p.fileName);
+            gatherDownloadStats(0);
         }
     }
 
-    function gatherStats(connection,delay) {
-        if(p2p.user.isChrome) {
-            connection.getStats(connection, function(results) {
-                console.log(results);
+    function findStatsObject(id) {
+        for(var i = 0 ; i < p2p.stats.length; i++) {
+            if(p2p.stats[i].id == id) {
+                return p2p.stats[i];
+            }
+        }
+        return null;
+    }
+
+    var stopGatheringStats = false;
+    var statGatheringStartTime = null;
+    function gatherStreamingStats(connection, delay) {
+        if(!statGatheringStartTime) {
+            statGatheringStartTime = Date.now();
+        }
+        if (p2p.user.isChrome) {
+            connection.peerConnection.getStats(connection, function (results) {
+                var stats = {};
+                Object.keys(results).forEach(function (key) {
+                    if (key.indexOf("ssrc_") !== -1) {
+                        stats.audioChannel = results[key];
+                        stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - statGatheringStartTime) / 1000)
+                        console.log(stats.audioChannel.bytesReceivedPerSecond);
+                    } else if (key.indexOf("Conn-audio-1-0") !== -1) {
+                        stats.audioConnection = results[key];
+                    }
+                });
+                console.log(stats);
                 p2p.signallingChannel.send("stats", JSON.stringify({
-                    roomId:p2p.roomId,
-                    user:p2p.user,
-                    toUser:connection.toUser,
-                    results: results
-                }))
+                    "userId": p2p.user.userId,
+                    "toUserId": connection.toUser.userId,
+                    "stats": stats
+                }));
             });
+            if (stopGatheringStats == false) {
+                setTimeout(function () {
+                    gatherStreamingStats(connection, delay);
+                }, delay);
+            }
+
+        }
+    }
+
+    function gatherDownloadStats(chunkLength) {
+        if (p2p.user.isChrome) {
+            var stats = {};
+            stats.dataChannel = {};
+            stats.dataChannel.bytesReceived = p2p.chunkedFile.join('').length;
+            stats.dataChannel.bytesReceivedPerSecond = chunkLength;
+            console.log(stats);
+            p2p.signallingChannel.send("stats", JSON.stringify({
+                "userId": p2p.user.userId,
+                "toUserId": p2p.connection.toUser.userId,
+                "stats": stats
+            }));
+
         }
     }
 }
@@ -21842,7 +23166,9 @@ module.exports = function () {
 
 
 
-},{"./app.js":63,"./signaller.js":65,"webrtc-adapter":53}],65:[function(require,module,exports){
+},{"./app.js":65,"./signaller.js":67,"randomcolor":35,"smoothie":36,"webrtc-adapter":55}],67:[function(require,module,exports){
+var $ = require('jquery');
+
 module.exports = function () {
     var socket = null;
 
@@ -21898,7 +23224,7 @@ module.exports = function () {
 
 
 }
-},{"socket.io-client":35}]},{},[63])
+},{"jquery":31,"socket.io-client":37}]},{},[65])
 
 
 //# sourceMappingURL=bundle.js.map

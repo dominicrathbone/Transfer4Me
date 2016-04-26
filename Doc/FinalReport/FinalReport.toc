@@ -1,0 +1,49 @@
+\contentsline {chapter}{\numberline {1}Project Scope}{3}
+\contentsline {section}{\numberline {1.1}Aims and Objectives}{3}
+\contentsline {section}{\numberline {1.2}Stakeholders}{3}
+\contentsline {section}{\numberline {1.3}Methods of Communication}{3}
+\contentsline {chapter}{\numberline {2}Research}{4}
+\contentsline {section}{\numberline {2.1}Comparing Network Architectures}{4}
+\contentsline {section}{\numberline {2.2}Current Solutions to Data Transfer}{6}
+\contentsline {section}{\numberline {2.3}WebRTC}{7}
+\contentsline {chapter}{\numberline {3}Specification}{10}
+\contentsline {section}{\numberline {3.1}Deliverables}{10}
+\contentsline {section}{\numberline {3.2}Risk Analysis}{12}
+\contentsline {section}{\numberline {3.3}Quality Analysis}{12}
+\contentsline {chapter}{\numberline {4}Methodology}{13}
+\contentsline {chapter}{\numberline {5}Prototyping}{15}
+\contentsline {section}{\numberline {5.1}Architecture}{15}
+\contentsline {subsection}{\numberline {5.1.1}Application Flow}{16}
+\contentsline {section}{\numberline {5.2}Signalling}{16}
+\contentsline {subsection}{\numberline {5.2.1}1st Iteration - Spring Boot}{16}
+\contentsline {subsection}{\numberline {5.2.2}2nd Iteration - Node JS}{17}
+\contentsline {subsubsection}{\numberline {5.2.2.1}JSON}{19}
+\contentsline {section}{\numberline {5.3}Peer to Peer Communication}{19}
+\contentsline {subsection}{\numberline {5.3.1}One-to-one peer connection}{19}
+\contentsline {subsection}{\numberline {5.3.2}Using RTCDataChannel to transfer files}{21}
+\contentsline {subsection}{\numberline {5.3.3}Streaming media via peer connection}{23}
+\contentsline {subsubsection}{\numberline {5.3.3.1}Audio}{23}
+\contentsline {subsubsection}{\numberline {5.3.3.2}Video}{23}
+\contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{23}
+\contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{24}
+\contentsline {section}{\numberline {5.4}Design}{25}
+\contentsline {subsection}{\numberline {5.4.1}Design}{25}
+\contentsline {chapter}{\numberline {6}Outcomes}{26}
+\contentsline {section}{\numberline {6.1}Data}{26}
+\contentsline {subsection}{\numberline {6.1.1}Load Testing}{26}
+\contentsline {subsubsection}{\numberline {6.1.1.1}Server In Isolation}{26}
+\contentsline {section}{\numberline {6.2}Discussion}{26}
+\contentsline {chapter}{\numberline {7}Review \& Reflection}{27}
+\contentsline {section}{\numberline {7.1}Background Research}{27}
+\contentsline {section}{\numberline {7.2}Methodology}{27}
+\contentsline {subsection}{\numberline {7.2.1}Kanban}{27}
+\contentsline {section}{\numberline {7.3}Technologies}{27}
+\contentsline {subsection}{\numberline {7.3.1}JavaScript Build Tools}{27}
+\contentsline {subsection}{\numberline {7.3.2}Development Environments}{27}
+\contentsline {subsection}{\numberline {7.3.3}Git}{27}
+\contentsline {subsection}{\numberline {7.3.4}Amazon Web Instances}{27}
+\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{27}
+\contentsline {subsection}{\numberline {7.4.1}Unit Testing}{27}
+\contentsline {subsection}{\numberline {7.4.2}Authentication Encryption}{27}
+\contentsline {subsection}{\numberline {7.4.3}HATEOAS}{27}
+\contentsline {section}{\numberline {7.5}Conclusions}{27}

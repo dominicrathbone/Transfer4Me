@@ -184,6 +184,7 @@ module.exports = function () {
         }
     }
 
+    var offerSentTime = null;
     function sendOffer() {
         p2p.connection.peerConnection.createOffer(function (description) {
             p2p.connection.peerConnection.setLocalDescription(description, function () {
@@ -193,6 +194,7 @@ module.exports = function () {
                     'toUser': p2p.connection.toUser,
                     'sdp': p2p.connection.peerConnection.localDescription
                 }));
+                offerSentTime = Date.now();
             }, app.logErrorToConsole);
         }, app.logErrorToConsole, {"offerToReceiveAudio": true, "offerToReceiveVideo": true});
         console.log("OFFER SENT");
@@ -302,10 +304,12 @@ module.exports = function () {
         hyperlink.download = fileName || fileUrl;
         $('progress').val(60);
         (document.body || document.documentElement).appendChild(hyperlink);
+
         hyperlink.onclick = function() {
             $('#progress-text').text("File has been downloaded!")
             $('progress').val(100);
             (document.body || document.documentElement).removeChild(hyperlink);
+            gatherDownloadStats(true);
             p2p.endSession();
         };
 
@@ -434,22 +438,25 @@ module.exports = function () {
     }
 
     var downloadStatGatheringStartTime = null;
-    function gatherDownloadStats() {
-        if(!downloadStatGatheringStartTime) {
-            downloadStatGatheringStartTime = Date.now();
-        }
+    function gatherDownloadStats(last) {
+        var stats = {};
+        stats.dataChannel = {};
         if (p2p.user.isChrome) {
-            var stats = {};
-            stats.dataChannel = {};
+            if(!downloadStatGatheringStartTime) {
+                downloadStatGatheringStartTime = Date.now();
+            }
             stats.dataChannel.bytesReceived = p2p.chunkedFile.join('').length;
             stats.dataChannel.bytesReceivedPerSecond = p2p.chunkedFile.join('').length / ((Date.now() - downloadStatGatheringStartTime) / 1000);
-            console.log(stats);
-            p2p.signallingChannel.send("stats", JSON.stringify({
-                "userId": p2p.user.userId,
-                "toUserId": p2p.connection.toUser.userId,
-                "stats": stats
-            }));
         }
+        if(last) {
+            stats.dataChannel.timeTaken = Date.now() - offerSentTime;
+        }
+        console.log(stats);
+        p2p.signallingChannel.send("stats", JSON.stringify({
+            "userId": p2p.user.userId,
+            "toUserId": p2p.connection.toUser.userId,
+            "stats": stats
+        }));
     }
 }
 

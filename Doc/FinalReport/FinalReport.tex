@@ -359,14 +359,29 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 			
 			One of the limitations of my approach in developing the application was that I geared the development towards achieving one-to-many peer connections without thinking about the long term goal of many-to-many connections, making the introduction of this functionality a difficult task as it will take a significant amount of code re-factoring.
 			
-			\subsection{Data Collection}
-				In order to gather statistics on the peer to peer connections within a room, I utilised the WebRTC GetStats API which returns a raw data object containing information about the  connection including the streams and data channels that exist within it. In order to do so, I created a new function that is called when a new connection is created on the recipient's application which sets up the getStats function to be called on the connection every second. The callback from the getStats function then extracts the relevant data from the results object returned and sends it to the signalling server along with the room id and the socket ids representing the user at each end of the connection.
+			\subsection{Data Aggregation}
+				\subsubsection{Data Collection}
+				In order to gather statistics on the peer to peer connections within a room, I created two new functions, one for streaming and one for downloading, that are called on the recipients application in order to collect information about the transfer of data. For the streaming data, I created a function that utilised the WebRTC GetStats API which returns a raw data object containing information about the connection including the streams and data channels that exist within it. The function sets up the getStats function and then extracts data from the resulting data object in a callback, the data is then sent  to the signalling server along with the room id and the socket ids representing the user at each end of the connection. In the download data gathering function, I was unable to use the getStats API as it does not contain useful statistics about the DataChannel, instead I created a custom object that contains the amount of bytes that was sent through to the recipient in each chunk. In both functions, this data is sent to the signalling server which then adds file meta-data to the statistics object such as size and type which is gathered when the file is initially uploaded. This information is logged to a file using a logging library called Winston that formats it with a time stamp. Winston is built to provide a simple interface to log to and query from multiple locations (or "transports") which would allow me to easily scale my application in the future.
 				
-				When the signalling server receives this data, it adds meta data about the file such as size and type received earlier to the data object and uses a logging library called Winston to format and log it to a log file on the server file system (A new file is created every day to make them easier to organise). In addition to this, the signalling server then forwards this data to a deployed data visualisation server called lightning-vis which models it into live streaming charts allowing me to monitor how the application performs under stress caused by variables such as high amounts of users or large files being uploaded. In the long run, this would easily allow me to target bottlenecks in the system to fix.
+				\subsubsection{Data Visualisation}
+				To monitor the application, I thought it would be a good idea to model the data I was receiving from the recipient using a data visualisation tool. There are a number of tools and libraries that enable developers to do this such as D3.js \& Charts.js. Initially, I chose to use a pre-built data visualisation server built with node.js called Lightning-vis which uses a REST API to communicate with. This way, I was able to live stream the data sent to the signalling server to the data visualisation server and watch the connections in each room in near real-time. Instead of directly interfacing with the REST API, I chose to use a JavaScript API client library that obfuscates the API and makes it easier to code against. Using this, I was able to create a lightning server session for each room created on my application and post the data to visualisations contained within them. However, as I was developing with the server and API client, I found it didn't have the functionality I was looking for. For example, once I created a visualisation in a session, I wasn't able to add more data series, only update the ones that previously existed, this meant that I wouldn't be able to add series to represent recipients as they joined and left the room. Another issue was that I found that the JavaScript API client was still quite buggy and I had to go into the code to fix it. Overall, I felt it would be better to approach data visualisation with a different library instead of expending any more time trying to make it work. However, if these problems were fixed in the future, this server would have been extremely beneficial as it I could use it to find bottlenecks in the code.
+				
+				\begin{figure}[H]
+					\caption{Lightning Viz Session}
+					\centering
+					\includegraphics[scale=0.25]{lightning-viz.png}
+				\end{figure}	
+				
+				As an alternative, I found a lightweight JavaScript library called smoothie.js that used the HTML5 canvas element to produce live streaming graphs. I used this library to add graphs to the uploader's application, enabling them to see how fast th users connected to them are either downloading or streaming the uploaded file. To do so, I updated the statistics sent to the signalling server by adding a new field that contains how many bytes the recipient receives per second and then made the signalling server forward these statistics on to the uploader. Using smoothie.js avoided the problem I was having with the lightning-viz server as I was now able to add a series per recipient to the chart. However, one of the downsides of this is that now the data visualisation and processing is all handled within the application which presents two problems. First of all, it puts extra load on the application instead of passing it to a service built for this purpose (like lightning-viz) which is probably considerably more efficient at it and secondly by doing so, it means that only the uploader can view the visualised statistics for the room. Due to this, I feel like this solution should only be temporary and refactored at a later point.
+				
+				\begin{figure}[H]
+					\caption{Smoothie.js Chart}
+					\centering
+					\includegraphics[scale=0.5]{smoothie-js.png}
+				\end{figure}
 				
 		\section{Design}			
-			\subsection{Design}
-			 I wanted to keep the design and structure of the web application simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. From figure 5.10, I went through multiple iterations to get to the final design after I finished the prototype. I settled on a design and structure that I felt highlighted the sole purpose of the site well.
+			As design and usability wasn't a key part of my project, I wanted to keep the design and structure of the web application simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. However, that said I feel the design of the application was still something that I needed to dedicate some time too as having a poorly designed site limited how easily I could test the application especially with the lack of unit tests. As you can see from figure 5.10, I went through multiple iterations to get to the final design which I felt fulfilled the goals of both making it easy to test and looking good.
 	
 			\begin{figure}[H]
 				\caption{Iterations of Design}
@@ -382,23 +397,21 @@ Contact: <sip:alice@df7jal23ls0d.invalid;transport=ws>
 			I used WebStorm, an integrated development environment for JavaScript. I chose it because of the massive range of functionality I could utilise as opposed to basic text editors such as sublime. An example of this functionality was that I was easily able to run and specifically debug processes such as the browserify gulp task and the node.js signalling server through it which saved me a lot of time that I would have spent setting up a third party node.js debugger. It also allowed me to spot syntactic and semantic errors as I was writing the code and do things such as refactor names of functions without crawling through the rest of the code to see where it is used.
 			
 			\subsection{Git}
-			Throughout the development process, I regularly committed code to my GitHub repository using the git command-line interface. This was a great habit to get into as it allowed me to track and log my work throughout as well as prevent any risk ofaccidental data loss or overwrites that would almost definitely have occurred from using a USB stick or even a cloud service like dropbox. it let me easily switch from one development platform to another without any trouble which was extremely important as I was in and out of university most days. This habit also spilled over into other modules as I now have a GitHub repository for each that contains all of the assignment work I have done for them. Using GitHub also allows me to expose my work with potential contributors as it is open-source as well as employers as an example of my abilities. 
+			Throughout the development process, I regularly committed code to my GitHub repository using the git command-line interface. This was a great habit to get into as it allowed me to track and log my work throughout as well as prevent any risk of accidental data loss or overwrites that would almost definitely have occurred from using a USB stick or even a cloud service like dropbox. it let me easily switch from one development platform to another without any trouble which was extremely important as I was in and out of university most days. This habit also spilled over into other modules as I now have a GitHub repository for each that contains all of the assignment work I have done for them. Using GitHub also allows me to expose my work with potential contributors as it is open-source as well as employers as an example of my abilities. 
 			
 			\subsection{Amazon Web Instances}
 			Amazon Web Services allowed me to efficiently spin up a virtual Ubuntu server instance that I could host both my application and lightning-vis data visualisation server on. I also was able to link this server to my domain name to expose it to the internet with. However, one of the problems I could potentially have with this though is that as I chose the free micro server instance and I am running multiple servers on it, it could potentially bottle neck their performance and the results I get from my data. In the future if i was to carry on with the project, I would upgrade the server to a more suitable instance.
 			
 	\chapter{Outcomes}
 		\section{Data}
-
+	
 
 		\section{Discussion}
 		
 	\chapter{Review \& Reflection}	
 		\section{Background Research}
-		
+		\section{Specification}
 		\section{Methodology}
-			\subsection{Kanban}
-			At the beginning of the 
 		\section{Limitations \& Improvements of the application}
 			\subsection{Unit Testing}
 			\subsection{JavaScript standards}

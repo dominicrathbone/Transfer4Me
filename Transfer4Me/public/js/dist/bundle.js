@@ -23092,11 +23092,10 @@ module.exports = function () {
     function appendChunkToFile(data) {
         console.log(data);
         p2p.chunkedFile.push(data.chunk);
-        gatherDownloadStats(data.chunk.length);
+        gatherDownloadStats();
         if (data.last) {
             $('progress').val(60);
             saveToDisk(p2p.chunkedFile.join(''), p2p.fileName);
-            gatherDownloadStats(0);
         }
     }
 
@@ -23110,10 +23109,10 @@ module.exports = function () {
     }
 
     var stopGatheringStats = false;
-    var statGatheringStartTime = null;
+    var streamStatGatheringStartTime = null;
     function gatherStreamingStats(connection, delay) {
-        if(!statGatheringStartTime) {
-            statGatheringStartTime = Date.now();
+        if(!streamStatGatheringStartTime) {
+            streamStatGatheringStartTime = Date.now();
         }
         if (p2p.user.isChrome) {
             connection.peerConnection.getStats(connection, function (results) {
@@ -23121,7 +23120,7 @@ module.exports = function () {
                 Object.keys(results).forEach(function (key) {
                     if (key.indexOf("ssrc_") !== -1) {
                         stats.audioChannel = results[key];
-                        stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - statGatheringStartTime) / 1000)
+                        stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - streamStatGatheringStartTime) / 1000)
                         console.log(stats.audioChannel.bytesReceivedPerSecond);
                     } else if (key.indexOf("Conn-audio-1-0") !== -1) {
                         stats.audioConnection = results[key];
@@ -23143,12 +23142,16 @@ module.exports = function () {
         }
     }
 
-    function gatherDownloadStats(chunkLength) {
+    var downloadStatGatheringStartTime = null;
+    function gatherDownloadStats() {
+        if(!downloadStatGatheringStartTime) {
+            downloadStatGatheringStartTime = Date.now();
+        }
         if (p2p.user.isChrome) {
             var stats = {};
             stats.dataChannel = {};
             stats.dataChannel.bytesReceived = p2p.chunkedFile.join('').length;
-            stats.dataChannel.bytesReceivedPerSecond = chunkLength;
+            stats.dataChannel.bytesReceivedPerSecond = p2p.chunkedFile.join('').length / ((Date.now() - downloadStatGatheringStartTime) / 1000);
             console.log(stats);
             p2p.signallingChannel.send("stats", JSON.stringify({
                 "userId": p2p.user.userId,

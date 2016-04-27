@@ -53,7 +53,12 @@ function setFileUploadState() {
                     $("#bytesReceivedByStreamers").remove();
                     $("#bytesReceivedByStreamersText").remove();
                 }
-                bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
+                if(p2pChannel.user.isChrome) {
+                    bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
+                } else {
+                    $("#bytesReceivedByDownloaders").remove();
+                    $("#bytesReceivedByDownloadersText").remove();
+                }
                 $("#app").removeClass("bounceOutThenIn");
             });
             $("#app").addClass("bounceOutThenIn");
@@ -88,9 +93,8 @@ function setNewRoomState(roomId, password, fileName) {
     statsContainer.append($("<p id = 'bytesReceivedByStreamersText'>Users streaming (Bytes/s)</p>"));
     statsContainer.append('<canvas id="bytesReceivedByStreamers" width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
 
-    statsContainer.append($("<p id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
+    statsContainer.append($("<p  id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
     statsContainer.append('<canvas id="bytesReceivedByDownloaders"  width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
-
 }
 
 function setJoinRoomState(roomId) {

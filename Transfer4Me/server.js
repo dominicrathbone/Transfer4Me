@@ -9,7 +9,7 @@ var app = express();
 var io;
 
 var production = process.argv.indexOf("-p");
-if (production != -1) {
+if (production !== -1) {
     var https = require('https').createServer({
             key: fs.readFileSync('certificate/transfer4me.key'),
             cert: fs.readFileSync('certificate/www_transfer4_me.crt'),

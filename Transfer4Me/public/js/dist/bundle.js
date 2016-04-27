@@ -22622,7 +22622,12 @@ function setFileUploadState() {
                     $("#bytesReceivedByStreamers").remove();
                     $("#bytesReceivedByStreamersText").remove();
                 }
-                bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
+                if(p2pChannel.user.isChrome) {
+                    bytesReceivedByDownloaders.streamTo(document.getElementById("bytesReceivedByDownloaders"));
+                } else {
+                    $("#bytesReceivedByDownloaders").remove();
+                    $("#bytesReceivedByDownloadersText").remove();
+                }
                 $("#app").removeClass("bounceOutThenIn");
             });
             $("#app").addClass("bounceOutThenIn");
@@ -22657,9 +22662,8 @@ function setNewRoomState(roomId, password, fileName) {
     statsContainer.append($("<p id = 'bytesReceivedByStreamersText'>Users streaming (Bytes/s)</p>"));
     statsContainer.append('<canvas id="bytesReceivedByStreamers" width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
 
-    statsContainer.append($("<p id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
+    statsContainer.append($("<p  id = 'bytesReceivedByDownloadersText'>Users downloading (Bytes/s)</p>"));
     statsContainer.append('<canvas id="bytesReceivedByDownloaders"  width="' + canvasWidth +'" height="' + canvasHeight +'" class="statistic"></canvas>');
-
 }
 
 function setJoinRoomState(roomId) {
@@ -23114,31 +23118,39 @@ module.exports = function () {
         if(!streamStatGatheringStartTime) {
             streamStatGatheringStartTime = Date.now();
         }
+        var getStatsTarget = connection.peerConnection.getRemoteStreams()[0].getAudioTracks()[0];
         if (p2p.user.isChrome) {
-            connection.peerConnection.getStats(connection, function (results) {
-                var stats = {};
-                Object.keys(results).forEach(function (key) {
+            getStatsTarget = connection.peerConnection;
+        }
+        connection.peerConnection.getStats(getStatsTarget, function (results) {
+            var stats = {};
+            Object.keys(results).forEach(function (key) {
+                if (p2p.user.isFirefox) {
+                    if (key.indexOf("inbound_rtp_audio_0") !== -1) {
+                        stats.audioChannel = results[key];
+                        stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - streamStatGatheringStartTime) / 1000)
+                    }
+                } else if(p2p.user.isChrome) {
                     if (key.indexOf("ssrc_") !== -1) {
                         stats.audioChannel = results[key];
                         stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - streamStatGatheringStartTime) / 1000)
-                        console.log(stats.audioChannel.bytesReceivedPerSecond);
                     } else if (key.indexOf("Conn-audio-1-0") !== -1) {
                         stats.audioConnection = results[key];
                     }
-                });
-                console.log(stats);
-                p2p.signallingChannel.send("stats", JSON.stringify({
-                    "userId": p2p.user.userId,
-                    "toUserId": connection.toUser.userId,
-                    "stats": stats
-                }));
+                }
             });
-            if (stopGatheringStats == false) {
-                setTimeout(function () {
-                    gatherStreamingStats(connection, delay);
-                }, delay);
-            }
-
+            console.log(stats);
+            p2p.signallingChannel.send("stats", JSON.stringify({
+                "userId": p2p.user.userId,
+                "userBrowser": p2p.user.isChrome || p2p.user.isFirefox,
+                "toUserId": connection.toUser.userId,
+                "stats": stats
+            }));
+        },app.logErrorToConsole);
+        if (stopGatheringStats == false) {
+            setTimeout(function () {
+                gatherStreamingStats(connection, delay);
+            }, delay);
         }
     }
 
@@ -23158,7 +23170,6 @@ module.exports = function () {
                 "toUserId": p2p.connection.toUser.userId,
                 "stats": stats
             }));
-
         }
     }
 }

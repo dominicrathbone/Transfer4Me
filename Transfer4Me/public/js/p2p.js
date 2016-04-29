@@ -218,7 +218,7 @@ module.exports = function () {
         }
     };
 
-    function prepareFileStream(connection, file, callback) {
+function prepareFileStream(connection, file, callback) {
         var reader = new FileReader();
         reader.onloadend = (function (event) {
             audioContext.decodeAudioData(event.target.result, function (buffer) {

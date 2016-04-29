@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  27 APR 2016 00:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.10.27)  28 APR 2016 18:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -662,30 +662,32 @@ File: resources/images/application-architecture.png Graphic file (type png)
 Package pdftex.def Info: resources/images/application-architecture.png used on 
 input line 242.
 (pdftex.def)             Requested size: 377.91095pt x 142.03026pt.
+ [15
 
-<resources/images/application-flow.png, id=74, 778.91pt x 792.9625pt>
+ <./resources/images/application-architecture.png>]
+
+LaTeX Warning: Marginpar on page 16 moved.
+
+<resources/images/application-flow.png, id=78, 778.91pt x 792.9625pt>
 File: resources/images/application-flow.png Graphic file (type png)
 
 <use resources/images/application-flow.png>
 Package pdftex.def Info: resources/images/application-flow.png used on input li
-ne 254.
+ne 256.
 (pdftex.def)             Requested size: 467.34961pt x 475.78116pt.
- [15
-
- <./resources/images/application-architecture.png>] [16 <./resources/images/app
-lication-flow.png>]
+ [16 <./resources/images/application-flow.png>]
 <resources/images/signalling-establishment-sequence.png, id=83, 858.20625pt x 5
 84.1825pt>
 File: resources/images/signalling-establishment-sequence.png Graphic file (type
  png)
  <use resources/images/signalling-establishment-sequence.png>
 Package pdftex.def Info: resources/images/signalling-establishment-sequence.png
- used on input line 274.
+ used on input line 276.
 (pdftex.def)             Requested size: 429.10208pt x 292.09053pt.
 
 [17]
 LaTeX Font Info:    Font shape `OMS/cmr/bx/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/b/n' tried instead on input line 288.
+(Font)              Font shape `OMS/cmsy/b/n' tried instead on input line 290.
  [18 <./resources/images/signalling-establishment-sequence.png>]
 <resources/images/peer-connection-establishment-sequence-chrome.png, id=93, 883
 .3pt x 753.81625pt>
@@ -694,7 +696,7 @@ c file (type png)
 
 <use resources/images/peer-connection-establishment-sequence-chrome.png>
 Package pdftex.def Info: resources/images/peer-connection-establishment-sequenc
-e-chrome.png used on input line 308.
+e-chrome.png used on input line 310.
 (pdftex.def)             Requested size: 441.64893pt x 376.90721pt.
 
 [19]
@@ -705,7 +707,7 @@ ic file (type png)
 
 <use resources/images/peer-connection-establishment-sequence-firefox.png>
 Package pdftex.def Info: resources/images/peer-connection-establishment-sequenc
-e-firefox.png used on input line 314.
+e-firefox.png used on input line 316.
 (pdftex.def)             Requested size: 441.64893pt x 376.90721pt.
 
 [20 <./resources/images/peer-connection-establishment-sequence-chrome.png>]
@@ -715,7 +717,7 @@ File: resources/images/file-sending-sequence-chrome.png Graphic file (type png)
 
  <use resources/images/file-sending-sequence-chrome.png>
 Package pdftex.def Info: resources/images/file-sending-sequence-chrome.png used
- on input line 323.
+ on input line 326.
 (pdftex.def)             Requested size: 348.80226pt x 316.68236pt.
  [21 <./resources/images/peer-connection-establishment-sequence-firefox.png>]
 <resources/images/file-sending-sequence-firefox.png, id=107, 666.49pt x 469.755
@@ -724,7 +726,7 @@ File: resources/images/file-sending-sequence-firefox.png Graphic file (type png
 )
  <use resources/images/file-sending-sequence-firefox.png>
 Package pdftex.def Info: resources/images/file-sending-sequence-firefox.png use
-d on input line 329.
+d on input line 332.
 (pdftex.def)             Requested size: 333.24419pt x 234.87692pt.
  [22 <./resources/images/file-sending-sequence-chrome.png> <./resources/images/
 file-sending-sequence-firefox.png>]
@@ -732,8 +734,8 @@ file-sending-sequence-firefox.png>]
 File: resources/images/One-to-many.png Graphic file (type png)
 
 <use resources/images/One-to-many.png>
-Package pdftex.def Info: resources/images/One-to-many.png used on input line 34
-9.
+Package pdftex.def Info: resources/images/One-to-many.png used on input line 35
+3.
 (pdftex.def)             Requested size: 152.06775pt x 121.95532pt.
  [23]
 <resources/images/many-to-many.png, id=117, 514.92375pt x 294.09875pt>
@@ -741,7 +743,7 @@ File: resources/images/many-to-many.png Graphic file (type png)
 
 <use resources/images/many-to-many.png>
 Package pdftex.def Info: resources/images/many-to-many.png used on input line 3
-57.
+61.
 (pdftex.def)             Requested size: 257.46124pt x 147.04901pt.
  [24 <./resources/images/One-to-many.png> <./resources/images/many-to-many.png>
 ]
@@ -750,121 +752,152 @@ File: resources/images/lightning-viz.png Graphic file (type png)
 
 <use resources/images/lightning-viz.png>
 Package pdftex.def Info: resources/images/lightning-viz.png used on input line 
-371.
+376.
 (pdftex.def)             Requested size: 358.14967pt x 179.35713pt.
  [25 <./resources/images/lightning-viz.png>] <resources/images/smoothie-js.png,
  id=128, 624.08156pt x 441.90094pt>
 File: resources/images/smoothie-js.png Graphic file (type png)
 
 <use resources/images/smoothie-js.png>
-Package pdftex.def Info: resources/images/smoothie-js.png used on input line 37
-9.
+Package pdftex.def Info: resources/images/smoothie-js.png used on input line 38
+4.
 (pdftex.def)             Requested size: 312.04001pt x 220.94992pt.
 
 <resources/images/design.png, id=129, 2529.45pt x 2806.485pt>
 File: resources/images/design.png Graphic file (type png)
 
 <use resources/images/design.png>
-Package pdftex.def Info: resources/images/design.png used on input line 388.
+Package pdftex.def Info: resources/images/design.png used on input line 395.
 (pdftex.def)             Requested size: 379.40114pt x 420.95459pt.
  [26 <./resources/images/smoothie-js.png>]
 [27 <./resources/images/design.png>] [28]
 Chapter 6.
-[29
+<resources/images/download-chart.png, id=140, 621.07031pt x 539.01375pt>
+File: resources/images/download-chart.png Graphic file (type png)
 
-]
+<use resources/images/download-chart.png>
+Package pdftex.def Info: resources/images/download-chart.png used on input line
+ 419.
+(pdftex.def)             Requested size: 310.5344pt x 269.50621pt.
+
+<resources/images/download-failures-chart.png, id=141, 560.8453pt x 539.01375pt
+>
+File: resources/images/download-failures-chart.png Graphic file (type png)
+ <use resources/images/download-failures-chart.png>
+Package pdftex.def Info: resources/images/download-failures-chart.png used on i
+nput line 424.
+(pdftex.def)             Requested size: 280.42197pt x 269.50621pt.
+ [29
+
+ <./resources/images/download-chart.png>]
+<resources/images/streaming-chart.png, id=146, 560.8453pt x 503.63156pt>
+File: resources/images/streaming-chart.png Graphic file (type png)
+
+<use resources/images/streaming-chart.png>
+Package pdftex.def Info: resources/images/streaming-chart.png used on input lin
+e 437.
+(pdftex.def)             Requested size: 252.37805pt x 226.6321pt.
+
+<resources/images/stream-failures-chart.png, id=147, 559.33969pt x 510.40688pt>
+File: resources/images/stream-failures-chart.png Graphic file (type png)
+<use resources/images/stream-failures-chart.png>
+Package pdftex.def Info: resources/images/stream-failures-chart.png used on inp
+ut line 442.
+(pdftex.def)             Requested size: 251.70053pt x 229.68097pt.
+ [30 <./resources/images/download-failures-chart.png>] [31 <./resources/images/
+streaming-chart.png> <./resources/images/stream-failures-chart.png>] [32]
 Chapter 7.
-[30
+[33
 
 ]
-Overfull \hbox (71.66275pt too wide) in paragraph at lines 428--429
+Overfull \hbox (71.66275pt too wide) in paragraph at lines 469--470
 []\OT1/cmr/m/n/10 An Un-struc-tured Peer-To-Peer Over-lay Net-work. Avail-able:
  http://www.hindawi.com/journals/jcnc/2012/485875/fig1/.
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 434--435
+Underfull \hbox (badness 3058) in paragraph at lines 475--476
 []\OT1/cmr/m/n/10 Schulzrinne, et al. (Febru-ary 2010). Se-cu-rity in P2P Re-al
 -time Com-mu-ni-ca-tions. Avail-able:
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 438--439
+Underfull \hbox (badness 1571) in paragraph at lines 479--480
 \OT1/cmr/m/n/10 Avail-able: https://www.scss.tcd.ie/publications/tech-reports/r
 eports.10/TCD-CS-2010-06.pdf. Last
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 444--445
+Underfull \hbox (badness 10000) in paragraph at lines 485--486
 \OT1/cmr/m/n/10 style/gadgets-and-tech/news/investigatory-powers-bill-could-all
 ow-government-to-ban-end-to-end-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 446--447
+Underfull \hbox (badness 10000) in paragraph at lines 487--488
 []\OT1/cmr/m/n/10 WeTransfer. How long are my up-loads avail-able to down-load?
 . Avail-able:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 446--447
+Underfull \hbox (badness 10000) in paragraph at lines 487--488
 \OT1/cmr/m/n/10 https://wetransfer.zendesk.com/hc/en-us/articles/202603916-How-
 long-are-my-uploads-available-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 452--453
+Underfull \hbox (badness 10000) in paragraph at lines 493--494
 []\OT1/cmr/m/n/10 Harald Alves-trand. (2011). Google re-lease of We-bRTC source
  code. Avail-able:
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 454--455
+Underfull \hbox (badness 5637) in paragraph at lines 495--496
 []\OT1/cmr/m/n/10 Adam Bergkvist, Daniel C. Bur-nett, Cullen Jen-nings, Anant N
 arayanan (un-til Novem-
  []
 
 
-Underfull \hbox (badness 4060) in paragraph at lines 454--455
+Underfull \hbox (badness 4060) in paragraph at lines 495--496
 \OT1/cmr/m/n/10 ber 2012). (2011). We-bRTC 1.0: Real-time Com-mu-ni-ca-tion Be-
 tween Browsers. Avail-able:
  []
 
-[31
+[34
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 460--461
+Underfull \hbox (badness 10000) in paragraph at lines 501--502
 []\OT1/cmr/m/n/10 Justin Uberti. (2011). Javascript Ses-sion Es-tab-lish-ment P
 ro-to-col (JSEP).
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 460--461
+Underfull \hbox (badness 10000) in paragraph at lines 501--502
 \OT1/cmr/m/n/10 Avail-able: https://lists.w3.org/Archives/Public/public-webrtc/
 2012Jan/att-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 466--467
+Underfull \hbox (badness 10000) in paragraph at lines 507--508
 []\OT1/cmr/m/n/10 Jesup, et al. (2015). We-bRTC Data Chan-nel Es-tab-lish-ment 
 Pro-to-col. Avail-able:
  []
 
 
-Underfull \hbox (badness 1688) in paragraph at lines 468--469
+Underfull \hbox (badness 1688) in paragraph at lines 509--510
 []\OT1/cmr/m/n/10 Available: http://www.agilenutshell.com/assets/test-driven-de
 velopment/tdd-circle-of-life.png. Last
  []
 
-[32] (./FinalReport.aux) ) 
+[35] (./FinalReport.aux) ) 
 Here is how much of TeX's memory you used:
- 13861 strings out of 493054
- 272834 string characters out of 6138326
- 328452 words of memory out of 5000000
- 17099 multiletter control sequences out of 15000+600000
+ 13973 strings out of 493054
+ 275779 string characters out of 6138326
+ 328889 words of memory out of 5000000
+ 17207 multiletter control sequences out of 15000+600000
  9698 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,13n,68p,1708b,1518s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,13n,76p,1752b,1518s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2015/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmbsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 bx10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
@@ -874,10 +907,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2015/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmsy10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt8.pfb>
-Output written on FinalReport.pdf (33 pages, 1360094 bytes).
+Output written on FinalReport.pdf (36 pages, 1469148 bytes).
 PDF statistics:
- 184 PDF objects out of 1000 (max. 8388607)
- 105 compressed objects within 2 object streams
+ 201 PDF objects out of 1000 (max. 8388607)
+ 111 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 108 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 128 words of extra memory for PDF output out of 10000 (max. 10000000)
 

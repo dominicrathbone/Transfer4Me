@@ -1,7 +1,6 @@
 #Transfer4me
 
-##URL
-https://www.transfer4.me
+##[LIVE APPLICATION DEMO](https://www.transfer4.me)
 
 ##About
 Transfer4me is an attempt to implement a peer-to-peer file sharing network through the web application. I have done this by creating a web application that uses WebRTC to establish a connection between two browsers. This prevents the need for a user to upload the file to a third party server to share it and thus prevents the security and privacy concerns that come with using them.

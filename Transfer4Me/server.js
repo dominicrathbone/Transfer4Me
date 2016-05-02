@@ -8,6 +8,8 @@ var fs = require('fs');
 var app = express();
 var io;
 
+// if production parameter exists, use HTTPS
+// else use HTTP
 var production = process.argv.indexOf("-p");
 if (production !== -1) {
     var https = require('https').createServer({
@@ -47,6 +49,7 @@ var logger = new (winston.Logger)({
     ]
 });
 
+//Room represents a space in which a uploader has uploaded a file.
 function Room(id, password) {
     this.namespace = io.of(baseUrl.concat(id));
     this.id = id;
@@ -63,6 +66,8 @@ function Room(id, password) {
     var room = this;
 
     this.namespace.on('connection', function (socket) {
+        //if a room uploader doesn't exist, make the first socket to connect the uploader.
+        //else add a user and alert the uploader.
         if (!room.uploader) {
             room.uploader = socket.client.id;
         } else {
@@ -78,6 +83,8 @@ function Room(id, password) {
 
         socket.on('disconnect', function () {
             console.log(socket.client.id + " disconnected from room: " + room.id);
+            //if the uploader leaves, remove the room from the list.
+            //else just remove the user from the room and alert the uploader.
             if (this.client.id == room.uploader) {
                 for (var i = 0; i < rooms.length; i++) {
                     if (rooms[i].uploader == this.client.id) {
@@ -98,6 +105,8 @@ function Room(id, password) {
         socket.on('signal', function (signal) {
             var parsedSignal = JSON.parse(signal);
             console.log(signal);
+            //if the signal contains a specific socket, send it to them
+            //else just send the signal to the uploader.
             if (parsedSignal.toUser) {
                 room.namespace.to(room.namespace.name.concat("#", parsedSignal.toUser.userId)).emit('signal', signal);
             } else {
@@ -105,6 +114,7 @@ function Room(id, password) {
             }
         });
 
+        //Uploader sends metadata in when the file is uploaded.
         socket.on('metadata', function (result) {
             if (room.fileType == null) {
                 room.fileType = JSON.parse(result).fileType;
@@ -114,12 +124,15 @@ function Room(id, password) {
             }
         });
 
+        //When recipient starts to download or stream, they gather statistics and send them in.
         socket.on('stats', function (stats) {
             stats = JSON.parse(stats);
             stats.roomId = room.id;
             stats.fileType = room.fileType;
             stats.fileSize = room.fileSize;
             logger.info(stats);
+            //if streaming, send streaming statistics to uploader,
+            //else if downloading, send downloading statistics to them.
             if (stats.stats.audioChannel && stats.toUserId) {
                 room.namespace.to(room.namespace.name.concat("#",stats.toUserId)).emit('signal', JSON.stringify({
                     userId: stats.userId,
@@ -144,12 +157,14 @@ app.get('/', function (req, res) {
     res.sendFile("public/index.html", {"root": __dirname});
 });
 
-app.get('/room', function (req, res) {
+//Add a room
+//Accepts optional password field in request body
+//Returns ID and optional password with 201 Created status
+app.post('/room', function (req, res) {
     var roomId = uuid.v1();
     var password;
-    if (req.query.passworded) {
-        var randomString = require('just.randomstring');
-        password = randomString();
+    if (req.body.passworded) {
+        password = require('just.randomstring')();
     }
 
     rooms.push(new Room(roomId, password));
@@ -161,6 +176,10 @@ app.get('/room', function (req, res) {
     res.json(JSON.stringify(result));
 });
 
+//Get a room
+//If a password cookie has been added with the request or the room doesn't have a password, serve the index page
+//Else serve the password page
+//If a room isn't found, redirect them to the home page.
 app.get('/room/:room', function (req, res) {
     var roomFound = false;
     findRoom(req.params.room, function (room) {
@@ -176,6 +195,7 @@ app.get('/room/:room', function (req, res) {
     }
 });
 
+//Get the file type associated with the file uploaded in the room.
 app.get('/room/:room/fileType', function (req, res) {
     findRoom(req.params.room, function (room) {
         if(room.fileType != null) {
@@ -185,6 +205,10 @@ app.get('/room/:room/fileType', function (req, res) {
     });
 });
 
+//Validate the password
+//Requires a password field in request body
+//If password is successful, adds a cookie to the response and returns 200 OK
+//Else returns 401 Unauthorized
 app.post('/room/:room/password', function (req, res) {
     findRoom(req.params.room, function (room) {
         var password = req.body.password;

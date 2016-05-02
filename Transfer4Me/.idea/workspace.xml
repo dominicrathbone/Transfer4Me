@@ -2,21 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1fa73087-a05f-462e-86d7-77cefa9574e9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/serverTests.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nohup.out" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.pdf" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.pdf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.synctex.gz" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.synctex.gz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/WeeklyLog/log.odt" afterPath="$PROJECT_DIR$/../Doc/WeeklyLog/log.odt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.aux" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.aux" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.log" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.tex" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.tex" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.toc" afterPath="$PROJECT_DIR$/../Doc/FinalReport/FinalReport.toc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Transfer4Me.iml" afterPath="$PROJECT_DIR$/.idea/Transfer4Me.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logs/stats/p2p_data-27-3-2016.log" afterPath="$PROJECT_DIR$/logs/stats/p2p_data-27-3-2016.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/dist/bundle.js" afterPath="$PROJECT_DIR$/public/js/dist/bundle.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/dist/bundle.js.map" afterPath="$PROJECT_DIR$/public/js/dist/bundle.js.map" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/p2p.js" afterPath="$PROJECT_DIR$/public/js/p2p.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/signaller.js" afterPath="$PROJECT_DIR$/public/js/signaller.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/serverTests.js" afterPath="$PROJECT_DIR$/tests/serverTests.js" />
     </list>
     <ignored path="Transfer4Me.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,58 +34,28 @@
     <favorites_list name="Transfer4Me" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5294856">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="serverTests.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/tests/serverTests.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.5540309">
-                  <caret line="40" column="15" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-                  <folding>
-                    <element signature="e#0#44#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="should.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/node_modules/should/lib/should.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="71" column="54" selection-start-line="71" selection-start-column="54" selection-end-line="71" selection-end-column="54" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="p2p.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-15.827586">
-                  <caret line="72" column="46" selection-start-line="72" selection-start-column="38" selection-end-line="72" selection-end-column="46" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="server.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/server.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.29245284">
-                  <caret line="78" column="27" selection-start-line="78" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="p2p.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.21327968">
+              <caret line="530" column="32" selection-start-line="530" selection-start-column="32" selection-end-line="530" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/js/app.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -113,7 +81,6 @@
         <option value="$PROJECT_DIR$/public/password.html" />
         <option value="$PROJECT_DIR$/public/css/animations.css" />
         <option value="$PROJECT_DIR$/public/js/asd" />
-        <option value="$PROJECT_DIR$/public/js/signaller.js" />
         <option value="$PROJECT_DIR$/public/documentation.html" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/gulpfile.js" />
@@ -125,11 +92,12 @@
         <option value="$PROJECT_DIR$/logs/stats/p2p_data-25-3-2016.log" />
         <option value="$PROJECT_DIR$/public/css/index.css" />
         <option value="$PROJECT_DIR$/public/js/app.js" />
-        <option value="$PROJECT_DIR$/public/js/p2p.js" />
         <option value="$PROJECT_DIR$/tests/socket.io.js" />
         <option value="$PROJECT_DIR$/tests/serverUnitTests.js" />
-        <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/tests/serverTests.js" />
+        <option value="$PROJECT_DIR$/server.js" />
+        <option value="$PROJECT_DIR$/public/js/signaller.js" />
+        <option value="$PROJECT_DIR$/public/js/p2p.js" />
       </list>
     </option>
   </component>
@@ -146,10 +114,10 @@
     <data>C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\node_modules\mocha</data>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1912" />
-    <option name="y" value="-289" />
-    <option name="width" value="1066" />
-    <option name="height" value="1696" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -273,7 +241,7 @@
       <recent name="C:\Users\Dominic\Documents\GitRepositories\CI301-Final-Year-Project\Transfer4Me\public\css" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.tests\serverTests.js">
+  <component name="RunManager" selected="Node.js.server.js">
     <configuration default="false" name="server.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="C:/Program Files/nodejs/node" path-to-js-file="server.js" working-dir="$PROJECT_DIR$">
       <method />
     </configuration>
@@ -397,17 +365,17 @@
     <list size="7">
       <item index="0" class="java.lang.String" itemvalue="Gulp.js.Update static resources" />
       <item index="1" class="java.lang.String" itemvalue="Node.js.lightning-server" />
-      <item index="2" class="java.lang.String" itemvalue="Node.js.server.js" />
-      <item index="3" class="java.lang.String" itemvalue="Mocha.tests\serverTests.js" />
+      <item index="2" class="java.lang.String" itemvalue="Mocha.tests\serverTests.js" />
+      <item index="3" class="java.lang.String" itemvalue="Node.js.server.js" />
       <item index="4" class="java.lang.String" itemvalue="Mocha.End to End.should create and join room" />
       <item index="5" class="java.lang.String" itemvalue="Mocha.End to End.should create room with password" />
       <item index="6" class="java.lang.String" itemvalue="Mocha.Server Tests.should send signal via WebSockets" />
     </list>
     <recent_temporary>
       <list size="4">
-        <item index="0" class="java.lang.String" itemvalue="Mocha.Server Tests.should send signal via WebSockets" />
-        <item index="1" class="java.lang.String" itemvalue="Mocha.End to End.should create room with password" />
-        <item index="2" class="java.lang.String" itemvalue="Node.js.server.js" />
+        <item index="0" class="java.lang.String" itemvalue="Node.js.server.js" />
+        <item index="1" class="java.lang.String" itemvalue="Mocha.Server Tests.should send signal via WebSockets" />
+        <item index="2" class="java.lang.String" itemvalue="Mocha.End to End.should create room with password" />
         <item index="3" class="java.lang.String" itemvalue="Mocha.End to End.should create and join room" />
       </list>
     </recent_temporary>
@@ -426,46 +394,46 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 15m 59s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 38m 50s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 16m 44s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 39m 08s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 17m 05s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 39m 12s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 17m 38s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 39m 53s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 17m 54s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 39m 56s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 18m 01s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 40m 01s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 18m 54s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 40m 03s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 19m 16s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 40m 23s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 19m 30s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 40m 25s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="tests_serverTests_js - 2016.04.29 at 22h 19m 44s.xml">
+    <history-entry file="tests_serverTests_js - 2016.05.01 at 21h 40m 28s.xml">
       <configuration name="tests\serverTests.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-289" width="1066" height="1696" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24095239" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13177083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24763705" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41499472" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -492,7 +460,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="195" />
+      <option name="time" value="198" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -501,7 +469,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -533,7 +500,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -565,7 +531,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -597,7 +562,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -619,13 +583,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33278418">
           <caret line="168" column="0" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/password.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55593807">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -741,7 +698,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -757,9 +713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.5531135">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -767,7 +720,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -775,7 +727,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="32" selection-start-line="0" selection-start-column="32" selection-end-line="0" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -791,7 +742,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35410336">
           <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="162" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -799,7 +749,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.8267477">
           <caret line="4" column="31" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -807,7 +756,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.28419453">
           <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -815,10 +763,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.48101267">
           <caret line="118" column="14" selection-start-line="118" selection-start-column="14" selection-end-line="118" selection-end-column="14" />
-          <folding>
-            <marker date="1461691132697" expanded="true" signature="4211:4221" placeholder="..." />
-            <marker date="1461691132697" expanded="true" signature="4368:4377" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -826,7 +770,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.025835866">
           <caret line="5" column="26" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -834,31 +777,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="54" selection-start-line="71" selection-start-column="54" selection-end-line="71" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.1630218">
-          <caret line="65" column="7" selection-start-line="65" selection-start-column="7" selection-end-line="65" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.827586">
-          <caret line="72" column="46" selection-start-line="72" selection-start-column="38" selection-end-line="72" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/signaller.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3555133">
-          <caret line="11" column="27" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -866,25 +784,56 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33269963">
           <caret line="53" column="16" selection-start-line="53" selection-start-column="16" selection-end-line="53" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
+    <entry file="file://$PROJECT_DIR$/public/password.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29245284">
-          <caret line="78" column="27" selection-start-line="78" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+        <state vertical-scroll-proportion="-12.423077">
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/serverTests.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5540309">
-          <caret line="40" column="15" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="57" column="30" selection-start-line="57" selection-start-column="30" selection-end-line="57" selection-end-column="30" />
           <folding>
             <element signature="e#0#44#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7040261">
+          <caret line="226" column="0" selection-start-line="226" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/signaller.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16648531">
+          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/p2p.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21327968">
+          <caret line="530" column="32" selection-start-line="530" selection-start-column="32" selection-end-line="530" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -10,10 +10,10 @@ describe("Server Tests",function(){
     var serverURL = "http://localhost:80";
     it('should create room', function(done){
         var request = testRequest(serverURL);
-        request.get("/room").expect(201, done);
+        request.post("/room").expect(201, done);
     });
     it('should create room with password', function(done){
-        sendRequest.get(serverURL + "/room?passworded=true", function(err, res, body) {
+        sendRequest.post(serverURL + "/room", {form:{'passworded':'true'}}, function(err, res, body) {
             body = JSON.parse(JSON.parse(body));
             var roomId = body.roomId;
             var password = body.password;
@@ -24,7 +24,7 @@ describe("Server Tests",function(){
         });
     });
     it('should find room', function(done){
-        sendRequest.get(serverURL + "/room", function(err, res, body) {
+        sendRequest.post(serverURL + "/room", function(err, res, body) {
             body = JSON.parse(JSON.parse(body));
             var roomId = body.roomId;
             var request = testRequest(serverURL);
@@ -32,7 +32,7 @@ describe("Server Tests",function(){
         });
     });
     it('should join room via WebSockets', function(done) {
-        sendRequest.get(serverURL + "/room", function(err, res, body) {
+        sendRequest.post(serverURL + "/room", function(err, res, body) {
             body = JSON.parse(JSON.parse(body));
             var roomId = body.roomId;
             var socket = io(serverURL + "/room/" + roomId);
@@ -42,7 +42,7 @@ describe("Server Tests",function(){
         });
     });
     it('should send signal via WebSockets', function(done) {
-        sendRequest.get(serverURL + "/room", function(err, res, body) {
+        sendRequest.post(serverURL + "/room", function(err, res, body) {
             body = JSON.parse(JSON.parse(body));
             var roomId = body.roomId;
             var socket = io(serverURL + "/room/" + roomId);
@@ -66,7 +66,7 @@ describe("Server Tests",function(){
         });
     });
     it('should add file type to room', function(done) {
-        sendRequest.get(serverURL + "/room", function(err, res, body) {
+        sendRequest.post(serverURL + "/room", function(err, res, body) {
             body = JSON.parse(JSON.parse(body));
             var roomId = body.roomId;
             var socket = io(serverURL + "/room/" + roomId);

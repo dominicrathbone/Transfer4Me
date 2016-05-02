@@ -3,51 +3,54 @@
 \contentsline {section}{\numberline {1.2}Stakeholders}{3}
 \contentsline {section}{\numberline {1.3}Methods of Communication}{3}
 \contentsline {chapter}{\numberline {2}Research}{4}
-\contentsline {section}{\numberline {2.1}Comparing Network Architectures}{4}
-\contentsline {section}{\numberline {2.2}Current Solutions to Data Transfer}{6}
+\contentsline {section}{\numberline {2.1}Current Solutions to Data Transfer}{4}
+\contentsline {section}{\numberline {2.2}Comparing Network Architectures}{5}
 \contentsline {section}{\numberline {2.3}WebRTC}{7}
-\contentsline {chapter}{\numberline {3}Specification}{10}
-\contentsline {section}{\numberline {3.1}Deliverables}{10}
-\contentsline {section}{\numberline {3.2}Risk Analysis}{12}
-\contentsline {section}{\numberline {3.3}Quality Analysis}{12}
-\contentsline {chapter}{\numberline {4}Methodology}{13}
-\contentsline {chapter}{\numberline {5}Development}{15}
-\contentsline {section}{\numberline {5.1}Architecture}{15}
-\contentsline {subsection}{\numberline {5.1.1}Application Flow}{16}
-\contentsline {section}{\numberline {5.2}Signalling}{17}
-\contentsline {subsection}{\numberline {5.2.1}1st Iteration - Spring Boot}{17}
-\contentsline {subsection}{\numberline {5.2.2}2nd Iteration - Node JS}{17}
-\contentsline {subsubsection}{\numberline {5.2.2.1}JSON}{19}
-\contentsline {section}{\numberline {5.3}Peer to Peer Communication}{19}
-\contentsline {subsection}{\numberline {5.3.1}One-to-one peer connection}{19}
-\contentsline {subsection}{\numberline {5.3.2}Using RTCDataChannel to transfer files}{21}
-\contentsline {subsection}{\numberline {5.3.3}Streaming media via peer connection}{23}
-\contentsline {subsubsection}{\numberline {5.3.3.1}Audio}{23}
-\contentsline {subsubsection}{\numberline {5.3.3.2}Video}{23}
-\contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{23}
-\contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{24}
-\contentsline {subsubsection}{\numberline {5.3.5.1}Data Collection}{24}
-\contentsline {subsubsection}{\numberline {5.3.5.2}Data Visualisation}{25}
-\contentsline {section}{\numberline {5.4}Presentation Layer}{26}
-\contentsline {section}{\numberline {5.5}Design}{26}
-\contentsline {section}{\numberline {5.6}Technologies}{27}
+\contentsline {chapter}{\numberline {3}Specification}{9}
+\contentsline {section}{\numberline {3.1}Deliverables}{9}
+\contentsline {section}{\numberline {3.2}Risk Analysis}{11}
+\contentsline {section}{\numberline {3.3}Quality Analysis}{11}
+\contentsline {chapter}{\numberline {4}Methodology}{12}
+\contentsline {chapter}{\numberline {5}Development}{14}
+\contentsline {section}{\numberline {5.1}Architecture}{14}
+\contentsline {section}{\numberline {5.2}Signalling}{16}
+\contentsline {subsection}{\numberline {5.2.1}1st Iteration - Spring Boot}{16}
+\contentsline {subsection}{\numberline {5.2.2}2nd Iteration - Node JS}{16}
+\contentsline {subsubsection}{\numberline {5.2.2.1}JSON}{18}
+\contentsline {section}{\numberline {5.3}Peer to Peer Communication}{18}
+\contentsline {subsection}{\numberline {5.3.1}One-to-one peer connection}{18}
+\contentsline {subsection}{\numberline {5.3.2}File Transfer}{20}
+\contentsline {subsection}{\numberline {5.3.3}Media Streaming}{22}
+\contentsline {subsubsection}{\numberline {5.3.3.1}Audio}{22}
+\contentsline {subsubsection}{\numberline {5.3.3.2}Video}{22}
+\contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{22}
+\contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{23}
+\contentsline {subsubsection}{\numberline {5.3.5.1}Data Collection}{23}
+\contentsline {subsubsection}{\numberline {5.3.5.2}Data Visualisation}{23}
+\contentsline {section}{\numberline {5.4}Presentation}{25}
+\contentsline {subsection}{\numberline {5.4.1}Design}{25}
+\contentsline {subsection}{\numberline {5.4.2}App.js module}{26}
+\contentsline {section}{\numberline {5.5}Authentication}{26}
+\contentsline {section}{\numberline {5.6}Other Technologies}{27}
 \contentsline {subsection}{\numberline {5.6.1}JavaScript Build Tools}{27}
-\contentsline {subsection}{\numberline {5.6.2}Development Environments}{28}
-\contentsline {subsection}{\numberline {5.6.3}Git}{28}
-\contentsline {subsection}{\numberline {5.6.4}Amazon Web Instances}{28}
-\contentsline {chapter}{\numberline {6}Outcomes}{29}
-\contentsline {section}{\numberline {6.1}Data Analysis}{29}
-\contentsline {subsection}{\numberline {6.1.1}File Transfer}{29}
-\contentsline {subsection}{\numberline {6.1.2}File Streaming}{31}
-\contentsline {subsection}{\numberline {6.1.3}Summary}{32}
-\contentsline {chapter}{\numberline {7}Review \& Reflection}{33}
-\contentsline {section}{\numberline {7.1}Background Research}{33}
-\contentsline {section}{\numberline {7.2}Specification}{33}
-\contentsline {section}{\numberline {7.3}Methodology}{33}
-\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{33}
-\contentsline {subsection}{\numberline {7.4.1}Unit Testing}{33}
-\contentsline {subsection}{\numberline {7.4.2}JavaScript standards}{33}
-\contentsline {subsubsection}{\numberline {7.4.2.1}Promises/A+ Compliancy}{33}
-\contentsline {subsection}{\numberline {7.4.3}Authentication Encryption}{33}
-\contentsline {subsection}{\numberline {7.4.4}HATEOAS}{33}
-\contentsline {section}{\numberline {7.5}Conclusions}{33}
+\contentsline {subsection}{\numberline {5.6.2}Development Environments}{27}
+\contentsline {subsection}{\numberline {5.6.3}Git}{27}
+\contentsline {subsection}{\numberline {5.6.4}Amazon Web Instances}{27}
+\contentsline {chapter}{\numberline {6}Testing}{29}
+\contentsline {section}{\numberline {6.1}Automated Testing}{29}
+\contentsline {section}{\numberline {6.2}Manual Testing}{29}
+\contentsline {section}{\numberline {6.3}Stress Testing}{29}
+\contentsline {subsection}{\numberline {6.3.1}Discussion of results}{30}
+\contentsline {subsubsection}{\numberline {6.3.1.1}File Transfer}{30}
+\contentsline {subsubsection}{\numberline {6.3.1.2}File Streaming}{32}
+\contentsline {subsubsection}{\numberline {6.3.1.3}Summary}{33}
+\contentsline {chapter}{\numberline {7}Review \& Reflection}{34}
+\contentsline {section}{\numberline {7.1}Background Research}{34}
+\contentsline {section}{\numberline {7.2}Specification}{34}
+\contentsline {section}{\numberline {7.3}Methodology}{34}
+\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{35}
+\contentsline {subsection}{\numberline {7.4.1}Network Structure}{35}
+\contentsline {subsection}{\numberline {7.4.2}JavaScript standards}{36}
+\contentsline {subsection}{\numberline {7.4.3}Authentication Encryption}{36}
+\contentsline {subsection}{\numberline {7.4.4}HATEOAS}{36}
+\contentsline {section}{\numberline {7.5}Conclusion}{36}

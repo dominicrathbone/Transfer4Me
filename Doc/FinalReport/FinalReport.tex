@@ -5,7 +5,8 @@
 \usepackage{listings}
 \usepackage[margin=1in]{geometry}
 \usepackage{float}
-\graphicspath{{resources/images/}}
+\usepackage{pdfpages}
+\graphicspath{{resources/}}
 \setcounter{secnumdepth}{5}
 
 
@@ -18,7 +19,7 @@
 	 \\ BSc Computer Science 
 	 \\ Git Repository \& Documentation available: 
 	 \\	https://github.com/domr115/CI301-Final-Year-Project 
-	 }
+}
 
 
 \begin{document}
@@ -32,7 +33,7 @@
 		\item Research peer-to-peer networking architecture and topologies.
 		\item Research current solutions to file transfer over the browser.
 		\item Research WebRTC.
-		\item Develop a session signalling server in Java with the WebSockets protocol
+		\item Develop a signalling server in Java with the WebSockets protocol
 		\item Develop a WebRTC Application to transfer and stream uploaded files.
 		\item Implement a structured peer to peer network between peers transferring/streaming a file using the web application.
 	\end{itemize}
@@ -121,15 +122,21 @@
 	As shown by the Javascript Session Establishment Protocol (JSEP) \cite{JSEP}, although WebRTC and the browser is used to transfer the data between two peers, it purposely does not handle the protocol signalling occurs over. Signalling is a concept that came from telecommunications and VoIP and is the process of organising the communication between two clients, handling the exchange of metadata that creates and manages a session. The rationale behind WebRTC being signalling-agnostic is that different applications will require particular protocols in order to be able to fit into previously existing architecture or meet a specific requirement regarding the protocols used. However to use WebRTC, the signalling protocol must be able to support duplex communication to send messages over.
 	
 	\begin{figure}[H]
+		\centering
 		\caption{WebRTC Architecture as defined by JSEP \cite{JSEP}}
 		\includegraphics[scale=0.4]{jsep.png}
 	\end{figure}
 	
-	WebSockets is a protocol implemented by browsers and servers to provide bi-directional communication between them\cite{WebSockets}. Once established, a session is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably send messages back and forth through the server. Over this WebSockets session, SDP signals will be sent. SDP is a communication protocol that specifies how signals are modelled \cite{SDP Over WebSockets}. As a convenience, most browser implementations of WebRTC handle the generation of these SDP signals. To establish a connection, one peer sends an offer SDP to another through the signalling server, the receiving peer generates an answer SDP which is sent back, forming the connection. To get the peer's location, WebRTC uses a process called interactive connectivity establishment (ICE) to find a list of the possible IP's and ports of each peer which are then sent through the signalling channel. Once this is done, a data channel or a media stream can be added to the connection to either transfer or stream data. For streaming, WebRTC secures these packets of data by Secure Real Time Transport Protocol (SRTP) and for the data channel, the packets are secured by Stream Control Transmission Protocol (SCTP) and encrypted by Datagram Transport Layer Security (DTLS) \cite{WebRTC Data Channel Establishment Protocol}. 
+	WebSockets is a protocol implemented by browsers and servers to provide bi-directional communication between them\cite{WebSockets}. Once established, a session is left open for the server to send messages to the client and vice versa, making it a good candidate for signalling with a WebRTC application which needs peers to be able to reliably send messages back and forth through the server. Over this WebSockets session, SDP signals will be sent. SDP is a communication protocol that specifies how signals are modelled \cite{SDP Over WebSockets} (See Appendix D for an example SDP). As a convenience, most browser implementations of WebRTC handle the generation of these SDP signals. To establish a connection, one peer sends an offer SDP to another through the signalling server, the receiving peer generates an answer SDP which is sent back, forming the connection. To get the peer's location, WebRTC uses a process called interactive connectivity establishment (ICE) to find a list of the possible IP's and ports of each peer which are then sent through the signalling channel. Once this is done, a data channel or a media stream can be added to the connection to either transfer or stream data. For streaming, WebRTC secures these packets of data by Secure Real Time Transport Protocol (SRTP) and for the data channel, the packets are secured by Stream Control Transmission Protocol (SCTP) and encrypted by Datagram Transport Layer Security (DTLS) \cite{WebRTC Data Channel Establishment Protocol}. 
 	
-	\begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize]
-
-	\end{lstlisting}
+	  \subsection{SRTP}
+	  SRTP is an extension to the real-time protocol (RTP) that provides more security features such as authentication and encryption \cite{SRTP}. RTP is a protocol that usually sits on top of the transport protocol UDP and is used for media streaming over a network, primarily used in telephony and video conferencing applications. Although it uses UDP and doesn't provide any mechanisms for reliability or quality of the data in the stream, it is supported by another protocol called Real-Time Control Protocol (RTCP) which monitors the transmission of data in order to provide statistics on the quality of service provided by RTP \cite{RTP}. This way, the statistics can be sent to participants of the stream and measures can be taken to detect and fix faults in this transmission.
+	  
+	  \subsection{SCTP}
+	  SCTP is a protocol that sits on the transport layer of a network and was created as an alternative to TCP and UDP. Similar to TCP, it provides a reliable, sequential mechanism for transporting data over network meaning that the data can be received in order and without error \cite{SCTP} but it also shares features with UDP as it is can send unordered data and it is message oriented as opposed to stream oriented. In order to send messages reliably, SCTP establishes and maintains a session between the two nodes in a network before transferring the data, as opposed to the transaction model that UDP supports. The differences between TCP and SCTP are in its extended functionality such as it's ability to handle multiple channels of data per connection as opposed to TCP which can only support one. Although it is still unicast like TCP, SCTP also supports the use of multiple IP addresses for one node so in the case in which one IP address fails, it is able to fall back on to others (in WebRTC, these multiple IP addresses are represented by the ICE candidates). SCTP is also be considered more secure due to use of a signed cookie mechanism to establish the connection. \cite{SCTP ISOC}
+	  
+	  \subsection{DTLS}
+	  DTLS is a protocol based on the Transport Layer Security (TLS) protocol that secures connections that are using datagram based protocols such as SRTP, UDP and SCTP \cite{DTLS}. The TLS protocol prevents man-in-the-middle attacks on these connections by 3 mechanisms. The first being encryption, it does this using public key cryptography to generate a shared key for the two nodes in the connection to encrypt and decrypt the data with. The second mechanism is the ability for nodes to authenticate their identification which is normally achieved with a "chain of trust" \cite{TLS}. However in this case, the DTLS implementation for WebRTC cannot achieve it this way as there is no authority to provide the chain of trust. As a result, the authentication process is entrusted to the application \cite{WebRTC DTLS}. The last mechanism is data integrity, the guarantee that messages have not been forged or tampered with before they arrive at a node. It does this by generating message authentication codes (MAC) and appending them to a TLS message. MACs essentially act as a checksum which the recipient can check against the message when they receive it, to guarantee that the value of the message has not changed \cite{TLS}.
 				
 \chapter{Specification}
 	\section{Deliverables}
@@ -139,6 +146,7 @@
 	
 	The second end deliverable will be the final report containing documentation and analysis using the metrics from my application, comparing how it and technologies behind it perform in comparison to others, focusing in particular on how peer-to-peer over the browser (WebRTC) compares to other methods of data transfer and media streaming.
 	
+	The initial estimated schedule of activities to produce these deliverables can be seen in Figure 3.1.
 	\newpage
 	\begin{figure}[h!]
 		\caption{Schedule of Activities}
@@ -167,7 +175,7 @@
 	\chapter{Methodology}
 	I chose to use an alternative methodology to the waterfall model because it lacks the ability to adapt to changes throughout a project's timeline. Due to the way waterfall is structured into different phases that must be completed sequentially, often when changes such as new requirements occur, all these phases must be repeated in order to account for it.	Thus, as a way of managing this project, I plan to use an iterative and evolutionary methodology. . Iterative methodologies take an approach that can adapt to these changing requirements because they utilise short development cycles and focus on developing small modules of a product at one time, making it easier to revise one if necessary. This is particular useful in this project as it is relatively experimental and the requirements may change regularly. Whilst it will be similar to processes such as scrum, it will not have the stricter framework surrounding it that requires a product owner and scrum master. This methodology will be relatively simple and based around a backlog of tasks from which a developer takes from in a limited amount, normally one to two tasks at a time which are then pushed through the work flow.
 		
-	In my case, the work flow will be relatively simple:
+	In this case, the work flow will be relatively simple:
 	\begin{enumerate}
 		\item To Do
 		\item In Progress
@@ -202,22 +210,20 @@
 			
 			In order to manage these modules and their external and internal dependencies, a build tool called Browserify was used. Traditionally, all of the JavaScript files are added via script elements within the html document they are associated with. Instead, this tool allows for a JavaScript file to be included as a dependency by using JavaScript. It does this by using the "require('module')" function to simulate the modular structure Node.js uses. This modular structure makes it clear which dependencies each module requires and provides a consistent way of doing so. Each JavaScript file is wrapped in a global function which Browserify can then export and bundle together into one larger JavaScript file using a command line interface. This bundled file is then referred to in the main HTML document. By organising JavaScript this way, Browserify enables the client side JavaScript to also use node modules, making full-stack development more efficient.
 			
-			The Node.js server uses the Express.js web framework for two purposes, to serve files to the browser by resolving URLs to static resources and to also provide the API which the client-side JavaScript application communicates with by routing HTTP requests to functions in the main server file. To support the bi-directional communication necessary for the two clients to talk, both the server and the client uses the Socket.io library to establish WebSocket sessions. Due to the application's peer-to-peer nature, the resulting architecture could be considered to have a "fat client" as most of the processing is achieved on the client side with the server-side functionality only functioning as a method of communications and organisation for them. Due to this, there was no need for more than one JavaScript module to model it's functionality. However in the future, if a feature such as the API is was expanded, it may need to be moved to it's own module. Overall, the dependence on a centralised server to organise the clients means the architecture of the application reflects that of a hybrid peer-to-peer network as defined in the research section.
-				
-			\begin{figure}[H]
-				\caption{Application Flow Chart}
-				\centering
-				\includegraphics[scale=0.6]{application-flow.png}
-			\end{figure}
-			
-			The diagram in Figure 5.2 shows how the applications transitions between each state within the application, \todo{FINISH}
-		
+			The Node.js server uses the Express.js web framework for two purposes, to serve files to the browser by resolving URLs to static resources and to also provide the API which the client-side JavaScript application communicates with by routing HTTP requests to functions in the main server file. To support the bi-directional communication necessary for the two clients to talk, both the server and the client uses the Socket.io library to establish WebSocket sessions. Due to the application's peer-to-peer nature, the resulting architecture could be considered to have a "thick client" as most of the processing is achieved on the client side with the server-side functionality only functioning as a method of communications and organisation for them. Due to this, there was no need for more than one JavaScript module to model it's functionality. However in the future, if a feature such as the API is was expanded, it may need to be moved to it's own module. Overall, the dependence on a centralised server to organise the clients means the architecture of the application reflects that of a hybrid peer-to-peer network as defined in the research section.
+						
 		\section{Signalling}
 			\subsection{1st Iteration - Spring Boot}
 				\subsubsection*{Spring WebSockets Over STOMP}
-				The first prototype of the signalling server for Transfer4me was implemented using Spring Boot. This is a part of the Spring application framework emphasising convention-over-configuration which is the idea that frameworks should supply a set of pre-configured technologies to be used by default as opposed to making the developer have to choose and configure them. This makes it a lot faster and easier to produce a working prototype. To support the WebSockets protocol, Spring uses the "STOMP" sub-protocol to model the message sent between server and client. STOMP is very similar to HTTP in how it models the message but is sent over TCP once the socket is established \todo{CITE}. Using the STOMP JavaScript client, an application can subscribe to several destinations and listen for events (by asynchronous callbacks) or publish events using a send method that takes a string identifying the event (which in this case is the "signal" event) and another string representing the message. The architecture that was created on top of this protocol used rooms that were created when a user uploads a file and were designated via a URL which the recipients then subscribe to when they load the page.
+				The first prototype of the signalling server for Transfer4me was implemented using Spring Boot. This is a part of the Spring application framework emphasising convention-over-configuration which is the idea that frameworks should supply a set of pre-configured technologies to be used by default as opposed to making the developer have to choose and configure them. This makes it a lot faster and easier to produce a working prototype. To support the WebSockets protocol, Spring uses the "STOMP" sub-protocol to model the message sent between server and client. STOMP is very similar to HTTP in how it models the message but is sent over TCP once the socket is established \cite{STOMP}. Using the STOMP JavaScript client, an application can subscribe to several destinations and listen for events (by asynchronous callbacks) or publish events using a send method that takes a string identifying the event (which in this case is the "signal" event) and another string representing the message. The architecture that was created on top of this protocol used rooms that were created when a user uploads a file and were designated via a URL which the recipients then subscribe to when they load the page.
 
 				To create these rooms, the client that uploads the file fires a request to the server using a HTTP endpoint. When the server receives this request, it generates a Room object and a UUID that serves as its identifier. This room is then added to a list and the ID is returned to the client in the response. The uploader then uses this ID to subscribe to the room over WebSockets. When this connection is established, the server creates a user object and adds it to the correct room. This ID is then appended to the base URL of the page for the uploader to share. The recipient loads the URL but only joins the room at the point at which it is necessary (when the recipient either chooses the download or stream button), this is a tactic called "lazy initialization" and by using it, the server only has to cope with the load from the WebSocket sessions that actually need to be connected as opposed to users that may be idle on the page.
+				
+				\begin{figure}[H]
+					\caption{Signalling establishment sequence}
+					\centering
+					\includegraphics[scale=0.5]{signalling-establishment-sequence.png}
+				\end{figure}
 							
 				\subsubsection*{Problems}
 				The main problem found with the Spring implementation was in it's limited functionality. It was extremely hard to implement sending messages to specific individual sockets which limited how multiple peer connections could communicate within the same room as they would all be receiving every signal being exchanged through it. This could be avoided to an extent by making each client application only pay attention to the messages that were destined for it by appending an identifier for the destination to each message but that would only stop the clients from using the messages as opposed to receiving them. As a result, this is not a viable solution as it leaves the application open to man-in- the-middle attacks because a user could easily modify the client-side application to log all of the messages that it received which is a major issue in this case as the majority of the messages sent will be WebRTC meta-data such as your IP address.
@@ -227,19 +233,13 @@
 				\subsubsection*{Socket.IO}
 				Node.js maintains support for WebSockets through the Socket.IO library which offers extended functionality over it's Spring counterpart. Socket.io models communication using the concepts of name spaces and rooms where a name space is represented by the endpoint a socket connects to and rooms are channels within this that users can join and leave, allowing for communications to be separated without having to use multiple endpoints. By default, every socket that connects to a name space has it's own room which means Socket.IO could broadcast events to specific user's rooms solving the security issues that the Spring implementation had. As a result of this, the architecture of the server was slightly changed to reflect this new functionality as there was no longer a need to have an object to specifically represent a user. 
 				
-				\begin{figure}[H]
-					\caption{Signalling establishment sequence}
-					\centering
-					\includegraphics[scale=0.5]{signalling-establishment-sequence.png}
-				\end{figure}
-				
 				\subsubsection*{API}
 				After switching to Node.js, the API was extended to support new functionality in the client side web application. Another endpoint was added to retrieve the file type of the file uploaded as the application would previously let you select the stream option for any file (including files such as a text document) which evidentially caused failure. By adding this endpoint, it meant that the client-side application could retrieve the file type and only present the user with the corresponding options. It was also extended to allow the authentication process to work by modifying the current new room endpoint to generate a password if specified and adding a new endpoint to validate this password. 
 				
-				As these were added, it was realised that the API was becoming inconsistent and should be restructured in order to maintain uniformity amongst endpoints. As a result, the URI structure of each was re-factored using a RESTful approach. REST (Representational State Transfer) is an architectural style specifying that an endpoint into a system should be built around resources with methods for retrieving and manipulating this resource \todo{CITE}. In practice, these methods generally translate into HTTP verbs such as GET and POST. For example to add a room, a POST request is sent to the URI "/room" and to retrieve a room, a request is sent to "/room/{roomId}". These guidelines allow for an easily maintainable API as well as providing the client web application with a predictable and consistent group of endpoints to code against. As a RESTful API is modelled in terms of resources, it does not hold the state of a client's journey throughout the web application and thus, this is left up to the client consuming the resource which in this case is the JavaScript application. By doing so, it means the server is under less load and is in a better state to be scaled.
+				As these were added, it was realised that the API was becoming inconsistent and should be restructured in order to maintain uniformity amongst endpoints. As a result, the URI structure of each was re-factored using a RESTful approach. REST (Representational State Transfer) is an architectural style specifying that an endpoint into a system should be built around resources with methods for retrieving and manipulating this resource \cite{REST}. In practice, these methods generally translate into HTTP verbs such as GET and POST. For example to add a room, a POST request is sent to the URI "/room" and to retrieve a room, a request is sent to "/room/{roomId}". These guidelines allow for an easily maintainable API as well as providing the client web application with a predictable and consistent group of endpoints to code against. As a RESTful API is modelled in terms of resources, it does not hold the state of a client's journey throughout the web application and thus, this is left up to the client consuming the resource which in this case is the JavaScript application. By doing so, it means the server is under less load and is in a better state to be scaled.
 				
 				\begin{description}
-					\item [API Documentation]
+					\item [API Endpoints]
 				
 					\item[POST /room] 
 					Adds a unique room to the list of rooms on the server. Returns a JSON object containing a UUID for the room and, if the passworded field is present in the request body, a random string password.
@@ -262,17 +262,17 @@
 			\begin{figure}[H]
 				\caption{Peer Connection Establishment Sequence in Chrome}
 				\centering
-				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-chrome.png}
+				\includegraphics[scale=0.4]{peer-connection-establishment-sequence-chrome.png}
 			\end{figure}
 			
 			\begin{figure}[H]
 				\caption{Peer Connection Establishment Sequence in Firefox}
 				\centering
-				\includegraphics[scale=0.5]{peer-connection-establishment-sequence-firefox.png}
+				\includegraphics[scale=0.4]{peer-connection-establishment-sequence-firefox.png}
 			\end{figure}
 			
 			\subsection{File Transfer}
-			To upload a file, the application uses the HTML5 File API \todo{CITE} to retrieve the file from an input element which is then stored as a variable waiting to be sent to a recipient. In order to download the file, the recipient creates a new RTCDataChannel using the RTCPeerConnection API which is added to the offer to be sent to the uploader. Once the connection is established, the uploader waits for the addition and establishment of this RTCDataChannel via an asynchronous event listener. After this, how the file is sent depends on the browser. In Firefox, once the DataChannel reaches it's open state, a callback is fired which sends the file through. On the recipient peer's client, an event listener waits for messages to be sent through which then catches the file and saves it to the disk. However, Chrome's implementation of RTCDataChannel has a size limit on the messages that can be sent meaning the file has to be sliced into several smaller parts which can then by reassembled by the recipient (a process called chunking). The major problem with this approach is that it significantly bottlenecks how fast a file can be sent to the recipient in Chrome. Although this allows for cross-browser file sharing, sending files from Firefox to Firefox will always be faster for downloading via the application. Once this file has been received, it is then saved to disk by reading the file in as a data URI and then appending an element to the html with this URI as the reference. An automated JavaScript mouse event is then used to simulate the click of this element which triggers the file to download. 
+			To upload a file, the application uses the HTML5 File API to retrieve the file from an input element which is then stored as a variable waiting to be sent to a recipient. In order to download the file, the recipient creates a new RTCDataChannel using the RTCPeerConnection API which is added to the offer to be sent to the uploader. Once the connection is established, the uploader waits for the addition and establishment of this RTCDataChannel via an asynchronous event listener. After this, how the file is sent depends on the browser. In Firefox, once the DataChannel reaches it's open state, a callback is fired which sends the file through. On the recipient peer's client, an event listener waits for messages to be sent through which then catches the file and saves it to the disk. However, Chrome's implementation of RTCDataChannel has a size limit on the messages that can be sent meaning the file has to be sliced into several smaller parts which can then by reassembled by the recipient (a process called chunking). The major problem with this approach is that it significantly bottlenecks how fast a file can be sent to the recipient in Chrome. Although this allows for cross-browser file sharing, sending files from Firefox to Firefox will always be faster for downloading via the application. Once this file has been received, it is then saved to disk by reading the file in as a data URI and then appending an element to the html with this URI as the reference. An automated JavaScript mouse event is then used to simulate the click of this element which triggers the file to download. 
 			
 			\begin{figure}[H]
 				\caption{File sending sequence in Chrome}
@@ -293,7 +293,7 @@
 				It is important to note that the stream actually starts to play when it is created by the uploader as it is a "live stream" and if there is any latency issues between the two clients or if the recipient decides to pause the player, the stream will carry on and they will miss parts of it. To avoid the problems with live streaming, an alternative to this could be to make the recipient completely download the file from the uploader using RTCDataChannel before playing it using the HTML5 audio element. By doing so, they would be able to pause and control it. The problem with this is that it puts a limit on the size of the file that can the uploader can stream to a recipient as the RTCDataChannel has a size limit on what can be sent through, particularly in Chrome.
 
 				\subsubsection{Video}
-				I originally planned on also adding video streaming to the application. However, when I looked into this, the part of the MediaStream processing API drafted by W3C \todo{CITE} that would capture video as a stream has yet to be implemented by any browsers. Similar to how audio is captured, The captureStreamUntilEnded() function would return a MediaStream containing both the audio and video tracks of a file which could then be passed to the peer connection and played by a HTML5 video element on the recipient's application after the peer connection has been established. These issues could also potentially be avoided by downloading the file via RTCDataChannel before playing it with a HTML5 video element as it means the uploader would not have to convert the file to a media stream in order to transfer it to the recipient.
+				The application was originally planned on also having video streaming functionality. However, when this was looked into, the part of the MediaStream processing API drafted by W3C \cite{MediaStream API} that would capture video as a stream has yet to be implemented by any browsers. Similar to how audio is captured, The captureStreamUntilEnded() function would return a MediaStream containing both the audio and video tracks of a file which could then be passed to the peer connection and played by a HTML5 video element on the recipient's application after the peer connection has been established. These issues could also potentially be avoided by downloading the file via RTCDataChannel before playing it with a HTML5 video element as it means the uploader would not have to convert the file to a media stream in order to transfer it to the recipient.
 			
 			\subsection{One-to-many peer connections}
 			Switching to the Node.js implementation of the server allowed for one-to-many peer connections to be implemented with ease. To do this, the uploader instantiates new peer connections and adds them to an array which are then used to communicate with the recipients which only holds one peer connection (to the uploader). Each message sent via the signalling server contains the socket ID of the user it is from and the user it is destined towards, which is then extracted by the server and used to send messages to only their socket, this way no information can be exposed to anyone except for the user it belongs to. One of the big disadvantages of this is it places a larger amount of load on the uploader as they now have to maintain and search through an array of peer connections making the load increase with the amount of users. To reduce this, the recipient sends a message to the uploader signifying to close the connection and remove it from the array as soon as the recipient has downloaded the file. In the future, this functionality will also be added for when a MediaStream ends but currently the MediaStream API in Firefox or Chrome has no way of establishing when a stream has finished.
@@ -306,53 +306,43 @@
 			
 			\subsection{Data Aggregation}
 				\subsubsection{Data Collection}
-				In order to gather statistics on the peer to peer connections within a room, two new functions were created, one for streaming and one for downloading. These are called on the recipients application in order to collect information about the transfer of data. For the streaming data, the function utilised the WebRTC GetStats API\todo{CITE} which returns a raw data object containing information about the connection including the streams and data channels that exist within it. The function calls the getStats function and then extracts data from the resulting data object in a callback, this is then sent to the signalling server along with the room ID and the socket IDs representing the user at each end of the connection. In the download data gathering function, the getStats API was not used as it does not contain useful statistics about the DataChannel, instead a custom object was created that contained the amount of bytes that was sent through to the recipient in each chunk as well as the bytes received per second and the overall time taken. In both functions, this data is sent to the signalling server which then adds file meta-data to the statistics object such as size and type which is gathered when the file is initially uploaded. As Firefox doesn't require files to be chunked in order to send them, the download function cannot record how many bytes are sent per chunk or second as it relies on measuring how fast the chunks are sent, due to this the application in Firefox only records the time taken from when it sent the offer to when the file was downloaded. On the server, this information is logged to a file using a logging library called Winston that formats it with a time stamp. Winston is built to provide a simple interface to log to and query from multiple locations (or "transports"). Using this framework allows for the logging process to be easily scaled with the application if it was extended in the future.
+				In order to gather statistics on the peer to peer connections within a room, two new functions were created, one for streaming and one for downloading. These are called on the recipients application in order to collect information about the transfer of data. For the streaming data, the function utilised the WebRTC GetStats API \cite{getStats} which returns a raw data object containing information about the connection including the streams and data channels that exist within it. The function calls the getStats function and then extracts data from the resulting data object in a callback, this is then sent to the signalling server along with the room ID and the socket IDs representing the user at each end of the connection. In the download data gathering function, the getStats API was not used as it does not contain useful statistics about the DataChannel, instead a custom object was created that contained the amount of bytes that was sent through to the recipient in each chunk as well as the bytes received per second and the overall time taken. In both functions, this data is sent to the signalling server which then adds file meta-data to the statistics object such as size and type which is gathered when the file is initially uploaded. As Firefox doesn't require files to be chunked in order to send them, the download function cannot record how many bytes are sent per chunk or second as it relies on measuring how fast the chunks are sent, due to this the application in Firefox only records the time taken from when it sent the offer to when the file was downloaded. On the server, this information is logged to a file using a logging library called Winston that formats it with a time stamp. Winston is built to provide a simple interface to log to and query from multiple locations (or "transports"). Using this framework allows for the logging process to be easily scaled with the application if it was extended in the future.
 				
 				\subsubsection{Data Visualisation}
-				To monitor the application, the data received from the recipient was also modelled using a data visualisation tool. There are a number of tools and libraries that enable developers to do this such as D3.js \& Charts.js. Initially, a pre-built data visualisation server built with node.js called Lightning-vis was chosen which uses a REST API to communicate with and send data to. This way after being sent to the signalling server, the data was able to be streamed to the data visualisation server and the connections in each room could be monitored in near real-time. Instead of directly interfacing with the REST API, a JavaScript API client library was chosen that obfuscates it and makes it easier to code against. Using this, the application created a lightning server session when each room was generated on the application and once a user started downloading or streaming, the data was posted to visualisations contained within this room. 
-								
-				\begin{figure}[H]
-					\caption{Lightning Viz Session}
-					\centering
-					\includegraphics[scale=0.25]{lightning-viz.png}
-				\end{figure}	
+				To monitor the application, the data received from the recipient was also modelled using a data visualisation tool. There are a number of tools and libraries that enable developers to do this such as D3.js \& Charts.js. Initially, a pre-built data visualisation server built with node.js called Lightning-vis was chosen which uses a REST API to communicate with and send data to. This way after being sent to the signalling server, the data was able to be streamed to the data visualisation server and the connections in each room could be monitored in near real-time. Instead of directly interfacing with the REST API, a JavaScript API client library was chosen that obfuscates it and makes it easier to code against. Using this, the application created a lightning server session (as seen in Appendix E) when each room was generated on the application and once a user started downloading or streaming, the data was posted to visualisations contained within this room. 	
 				
 				However as the server and API client were being developed with, the limitations of the functionality became apparent. For example, once a visualisation was created within a session, only the initial data series that were created with it were able to be updated, this meant that new series could not be added to represent recipients as they joined and left the room. Another issue was that the JavaScript API client had not been updated since the REST API had changed and an endpoint had to be changed for it to work. Overall, it was decided that it would be better to approach data visualisation with a different library instead of expending any more time trying to make it work. 
 
-				As an alternative, Lightning vis was replaced with a lightweight JavaScript library called smoothie.js that utilises the HTML5 canvas element to produce live streaming graphs. This library was implemented to add graphs to the uploader's application, enabling the user to see how fast the peers connected to them were either downloading or streaming the uploaded file. To do so, the signalling server was updated to forward these statistics on to the uploader. Using smoothie.js avoided the problem occurring with the lightning-viz server as it was now possible to add a series per recipient to the charts after they were initialized. However, one of the downsides of this was that now the data visualisation and processing is all handled within the application which presents two problems. First of all, it puts extra load on the application instead of passing it to a service built for this purpose (like lightning-viz) which is probably considerably more efficient at it and secondly by doing so, it means that only the uploader can view the visualised statistics for the room. Due to this, the solution should considered to only be temporary and refactored at a later point to use a solution such as the ELK (ElasticSearch, LogStash, Kibana) stack. Logstash is a tool that Winston can transport logs to and is used to centralize the aggregation of data, in combination with elastic search which searches and analyses this data and kibana for data visualisation, it would provide a better, more scalable solution.
-				
-				\begin{figure}[H]
-					\caption{Smoothie.js Chart}
-					\centering
-					\includegraphics[scale=0.5]{smoothie-js.png}
-				\end{figure}
+				As an alternative, Lightning vis was replaced with a lightweight JavaScript library called smoothie.js that utilises the HTML5 canvas element to produce live streaming graphs. This library was implemented to add graphs to the uploader's application (as seen in appendix F), enabling the user to see how fast the peers connected to them were either downloading or streaming the uploaded file. To do so, the signalling server was updated to forward these statistics on to the uploader. Using smoothie.js avoided the problem occurring with the lightning-viz server as it was now possible to add a series per recipient to the charts after they were initialized. However, one of the downsides of this was that now the data visualisation and processing is all handled within the application which presents two problems. First of all, it puts extra load on the application instead of passing it to a service built for this purpose (like lightning-viz) which is probably considerably more efficient at it and secondly by doing so, it means that only the uploader can view the visualised statistics for the room. Due to this, the solution should considered to only be temporary and refactored at a later point to use a solution such as the ELK (ElasticSearch, LogStash, Kibana) stack. Logstash is a tool that Winston can transport logs to and is used to centralize the aggregation of data, in combination with elastic search which searches and analyses this data and kibana for data visualisation, it would provide a better, more scalable solution.
 			
-		\section{Presentation}
+		\section{Presentation Layer}
 			\subsection{Design}		
-			\todo{GOOVERTHIS}	
-				As design and usability was not a key part of my project, the design and structure of the web application was kept simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. However, the design of the application was still something that needed to some time dedicated to it as having a poorly designed application limited how easily I could test it especially with the lack of unit tests.
-				
-				\begin{figure}[H]
-					\caption{Iterations of Design}
-					\centering
-					\includegraphics[scale=0.15]{design.png}
-				\end{figure}
-				
-			\subsection{App.js module}
-			Initially to develop the code that would present and manipulate the state of my application, JavaScript frameworks such as Backbone.js and Angular.js were looked into. However, this seemed unnecessary as the the states of the application were relatively simple. Instead, a basic set of functions that put the application into these states was developed and added to the app.js module. These functions manipulated the Document Object Model on the page using JQuery where possible and vanilla JavaScript where it couldnt be used. To transition into these states, these functions also asynchronously called functions from the lower level JavaScript modules in order to initiate a connection to the WebSocket and set up in preparation to receive an offer for a peer connection.
+			As design and usability was not a key part of my project, the design and structure of the web application was kept simple and clean in order to minimise time and effort spent on it and to emphasise the sole purpose of the project. However, the design of the application was still something that needed to some time dedicated to it as having a poorly designed application limited how easily I could test it especially with the lack of unit tests. The iterations of design that were went throughout the development process are available in Appendix B.
+
+			\subsection{Appplication Code}
+			Initially to develop the code that would present and manipulate the state of my application, JavaScript frameworks such as Backbone.js and Angular.js were looked into. However, this seemed unnecessary as the states of the application were relatively simple. Instead, a basic set of functions that put the application into these states were developed and added to the app.js module. These functions manipulated the Document Object Model on the page using JQuery where possible and vanilla JavaScript where it couldn't be used. To transition into these states, these also asynchronously called functions from the lower level JavaScript modules in order to initiate a connection to the WebSocket and set up in preparation to receive a peer connection offer.
+			
+			\subsubsection{Application Flow}
+			\begin{figure}[H]
+				\caption{Application Flow Chart}
+				\centering
+				\includegraphics[scale=0.6]{application-flow.png}
+			\end{figure}
+						
+			From the diagram in Figure 5.2, the states of the application and the interactions that cause it to transition between these can be seen. The main two states differentiating the paths a user can take through the application are the file upload state (Appendix C.1) and the join room state (Appendix C.3). The file upload state is the state in which a room does not exist yet as the user has not uploaded a file and the join room state is the state in which a recipient of the file enters a pre existing room, created by the user who has already uploaded a file and is in the new room state (Appendix C.2). From the new room, the user's journey within the application ends as they are now at the point at which they externally share the room. Once the recipient joins the room, they are in the position to either stream or download the file , putting them into either the terminating streaming (Appendix C.4) or downloading states (Appendix C.5).
 		
 		\section{Authentication}
 		To add basic authentication to the application, an option was added to the file upload state of the application that enabled the user to add a password to their "room". In the background, this worked by sending a password field through with the POST request to create a room if the password option was selected. A password would then be generated by the server and passed back to the client to present to the user. When a recipient then attempted to join a passworded room without a password cookie, they would be served a password page. This password page retrieves the password from the recipient and sends it in a POST request to the server, checking it against the room's password to validate it. If it is correct, a cookie containing the password is added to the response and the user is redirected to the room page, again checking to see if the cookie exists with the correct password. The reason for the intermediary password page is that if the password was asked for on the main room page, a user with experience of web development could easily bypass this and join the room without being authenticated.
 		
 		\section{Other Technologies}
 			\subsection{JavaScript Build Tools}
-			In order to streamline the process of developing with JavaScript I used a tool called Browserify. As explained earlier, Browserify is a dependency management tool that allows you to use node.js modules in the browser as well as allowing you to modularize JavaScript to produce a more structured application. However, to compile the bundle of dependencies together, a command line interface is used. This can be done manually but starts to become inefficient when code is being changed constantly. An alternative to doing it manually is to automate the process using a task runner such as Gulp. Gulp is essentially a task runner that allows developers run all of the pre-processing needed to build their compile static resources. In order to automate the Browserify process, I found a gulp task that uses a JavaScript library called watchify that monitors JavaScript for changes and recompiles the bundle when it does. I was then able to run this gulp task through the command line whenever I was developing so that I did not constantly have to run Browserify myself. In the future, I could also use gulp for other tasks, for example if I refactored the application's css to use sass instead, I could create a task that watches the sass files for changes and automatically compile them.
+			In order to streamline the process of developing with JavaScript I used a tool called Browserify. As explained in section 5.1, Browserify is a dependency management tool that allows a developer to use node.js modules in the browser as well as allowing them to modularize JavaScript to produce a more compartmentalized application. However, to compile the bundle of dependencies together, a command line interface is used. This can be done manually but starts to become inefficient when code is being changed constantly. An alternative to doing it manually is to automate the process using a task runner such as Gulp. Gulp is essentially a task runner that allows developers run all of the pre-processing needed to build their compile static resources. In order to automate the Browserify process,a gulp task was found that uses a JavaScript library called Watchify that monitors JavaScript for changes and recompiles the bundle when it does. This was then able to run through the command line whenever the application was being was developed on so automatically updating the bundle. In the future, Gulp could also be used for other tasks, for example if the application's CSS were re-factored to use SASS instead, a task could be created that watches the sass files for changes and automatically compile them. A task could also be created to run the suite of Mocha tests before compiling the JavaScript in order to ensure everything still works.
 			
 			\subsection{Development Environments}
-			I used WebStorm, an integrated development environment for JavaScript. I chose it because of the massive range of functionality I could utilise as opposed to basic text editors such as sublime. An example of this functionality was that I was easily able to run and specifically debug processes such as the browserify gulp task and the node.js signalling server through it which saved me a lot of time that I would have spent setting up a third party node.js debugger. It also allowed me to spot syntactic and semantic errors as I was writing the code and do things such as refactor names of functions without crawling through the rest of the code to see where it is used.
+			WebStorm, an integrated development environment for JavaScript was used to develop in. This was chosen because of the massive range of functionality it has that could be utilised as opposed to basic text editors such as sublime. An example of this functionality was that it was easily able to run and  debug processes such as the Browserify gulp task and the node.js signalling server through it which saved a lot of time that would have been spent setting up a third party node.js debugger. It also allowed me to spot syntactic and semantic errors as the code was being written and do things such as re-factor names of functions without crawling through the rest of the application to see where it is used.
 			
 			\subsection{Git}
-			Throughout the development process, I regularly committed code to my GitHub repository using the git command-line interface. This was a great habit to get into as it allowed me to track and log my work throughout as well as prevent any risk of accidental data loss or overwrites that would almost definitely have occurred from using a USB stick or even a cloud service like dropbox. it let me easily switch from one development platform to another without any trouble which was extremely important as I was in and out of university most days. This habit also spilled over into other modules as I now have a GitHub repository for each that contains all of the assignment work I have done for them. Using GitHub also allows me to expose my work with potential contributors as it is open-source as well as employers as an example of my abilities. 
+			Throughout the development process, changes were regularly committed to the application GitHub repository using the git command-line interface. This was a great habit to get into as it allowed me to track and log my work throughout as well as prevent any risk of accidental data loss or overwrites that would almost definitely have occurred from using a USB stick or even a cloud service like dropbox. it let me easily switch from one development platform to another without any trouble which was extremely important as I was in and out of university most days. This habit also spilled over into other modules as I now have a GitHub repository for each that contains all of the assignment work I have done for them. Using GitHub also allows me to expose my work with potential contributors as it is open-source as well as employers as an example of my abilities. 
 			
 			\subsection{Amazon Web Instances}
 			Amazon Web Services allowed me to quickly spin up and destroy virtual Ubuntu server instances to host the application on. In the end, I also linked this server with a domain address in order to provide a public interface into the application. However, choosing the free micro server instance that Amazon provide could potentially bottleneck the application. In order to scale the application, the server would eventually have to be upgraded to a better but more costly server instance.			
@@ -365,7 +355,7 @@
 			Due to the lack of a unit testing framework for client-side JavaScript, I was unable to write unit or integration tests for the browser modules. In order to overcome this, manual testing was emphasised throughout the development process. Every time functionality was added or changed, it was thoroughly manually black-box tested with the different possible use cases. To automate this process to an extent, the iMacros Chrome extension and the Selenium WebDriver plugin for Firefox were also investigated. These tools allow testers to create scripts that go through the flow of the application. iMacros ended up being abandoned as it was failing too often but with Selenium in Firefox, test cases were made for downloading and streaming. An end to end test case was unable to be scripted as Selenium couldn't seem to handle using the file element to upload a file. A Chrome application called Postman was also used to black box test the endpoints of the API. This application allows for test cases consisting of HTTP requests to be created and fired against the server. Through this, I was able to test each endpoint in isolation from the client side application. 
 		
 		\section{Stress Testing}
-		In order to load test the application, it was put under varying amounts of stress by changing factors such as the size of the file and the amount of concurrent users downloading or streaming the file and analysing the statistics from the log file. For the download test cases, the time taken from the offer being sent by the recipient to the time the file had been successfully downloaded was used as the benchmark. As streaming can't be measured in terms of how long it takes, average throughput (bytes per second) was used as the benchmark and the amount of users streaming the file became the variable. The download test cases were ran 3 times per amount of users per file size and the stream test cases were ran once per amount of users per file size. It is important to note that all of these tests were ran on the same browser on the same device so results could be limited by this and users may not have been truly concurrent downloading smaller files even with browser automation tools such as Selenium as the download could have occurred too fast. To improve this, the tests could be ran on separate devices concurrently in order to minimise the effect that it could possibly have on the results.
+		In order to load test the application, it was put under varying amounts of stress by changing factors such as the size of the file and the amount of concurrent users downloading or streaming the file and analysing the statistics from the log file. For the download test cases, the time taken from the offer being sent by the recipient to the time the file had been successfully downloaded was used as the benchmark. As streaming can't be measured in terms of how long it takes, average throughput (bytes per second) was used as the benchmark and the amount of users streaming the file became the variable. The download test cases were ran 3 times per amount of users per file size and the stream test cases were ran once per amount of users per file size. It is important to note that all of these tests were ran on the same browser on the same device so results could be limited by this and users may not have been truly concurrent downloading smaller files even with browser automation tools such as Selenium as the download could have occurred too fast. To improve this, the tests could be ran on separate devices concurrently in order to minimise the effect that it could possibly have on the results. The raw data for the results is available in appendix A.
 		
 		\subsection{Discussion of results}
 			\subsubsection{File Transfer}
@@ -430,13 +420,18 @@
 			\begin{figure}[H]
 				\caption{Many-to-many peer connections}
 				\centering
-				\includegraphics[scale=0.5]{many-to-many.png}
+				\includegraphics[scale=0.5]{tree-topology.png}
 			\end{figure}	
 			
 			This structure would eventually form a network topology similar to a tree network in which multiple nodes spawn from one node and eventually develop their own network of sub-nodes and so forth. Due to this structure, the network would be relatively easy to maintain and scale as each node would only needs to maintain the connection between it and it's sub-nodes. It would also provide a higher level of redundancy as the signalling server could be used to reconnect nodes to another seed if there is a failure with the original. The downside of this is that it puts more reliance and load on the server to organise the network, which is problematic if the signalling server crashes.
 			
+			In order to improve download speeds, the concept of super-nodes mentioned in section 2.2 could be implemented where a sub node could be connected to a seed based on criteria such how close together they are located. This would be achieved using a geolocation service API along with the user's IP address or by using the HTML5 geolocation library. However, this functionality would be optional, requiring the user's permission as it does mean that the user is exposing their location and IP address, potentially causing privacy issues.
+			
+			\subsection{Peer Discovery}
+			At the moment, the means by which a user can share the room and thus their file are restricted to directly sharing the URL or sharing it via social media which limits it as an alternative to current file sharing networks where a user is in some way able to search for a specific file they want to download or network they want to join. In order to replicate this in the application, a directory of rooms could be added in which users would search  for a certain file or refine by a variety or criteria ranging from type of file such as .mp3 or or .pdf or by tags selected by the user to determine the contents of the file such as music or e-books. This would enable a larger group of users to discover and join a network. In turn, if many-to-many networking was put in place, this would allow the network to scale faster thus protecting against failures. For users who want to keep their files private, they would be able to select the room to be unlisted on top of adding password authentication to it.
+			
 			\subsection{JavaScript standards}
-			As JavaScript was relatively new to me at the beginning of this project and it ended up being the language used throughout the full stack, the standard of the code could most likely be improved. An example of this is how callback functions were utilised instead of using the concept of promises. Promises are essentially objects that represent the potential result of an unfinished asynchronous operation. When these objects are created, they are initially empty but become fulfilled when the operation has finished or rejected if the operation fails. To use a promise, the code that is to be executed after the asynchronous operation is to be passed through to one of two functions called then() for successful results and catch() for failed results which are chained on to the end of the call to the asynchronous operation. This works because both functions return a promise which can be pipelined through each other. The major benefit of this is that by making the asynchronous operation an object, it can be passed around as a first class citizen whereas if a callback was used, this wouldn't be possible.	
+			As JavaScript was relatively new to me at the beginning of this project and it ended up being the language used throughout the full stack, the standard of the code could most likely be improved. An example of this is how callback functions were utilised instead of using the concept of promises. Promises are essentially objects that represent the potential result of an unfinished asynchronous operation. When these objects are created, they are initially empty but become fulfilled when the operation has finished or rejected if the operation fails. To use a promise, the code that is to be executed after the asynchronous operation is to be passed through to one of two functions called then() for successful results and catch() for failed results which are chained on to the end of the call to the asynchronous operation. This works because both functions return a promise which can be pipelined through each other. The major benefit of this is that by making the asynchronous operation an object, it can be passed around as a first class citizen whereas if a callback is used, this is not possible.	
 
 			\subsection{Authentication Encryption}
 			At the moment, the authentication process is relatively simple. In order to improve security, the generated password should be hashed on the server and password validation should occur by hashing the incoming password and comparing it to the version on the server. Although this isn't a major issue as the server only keeps the password for as long as the room exists and not in a database, if it ended up being compromised it would mean that the hacker would potentially have access to every passworded room. 
@@ -447,7 +442,6 @@
 	\section{Conclusion}
 		Although this project has shown that WebRTC has potential to provide consumers with an alternative means of transferring data over the internet, it is limited as WebRTC's primary purpose is enabling one to one real time communication. Due to this, WebRTC does not have the native means to effectively scale and transfer data to large amounts of people. This results in the application implementing this technology having to handle this, resorting to less efficient hacks and bypasses being used in order to make it work. In order for peer to peer data transfer through the browser to be considered a full alternative to current solutions, a specific technology would have to created that was able to deal the with optimisation and scalability concerns shown by this project at a browser level. This being said, WebRTC presented a novel opportunity to work with concepts like this and it could definitely be utilised to supplement current solutions. For example, the ability to stream audio files from one peer to another could be incorporated into a platform such as Spotify in order to ease load on servers. 
 			
-					
 	\begin{thebibliography}{20}
 		\bibitem{Unstructured P2P Diagram}
 		An Unstructured Peer-To-Peer Overlay Network. Available: http://www.hindawi.com/journals/jcnc/2012/485875/fig1/. Last Accessed 6 Nov. 2015.
@@ -485,6 +479,20 @@
 		Mozilla Web API. Available: https://developer.mozilla.org/en-US/docs/Web/API. Last accessed 30/10/2015.
 		\bibitem{JSEP}
 		Justin Uberti. (2011). Javascript Session Establishment Protocol (JSEP). Available: https://lists.w3.org/Archives/Public/public-webrtc/2012Jan/att-0002/JavascriptSessionEstablishmentProtocol.pdf. Last accessed 11/11/2015.
+		\bibitem{SRTP}
+		M. Baugher, D. McGrew, M. Naslund, E. Carrara, K. Norrman, . (2004). The Secure Real-time Transport Protocol (SRTP). Available: https://tools.ietf.org/html/rfc3711. Last accessed 03/05/2016.
+		\bibitem{RTP}
+		H. Schulzrinne, S. Casner, R. Frederick, V. Jacobson. (2003). RTP: A Transport Protocol for Real-Time Applications. Available: https://tools.ietf.org/html/rfc3550. Last accessed 03/05/2016.
+		\bibitem{SCTP}
+		L. Ong, J. Yoakum. (2002). An Introduction to the Stream Control Transmission Protocol (SCTP). Available: https://tools.ietf.org/html/rfc3286. Last accessed 03/05/2016.
+		\bibitem{SCTP ISOC}
+		Randall Stewart, Paul D. Amer. (2007). Why is SCTP needed given TCP and UDP are widely available?. Available: https://www.isoc.org/briefings/017/. Last accessed 03/05/2016.
+		\bibitem{DTLS}		
+		E. Rescorla, N. Modadugu. (2012). Datagram Transport Layer Security Version 1.2. Available: https://tools.ietf.org/html/rfc6347. Last accessed 03/05/2016.
+		\bibitem{TLS}
+		N/A. (N/A). Transport Layer Security (TLS). Available: http://chimera.labs.oreilly.com/books/1230000000545/ch04.html. Last accessed 03/05/2016.
+		\bibitem{WebRTC DTLS}
+		N/A. (N/A). Secure Communication with DTLS. Available: http://chimera.labs.oreilly.com/books/1230000000545/ch18.html#_secure_communication_with_dtls. Last accessed 03/05/2016.
 		\bibitem{WebSockets}
 		Fette \& Melnikov. (2011). The WebSocket Protocol. Available: https://tools.ietf.org/html/rfc6455. Last accessed 12/11/2015.
 		\bibitem{SDP Over WebSockets}
@@ -493,6 +501,158 @@
 		Jesup, et al. (2015). WebRTC Data Channel Establishment Protocol. Available: https://tools.ietf.org/html/draft-ietf-rtcweb-data-protocol-09. Last accessed 12/11/2015.
 		\bibitem{TDD Diagram}
 		Available: http://www.agilenutshell.com/assets/test-driven-development/tdd-circle-of-life.png. Last accessed 09/11/2015.
+		\bibitem{REST}
+		Roy Thomas Fielding. (2000). Architectural Styles and the Design of Network-based Software Architectures. Available: https://www.ics.uci.edu/\textasciitilde{}fielding/pubs/dissertation/fielding\_dissertation.pdf. Last accessed 02/05/2016.
+		\bibitem{MediaStream API}
+		Robert O'Callahan. (N/A). MediaStream Processing API. Available: https://www.w3.org/2011/audio/drafts/1WD/MediaStream/\#media-elements. Last accessed 02/05/2016.
+		\bibitem{getStats}
+		Harald Alvestrand, Varun Singh. (06/02/2015). Identifiers for WebRTC's Statistics API. Available: https://www.w3.org/TR/webrtc-stats/. Last accessed 02/05/2016.
+		\bibitem{STOMP}
+		Jeff Mesnil. (2012). STOMP Over WebSocket. Available: http://jmesnil.net/stomp-websocket/doc/. Last accessed 02/05/2016.
+		
 	\end{thebibliography}
+	
+	\appendix
+	\chapter{Load Testing Raw Data}
+	\includepdf[pages=-]{Results.pdf}
+	\chapter{Iterations of Design}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.15]{design.png}
+		\end{figure}
+	\chapter{States}
+	\section{FileUploadState}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.6]{fileuploadstate.png}
+		\end{figure}	
+	\section{NewRoomState}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.6]{newroomstate.png}
+		\end{figure}	
+	\section{JoinRoomState}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.6]{joinroomstate.png}
+		\end{figure}	
+	\section{StreamingState}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.6]{streamingstate.png}
+		\end{figure}	
+	\section{DownloadState}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.6]{downloadstate.png}
+		\end{figure}
+	\chapter{SDP Anatomy}
+	\begin{lstlisting}[tabsize=1,frame=single, basicstyle=\ttfamily\footnotesize, breaklines=true]
+	//Global Parameters
+		v=0
+		o=- 8673508164875365281 2 IN IP4 127.0.0.1
+		s=-
+		t=0 0
+		a=group:BUNDLE audio video data
+		a=msid-semantic: WMS
+		//Audio Parameters
+			m=audio 55386 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 126
+			c=IN IP4 81.132.56.236
+			a=rtcp:55388 IN IP4 81.132.56.236
+		//ICE Candidates
+			a=candidate:186199869 1 udp 2113937151 192.168.1.101 55386 typ host generation 0
+			a=candidate:186199869 2 udp 2113937150 192.168.1.101 55388 typ host generation 0
+			a=candidate:842163049 1 udp 1677729535 81.132.56.236 55386 typ srflx raddr 192.168.1.101 rport 55386 generation 0
+			a=candidate:842163049 2 udp 1677729534 81.132.56.236 55388 typ srflx raddr 192.168.1.101 rport 55388 generation 0
+		//ICE Parameters
+			a=ice-ufrag:0wQWmUu1vNtLfQb+
+			a=ice-pwd:CypcDjpI4jVplwdXcYFUDBAx
+		//DTLS Parameters
+			a=fingerprint:sha-256 46:11:61:1B:E1:D4:75:30:19:1A:50:11:73:F3:5C:3F:DA:D0:2C:D3:6F:E3:CE:EB:1E:13:94:12:00:71:51:60
+			a=setup:actpass
+		a=mid:audio
+		a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level
+		a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
+		a=recvonly
+		a=rtcp-mux
+		//Codec Parameters
+			a=rtpmap:111 opus/48000/2
+			a=fmtp:111 minptime=10; useinbandfec=1
+			a=rtpmap:103 ISAC/16000
+			a=rtpmap:104 ISAC/32000
+			a=rtpmap:9 G722/8000
+			a=rtpmap:0 PCMU/8000
+			a=rtpmap:8 PCMA/8000
+			a=rtpmap:106 CN/32000
+			a=rtpmap:105 CN/16000
+			a=rtpmap:13 CN/8000
+			a=rtpmap:126 telephone-event/8000
+			a=maxptime:60
+		//Video Parameters
+			m=video 55392 UDP/TLS/RTP/SAVPF 100 101 116 117 96
+			c=IN IP4 81.132.56.236
+			a=rtcp:55394 IN IP4 81.132.56.236
+		//ICE Candidates
+			a=candidate:186199869 1 udp 2113937151 192.168.1.101 55392 typ host generation 0
+			a=candidate:186199869 2 udp 2113937150 192.168.1.101 55394 typ host generation 0
+			a=candidate:842163049 2 udp 1677729534 81.132.56.236 55394 typ srflx raddr 192.168.1.101 rport 55394 generation 0
+			a=candidate:842163049 1 udp 1677729535 81.132.56.236 55392 typ srflx raddr 192.168.1.101 rport 55392 generation 0
+		//ICE Parameters
+			a=ice-ufrag:0wQWmUu1vNtLfQb+
+			a=ice-pwd:CypcDjpI4jVplwdXcYFUDBAx
+		//DTLS Parameters
+			a=fingerprint:sha-256 46:11:61:1B:E1:D4:75:30:19:1A:50:11:73:F3:5C:3F:DA:D0:2C:D3:6F:E3:CE:EB:1E:13:94:12:00:71:51:60
+			a=setup:actpass
+		a=mid:video
+		a=extmap:2 urn:ietf:params:rtp-hdrext:toffset
+		a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
+		a=extmap:4 urn:3gpp:video-orientation
+		a=recvonly
+		a=rtcp-mux
+		//Codec Parameters
+			a=rtpmap:100 VP8/90000
+			a=rtcp-fb:100 ccm fir
+			a=rtcp-fb:100 nack
+			a=rtcp-fb:100 nack pli
+			a=rtcp-fb:100 goog-remb
+			a=rtcp-fb:100 transport-cc
+			a=rtpmap:101 VP9/90000
+			a=rtcp-fb:101 ccm fir
+			a=rtcp-fb:101 nack
+			a=rtcp-fb:101 nack pli
+			a=rtcp-fb:101 goog-remb
+			a=rtcp-fb:101 transport-cc
+			a=rtpmap:116 red/90000
+			a=rtpmap:117 ulpfec/90000
+			a=rtpmap:96 rtx/90000
+			a=fmtp:96 apt=100
+		m=application 55390 DTLS/SCTP 5000
+		c=IN IP4 81.132.56.236
+		//ICE Candidates
+			a=candidate:186199869 1 udp 2113937151 192.168.1.101 55390 typ host generation 0
+			a=candidate:842163049 1 udp 1677729535 81.132.56.236 55390 typ srflx raddr 192.168.1.101 rport 55390 generation 0
+		//ICE Parameters
+			a=ice-ufrag:0wQWmUu1vNtLfQb+
+			a=ice-pwd:CypcDjpI4jVplwdXcYFUDBAx
+		//DTLS Parameters
+			a=fingerprint:sha-256 46:11:61:1B:E1:D4:75:30:19:1A:50:11:73:F3:5C:3F:DA:D0:2C:D3:6F:E3:CE:EB:1E:13:94:12:00:71:51:60
+			a=setup:actpass
+		a=mid:data
+		a=sctpmap:5000 webrtc-datachannel 1024
+	\end{lstlisting}	
+	
+	\chapter{}
+	\begin{figure}[H]
+		\caption{Lightning Viz Session}
+		\centering
+		\includegraphics[scale=0.25]{lightning-viz.png}
+	\end{figure}
+	
+	\chapter{}
+	\begin{figure}[H]
+		\caption{Smoothie.js Chart}
+		\centering
+		\includegraphics[scale=0.5]{smoothie-js.png}
+	\end{figure}
 
 \end{document}          

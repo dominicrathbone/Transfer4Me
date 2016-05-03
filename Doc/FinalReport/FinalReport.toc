@@ -13,44 +13,57 @@
 \contentsline {chapter}{\numberline {4}Methodology}{12}
 \contentsline {chapter}{\numberline {5}Development}{14}
 \contentsline {section}{\numberline {5.1}Architecture}{14}
-\contentsline {section}{\numberline {5.2}Signalling}{16}
-\contentsline {subsection}{\numberline {5.2.1}1st Iteration - Spring Boot}{16}
+\contentsline {section}{\numberline {5.2}Signalling}{15}
+\contentsline {subsection}{\numberline {5.2.1}1st Iteration - Spring Boot}{15}
 \contentsline {subsection}{\numberline {5.2.2}2nd Iteration - Node JS}{16}
-\contentsline {subsubsection}{\numberline {5.2.2.1}JSON}{18}
-\contentsline {section}{\numberline {5.3}Peer to Peer Communication}{18}
-\contentsline {subsection}{\numberline {5.3.1}One-to-one peer connection}{18}
-\contentsline {subsection}{\numberline {5.3.2}File Transfer}{20}
-\contentsline {subsection}{\numberline {5.3.3}Media Streaming}{22}
-\contentsline {subsubsection}{\numberline {5.3.3.1}Audio}{22}
-\contentsline {subsubsection}{\numberline {5.3.3.2}Video}{22}
-\contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{22}
-\contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{23}
-\contentsline {subsubsection}{\numberline {5.3.5.1}Data Collection}{23}
-\contentsline {subsubsection}{\numberline {5.3.5.2}Data Visualisation}{23}
-\contentsline {section}{\numberline {5.4}Presentation}{25}
-\contentsline {subsection}{\numberline {5.4.1}Design}{25}
-\contentsline {subsection}{\numberline {5.4.2}App.js module}{26}
-\contentsline {section}{\numberline {5.5}Authentication}{26}
-\contentsline {section}{\numberline {5.6}Other Technologies}{27}
-\contentsline {subsection}{\numberline {5.6.1}JavaScript Build Tools}{27}
-\contentsline {subsection}{\numberline {5.6.2}Development Environments}{27}
-\contentsline {subsection}{\numberline {5.6.3}Git}{27}
-\contentsline {subsection}{\numberline {5.6.4}Amazon Web Instances}{27}
-\contentsline {chapter}{\numberline {6}Testing}{29}
-\contentsline {section}{\numberline {6.1}Automated Testing}{29}
-\contentsline {section}{\numberline {6.2}Manual Testing}{29}
-\contentsline {section}{\numberline {6.3}Stress Testing}{29}
-\contentsline {subsection}{\numberline {6.3.1}Discussion of results}{30}
-\contentsline {subsubsection}{\numberline {6.3.1.1}File Transfer}{30}
-\contentsline {subsubsection}{\numberline {6.3.1.2}File Streaming}{32}
-\contentsline {subsubsection}{\numberline {6.3.1.3}Summary}{33}
-\contentsline {chapter}{\numberline {7}Review \& Reflection}{34}
-\contentsline {section}{\numberline {7.1}Background Research}{34}
-\contentsline {section}{\numberline {7.2}Specification}{34}
-\contentsline {section}{\numberline {7.3}Methodology}{34}
-\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{35}
-\contentsline {subsection}{\numberline {7.4.1}Network Structure}{35}
-\contentsline {subsection}{\numberline {7.4.2}JavaScript standards}{36}
-\contentsline {subsection}{\numberline {7.4.3}Authentication Encryption}{36}
-\contentsline {subsection}{\numberline {7.4.4}HATEOAS}{36}
-\contentsline {section}{\numberline {7.5}Conclusion}{36}
+\contentsline {subsubsection}{\numberline {5.2.2.1}JSON}{17}
+\contentsline {section}{\numberline {5.3}Peer to Peer Communication}{17}
+\contentsline {subsection}{\numberline {5.3.1}One-to-one peer connection}{17}
+\contentsline {subsection}{\numberline {5.3.2}File Transfer}{19}
+\contentsline {subsection}{\numberline {5.3.3}Media Streaming}{21}
+\contentsline {subsubsection}{\numberline {5.3.3.1}Audio}{21}
+\contentsline {subsubsection}{\numberline {5.3.3.2}Video}{21}
+\contentsline {subsection}{\numberline {5.3.4}One-to-many peer connections}{21}
+\contentsline {subsection}{\numberline {5.3.5}Data Aggregation}{22}
+\contentsline {subsubsection}{\numberline {5.3.5.1}Data Collection}{22}
+\contentsline {subsubsection}{\numberline {5.3.5.2}Data Visualisation}{22}
+\contentsline {section}{\numberline {5.4}Presentation Layer}{23}
+\contentsline {subsection}{\numberline {5.4.1}Design}{23}
+\contentsline {subsection}{\numberline {5.4.2}Appplication Code}{23}
+\contentsline {subsubsection}{\numberline {5.4.2.1}Application Flow}{24}
+\contentsline {section}{\numberline {5.5}Authentication}{25}
+\contentsline {section}{\numberline {5.6}Other Technologies}{25}
+\contentsline {subsection}{\numberline {5.6.1}JavaScript Build Tools}{25}
+\contentsline {subsection}{\numberline {5.6.2}Development Environments}{25}
+\contentsline {subsection}{\numberline {5.6.3}Git}{25}
+\contentsline {subsection}{\numberline {5.6.4}Amazon Web Instances}{26}
+\contentsline {chapter}{\numberline {6}Testing}{27}
+\contentsline {section}{\numberline {6.1}Automated Testing}{27}
+\contentsline {section}{\numberline {6.2}Manual Testing}{27}
+\contentsline {section}{\numberline {6.3}Stress Testing}{27}
+\contentsline {subsection}{\numberline {6.3.1}Discussion of results}{28}
+\contentsline {subsubsection}{\numberline {6.3.1.1}File Transfer}{28}
+\contentsline {subsubsection}{\numberline {6.3.1.2}File Streaming}{30}
+\contentsline {subsubsection}{\numberline {6.3.1.3}Summary}{31}
+\contentsline {chapter}{\numberline {7}Review \& Reflection}{32}
+\contentsline {section}{\numberline {7.1}Background Research}{32}
+\contentsline {section}{\numberline {7.2}Specification}{32}
+\contentsline {section}{\numberline {7.3}Methodology}{32}
+\contentsline {section}{\numberline {7.4}Limitations \& Improvements of the application}{33}
+\contentsline {subsection}{\numberline {7.4.1}Network Structure}{33}
+\contentsline {subsection}{\numberline {7.4.2}Peer Discovery}{34}
+\contentsline {subsection}{\numberline {7.4.3}JavaScript standards}{34}
+\contentsline {subsection}{\numberline {7.4.4}Authentication Encryption}{34}
+\contentsline {subsection}{\numberline {7.4.5}HATEOAS}{34}
+\contentsline {section}{\numberline {7.5}Conclusion}{35}
+\contentsline {chapter}{\numberline {A}Load Testing Raw Data}{38}
+\contentsline {chapter}{\numberline {B}Iterations of Design}{43}
+\contentsline {chapter}{\numberline {C}States}{44}
+\contentsline {section}{\numberline {C.1}FileUploadState}{44}
+\contentsline {section}{\numberline {C.2}NewRoomState}{45}
+\contentsline {section}{\numberline {C.3}JoinRoomState}{46}
+\contentsline {section}{\numberline {C.4}StreamingState}{47}
+\contentsline {section}{\numberline {C.5}DownloadState}{48}
+\contentsline {chapter}{\numberline {D}SDP Anatomy}{49}
+\contentsline {chapter}{\numberline {E}}{51}
+\contentsline {chapter}{\numberline {F}}{52}

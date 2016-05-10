@@ -199,7 +199,7 @@ module.exports = function () {
                     //if the signal is an ICE candidate from that user, add it to the peer connection
                     p2p.connection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
                 }
-            } else if(signal.user == "SERVER" && signal.users) {
+            } else if(signal.user == "SERVER" && signal.hasOwnProperty("users")) {
                 //if the signal is from the server and contains the amount of users, update the amount of users.
                 //this should be refactored to a callback
                 $("#users").text(signal.users + " user(s) connected to you.");

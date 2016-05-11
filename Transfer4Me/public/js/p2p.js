@@ -492,7 +492,7 @@ module.exports = function () {
             var stats = {};
             Object.keys(results).forEach(function (key) {
                 if (p2p.user.isFirefox) {
-                    if (key.indexOf("inbound_rtp_audio_0") !== -1) {
+                    if (key.indexOf("inbound_rtp_audio") !== -1) {
                         //get Audio Channel object from result of getStats data
                         stats.audioChannel = results[key];
                         stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - streamStatGatheringStartTime) / 1000)
@@ -502,7 +502,7 @@ module.exports = function () {
                         //get Audio Channel object from result of getStats data
                         stats.audioChannel = results[key];
                         stats.audioChannel.bytesReceivedPerSecond = stats.audioChannel.bytesReceived / ((Date.now() - streamStatGatheringStartTime) / 1000)
-                    } else if (key.indexOf("Conn-audio-1-0") !== -1) {
+                    } else if (key.indexOf("Conn-audio") !== -1) {
                         //get Audio Connection object from result of getStats data (specific to Chrome)
                         stats.audioConnection = results[key];
                     }
@@ -546,9 +546,3 @@ module.exports = function () {
         }));
     }
 }
-
-
-
-
-
-

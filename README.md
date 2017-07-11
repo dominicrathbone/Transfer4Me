@@ -22,5 +22,5 @@ The prototype web application is extremely simple to use.
 #### Uploading
 The uploader loads the page, upload a file & password protect it if they wish. (please note: the prototype can't currently handle large files due to limitations of the browser.) The application will respond by giving you a URL to share with people and multiple methods to share it (facebook, twitter, google).
 
-##### Downloading & Streaming
+#### Downloading & Streaming
 The recipient of the URL then load the page, triggering a password box to appear if the uploader passworded the room. After entering the password, they are redirected to a page where they can either download or, if it is a media file, stream it.
